@@ -1,1 +1,8 @@
 node_modules/
+
+# Local envs
+.env
+.env.*
+/.env
+
+supabase/config.toml
