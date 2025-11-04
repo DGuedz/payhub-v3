@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 PAYHUB_V3 AI Chat - Demo Hackathon</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2563eb; margin-bottom: 10px; }
+        .subtitle { color: #64748b; margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; }
+        textarea, input { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; transition: border-color 0.2s; }
+        textarea:focus, input:focus { outline: none; border-color: #2563eb; }
+        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        button { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: #6b7280; color: white; }
+        .btn-secondary:hover { background: #4b5563; }
+        .response-area { min-height: 100px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 2px solid #e5e7eb; }
+        .response-area.empty { color: #9ca3af; font-style: italic; }
+        .info-box { background: #dbeafe; border: 1px solid #2563eb; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .info-box h3 { margin-top: 0; color: #1e40af; }
+        .mode-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-left: 8px; }
+        .mode-sandbox { background: #fbbf24; color: #92400e; }
+        .mode-gpt { background: #10b981; color: #065f46; }
+        .loading { opacity: 0.6; pointer-events: none; }
+        .error { color: #dc2626; background: #fee2e2; border: 1px solid #dc2626; padding: 12px; border-radius: 8px; margin-top: 10px; }
+        .success { color: #059669; background: #d1fae5; border: 1px solid #059669; padding: 12px; border-radius: 8px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 PAYHUB_V3 AI Chat</h1>
+        <p class="subtitle">Demo Hackathon XRPL Vega House</p>
+        
+        <div class="info-box">
+            <h3>ℹ️ Informações Importantes</h3>
+            <ul>
+                <li><strong>Modo Sandbox:</strong> Funciona sem token JWT (respostas locais, sem custos)</li>
+                <li><strong>Modo GPT:</strong> Requer autenticação e quota OpenAI ativa</li>
+                <li><strong>Project Ref:</strong> nsdujmcxbifhssipszdp</li>
+                <li><strong>Endpoint:</strong> https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat</li>
+            </ul>
+        </div>
+
+        <div class="input-group">
+            <label for="message">Sua mensagem:</label>
+            <textarea id="message" rows="3" placeholder="Digite sua mensagem para a IA...">Olá PAYHUB_V3! Como posso integrar XRPL no meu projeto?</textarea>
+        </div>
+
+        <div class="input-group">
+            <label for="jwt">Token JWT (opcional - deixe vazio para modo sandbox):</label>
+            <input type="text" id="jwt" placeholder="Deixe vazio para modo sandbox sem custos">
+        </div>
+
+        <div class="button-group">
+            <button id="sendBtn" class="btn-primary">💬 Enviar Mensagem</button>
+            <button id="sandboxBtn" class="btn-secondary">🧩 Testar Sandbox</button>
+            <button id="quickTestBtn" class="btn-secondary">⚡ Teste Rápido</button>
+        </div>
+
+        <div class="input-group">
+            <label>Resposta da IA:</label>
+            <div id="response" class="response-area empty">Aguardando mensagem...</div>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="success" class="success" style="display: none;"></div>
+    </div>
+
+    <script type="module">
+        // Helper minimalista para AI Chat
+        const PROJECT_REF = "nsdujmcxbifhssipszdp";
+        const RES_URL = `https://${PROJECT_REF}.supabase.co/functions/v1/ai-chat`;
+
+        async function sendMessage(message, jwt = "") {
+            const res = await fetch(RES_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
+                },
+                body: JSON.stringify({ message }),
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Request failed ${res.status}: ${text}`);
+            }
+
+            return res.json();
+        }
+
+        async function testSandbox(message = "hello sandbox") {
+            return sendMessage(message, ""); // sem JWT = modo sandbox
+        }
+
+        // Elementos DOM
+        const messageInput = document.getElementById('message');
+        const jwtInput = document.getElementById('jwt');
+        const sendBtn = document.getElementById('sendBtn');
+        const sandboxBtn = document.getElementById('sandboxBtn');
+        const quickTestBtn = document.getElementById('quickTestBtn');
+        const responseDiv = document.getElementById('response');
+        const errorDiv = document.getElementById('error');
+        const successDiv = document.getElementById('success');
+
+        function showResponse(data, isSandbox = false) {
+            responseDiv.classList.remove('empty');
+            
+            const modeBadge = isSandbox 
+                ? '<span class="mode-badge mode-sandbox">🧩 SANDBOX</span>' 
+                : '<span class="mode-badge mode-gpt">🤖 GPT</span>';
+            
+            if (data.ok && data.reply) {
+                responseDiv.innerHTML = `
+                    <div style="margin-bottom: 8px;">${modeBadge}</div>
+                    <div>${data.reply}</div>
+                `;
+                showSuccess('✅ Mensagem processada com sucesso!');
+            } else if (data.error) {
+                responseDiv.innerHTML = `<div style="color: #dc2626;">❌ Erro: ${data.error}</div>`;
+                showError(`Erro: ${data.error}`);
+            } else {
+                responseDiv.innerHTML = `<div>📄 Resposta: ${JSON.stringify(data, null, 2)}</div>`;
+            }
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            successDiv.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+        }
+
+        function setLoading(loading) {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                if (loading) {
+                    btn.classList.add('loading');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        // Event Listeners
+        sendBtn.addEventListener('click', async () => {
+            const message = messageInput.value.trim();
+            const jwt = jwtInput.value.trim();
+            
+            if (!message) {
+                showError('Por favor, digite uma mensagem');
+                return;
+            }
+
+            hideMessages();
+            setLoading(true);
+            responseDiv.innerHTML = '🔄 Processando...';
+
+            try {
+                const response = await sendMessage(message, jwt);
+                showResponse(response, !jwt);
+            } catch (error) {
+                showError(`Erro: ${error.message}`);
+                responseDiv.innerHTML = '❌ Erro ao processar mensagem';
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        sandboxBtn.addEventListener('click', async () => {
+            hideMessages();
+            setLoading(true);
+            responseDiv.innerHTML = '🔄 Testando modo sandbox...';
+
+            try {
+                const response = await testSandbox("Teste do modo sandbox PAYHUB_V3");
+                showResponse(response, true);
+            } catch (error) {
+                showError(`Erro no sandbox: ${error.message}`);
+                responseDiv.innerHTML = '❌ Erro no modo sandbox';
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        quickTestBtn.addEventListener('click', async () => {
+            hideMessages();
+            setLoading(true);
+            responseDiv.innerHTML = '🔄 Executando testes rápidos...';
+
+            const testMessages = [
+                "Olá PAYHUB_V3!",
+                "Como funciona o pagamento com XRPL?",
+                "Explique sobre o hackathon Vega House"
+            ];
+
+            let results = [];
+            for (const msg of testMessages) {
+                try {
+                    const response = await testSandbox(msg);
+                    results.push({ message: msg, response });
+                } catch (error) {
+                    results.push({ message: msg, error: error.message });
+                }
+            }
+
+            responseDiv.innerHTML = '<h4>🧩 Resultados dos Testes:</h4>';
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '12px';
+                div.style.padding = '8px';
+                div.style.background = result.response ? '#d1fae5' : '#fee2e2';
+                div.style.borderRadius = '4px';
+                
+                if (result.response) {
+                    div.innerHTML = `<strong>"${result.message}"</strong><br>✅ ${result.response.reply}`;
+                } else {
+                    div.innerHTML = `<strong>"${result.message}"</strong><br>❌ ${result.error}`;
+                }
+                
+                responseDiv.appendChild(div);
+            });
+
+            showSuccess('✅ Testes rápidos concluídos!');
+            setLoading(false);
+        });
+
+        // Demo inicial
+        window.addEventListener('load', () => {
+            console.log('🤖 PAYHUB_V3 AI Chat Demo carregada!');
+            console.log('📍 Endpoint:', RES_URL);
+            console.log('🧩 Modo Sandbox disponível (sem custos)');
+        });
+    </script>
+</body>
+</html>
