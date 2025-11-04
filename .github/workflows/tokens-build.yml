@@ -1,0 +1,48 @@
+name: "Tokens: build & commit"
+
+on:
+  push:
+    paths:
+      - 'design-system/tokens.json'
+  pull_request:
+    paths:
+      - 'design-system/tokens.json'
+  workflow_dispatch: {}
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (dev)
+        run: |
+          npm ci --silent || npm i --no-audit --no-fund
+        env:
+          CI: false
+
+      - name: Run token -> css converter
+        run: |
+          node scripts/token-to-css.js
+
+      - name: Show diff
+        run: git --no-pager diff --name-only || true
+
+      - name: Commit and push tokens.css (if changed)
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: chore(design): build tokens.css from tokens.json
+          file_pattern: 'design-system/export/tokens.css'
+          branch: ${{ github.ref_name }}
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
