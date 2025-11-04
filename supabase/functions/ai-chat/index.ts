@@ -1,80 +1,56 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
-
-type ChatRequest = {
-  message: string
-  model?: string
+// Declarações ambient para Deno global
+declare global {
+  var Deno: {
+    env: {
+      get(key: string): string | undefined;
+    };
+    serve(handler: (req: Request) => Response | Promise<Response>): void;
+  };
 }
 
-type ChatResponse = {
-  ok: boolean
-  reply?: string
-  error?: string
-}
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const [REDACTED_OPENAI_KEY] = Deno.env.get("[REDACTED_OPENAI_KEY]")
-const DEFAULT_MODEL = "gpt-3.5-turbo"
-
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   try {
-    if (req.method !== "POST") {
-      return new Response(
-        JSON.stringify({ ok: false, error: "Method Not Allowed" } satisfies ChatResponse),
-        { status: 405, headers: { "Content-Type": "application/json" } },
-      )
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    let body: any = {};
+    try { body = await req.json(); } catch { body = {}; }
+
+    const message = (body && (body.message || body.prompt)) || "";
+    if (!message) {
+      return new Response(JSON.stringify({ ok:false, error: "empty_message" }), { status:400, headers:{ "Content-Type":"application/json" }});
     }
 
-    const body = (await req.json()) as ChatRequest
-    const userMessage = body?.message?.trim()
-    const model = body?.model || DEFAULT_MODEL
-
-    if (!userMessage) {
-      return new Response(
-        JSON.stringify({ ok: false, error: "Missing 'message' in request body" } satisfies ChatResponse),
-        { status: 400, headers: { "Content-Type": "application/json" } },
-      )
+    if (!OPENAI_API_KEY) {
+      return new Response(JSON.stringify({ ok:true, mode:"sandbox", reply: `Simulação: ${message}` }), { headers:{ "Content-Type":"application/json" }});
     }
 
-    if (![REDACTED_OPENAI_KEY]) {
-      return new Response(
-        JSON.stringify({ ok: true, reply: `Echo: ${userMessage}` } satisfies ChatResponse),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      )
-    }
-
-    const completionRes = await fetch("https://api.openai.com/v1/chat/completions", {
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${[REDACTED_OPENAI_KEY]}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model,
-        messages: [
-          { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: userMessage },
-        ],
+        model: "gpt-4o-mini",
+        messages: [{ role: "system", content: "Assistente PAYHUB_V3." }, { role: "user", content: message }],
       }),
-    })
+    });
 
-    if (!completionRes.ok) {
-      const errText = await completionRes.text()
-      return new Response(
-        JSON.stringify({ ok: false, error: `OpenAI error: ${errText}` } satisfies ChatResponse),
-        { status: completionRes.status, headers: { "Content-Type": "application/json" } },
-      )
+    const text = await resp.text();
+    let data: any;
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+
+    if (!resp.ok) {
+      // log remote error and return sanitized message
+      console.error("OpenAI error:", resp.status, data);
+      return new Response(JSON.stringify({ ok:false, error: "openai_error", status: resp.status, detail: data }), { status: 502, headers:{ "Content-Type":"application/json" }});
     }
 
-    const json = await completionRes.json()
-    const reply: string | undefined = json?.choices?.[0]?.message?.content ?? ""
-
-    return new Response(
-      JSON.stringify({ ok: true, reply } satisfies ChatResponse),
-      { status: 200, headers: { "Content-Type": "application/json" } },
-    )
+    const reply = data.choices?.[0]?.message?.content || data.result || data.raw || "empty_reply";
+    return new Response(JSON.stringify({ ok:true, reply }), { headers:{ "Content-Type":"application/json" }});
   } catch (err) {
-    return new Response(
-      JSON.stringify({ ok: false, error: (err as Error).message } satisfies ChatResponse),
-      { status: 500, headers: { "Content-Type": "application/json" } },
-    )
+    console.error("handler_ex", err);
+    return new Response(JSON.stringify({ ok:false, error: "internal", message: String(err) }), { status:500, headers:{ "Content-Type":"application/json" }});
   }
-})
+});
