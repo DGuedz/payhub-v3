@@ -9,7 +9,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo \"Build OK\"",
-    "vercel-build": "npm run build"
+    "vercel-build": "npm run build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "start": "node server.js",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx"
   },
   "repository": {
     "type": "git",
@@ -23,6 +27,14 @@
   },
   "homepage": "https://github.com/DGuedz/PAYHUB_V3#readme",
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
   }
 }
