@@ -6,3 +6,10 @@ node_modules/
 /.env
 
 supabase/config.toml
+# Local secrets and tokens
+figma-prototype/
+*.local.json
+.env
+.env.*
+**/.npmrc
+.vercel

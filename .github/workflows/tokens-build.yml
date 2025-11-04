@@ -39,10 +39,10 @@ jobs:
       - name: Commit and push tokens.css (if changed)
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: chore(design): build tokens.css from tokens.json
+          commit_message: "chore(design): build tokens.css from tokens.json"
           file_pattern: 'design-system/export/tokens.css'
-          branch: ${{ github.ref_name }}
+          branch: "${{ github.ref_name }}"
           commit_user_name: 'github-actions[bot]'
           commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
