@@ -1,0 +1,7 @@
+{
+  "repo_name": "payhub-v3",
+  "figma_file_key": "<replace-with-your-file-key>",
+  "output_path": "src/frontend/design/",
+  "sync_interval": "6h",
+  "assets": ["tokens", "components", "screens"]
+}
