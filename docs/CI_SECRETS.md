@@ -28,6 +28,19 @@ gh secret set VERCEL_ORG_ID --body "<sua_org_id>"
 gh secret set VERCEL_PROJECT_ID --body "<seu_project_id>"
 ```
 
+### Exemplos de valores (apenas ilustrativos)
+
+```
+# Figma
+FIGMA_TOKEN=figd_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+FIGMA_FILE_KEY=UQwbW2cybw7SGzlBWHlgcr
+
+# Vercel
+VERCEL_TOKEN=vercel_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+VERCEL_ORG_ID=org_xxxxxxxxxxxxxxxxxxxxxxxxx
+VERCEL_PROJECT_ID=prj_xxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
 ## Vercel — Variáveis de Ambiente
 
 No projeto Vercel, crie variáveis em `Settings → Environment Variables` (Production/Preview/Development):
