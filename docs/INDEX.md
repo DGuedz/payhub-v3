@@ -5,6 +5,8 @@
 - Pitch Deck PAYHUB + XRPL: `docs/PITCH_DECK_PAYHUB_XRPL.md`
 - Relatório Demo Crypto Point: `docs/RELATORIO_DEMO_CRYPTO_POINT.md`
 - Estratégia XRPL Hackathon: `src/frontend/RELATORIO-ESTRATEGICO-HACKATHON.md`
+- Executive README (EN): `README_EXECUTIVO_EN.md`
+- Glossary — XRPL & RLUSD (EN): `docs/GLOSSARIO_XRPL_RLUSD.md`
 
 ## Como Exportar para PDF (opções)
 - Abrir os arquivos em um editor com exportação PDF (Typora/Obsidian).
