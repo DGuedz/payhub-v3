@@ -1,4 +1,4 @@
-name: CI/CD — Build & Deploy (Vercel)
+name: CI-CD Build and Deploy
 
 on:
   push:
