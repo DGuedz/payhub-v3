@@ -13,6 +13,8 @@ jobs:
   figma_sync:
     name: Figma Check & Tokens Sync
     runs-on: ubuntu-latest
+    env:
+      HAVE_FIGMA_SECRETS: ${{ secrets.FIGMA_TOKEN != '' && secrets.FIGMA_FILE_KEY != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +37,7 @@ jobs:
           if [ -f package.json ]; then npm ci; else echo "No package.json found, skipping install"; fi
 
       - name: Figma check
-        if: ${{ secrets.FIGMA_TOKEN != '' && secrets.FIGMA_FILE_KEY != '' }}
+        if: ${{ env.HAVE_FIGMA_SECRETS == 'true' }}
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
@@ -43,7 +45,7 @@ jobs:
           if [ -f scripts/figma_check.sh ]; then bash scripts/figma_check.sh; else echo "figma_check.sh not found, skipping"; fi
 
       - name: Sync tokens from Figma
-        if: ${{ secrets.FIGMA_TOKEN != '' && secrets.FIGMA_FILE_KEY != '' }}
+        if: ${{ env.HAVE_FIGMA_SECRETS == 'true' }}
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
