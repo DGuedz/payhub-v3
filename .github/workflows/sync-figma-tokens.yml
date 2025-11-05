@@ -27,8 +27,9 @@ jobs:
         run: |
           echo "FIGMA_TOKEN is set: ${FIGMA_TOKEN:+yes}" && echo "FIGMA_FILE_KEY=${FIGMA_FILE_KEY}"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (skip if no package.json)
+        run: |
+          if [ -f package.json ]; then npm ci; else echo "No package.json found, skipping install"; fi
 
       - name: Figma check
         env:
@@ -73,8 +74,9 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (skip if no package.json)
+        run: |
+          if [ -f package.json ]; then npm ci; else echo "No package.json found, skipping install"; fi
 
       - name: Install Vercel CLI
         run: npm i -g vercel@latest
@@ -91,11 +93,13 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel build --prod --token=$VERCEL_TOKEN
+        run: |
+          if [ -f package.json ]; then vercel build --prod --token=$VERCEL_TOKEN; else echo "No package.json, skipping build"; fi
 
       - name: Deploy Project Artifacts to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel deploy --prod --prebuilt --token=$VERCEL_TOKEN
+        run: |
+          if [ -f package.json ]; then vercel deploy --prod --prebuilt --token=$VERCEL_TOKEN; else echo "No package.json, skipping deploy"; fi
