@@ -1,0 +1,101 @@
+name: Sync Figma Tokens and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  figma_sync:
+    name: Figma Check & Tokens Sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Use repository secrets for Figma
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: |
+          echo "FIGMA_TOKEN is set: ${FIGMA_TOKEN:+yes}" && echo "FIGMA_FILE_KEY=${FIGMA_FILE_KEY}"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Figma check
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: |
+          if [ -f scripts/figma_check.sh ]; then bash scripts/figma_check.sh; else echo "figma_check.sh not found, skipping"; fi
+
+      - name: Sync tokens from Figma
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: |
+          if [ -f scripts/figma-tokens-sync.js ]; then node scripts/figma-tokens-sync.js; else echo "figma-tokens-sync.js not found, skipping"; fi
+
+      - name: Generate CSS from tokens (optional)
+        run: |
+          if [ -f scripts/token-to-css.js ]; then node scripts/token-to-css.js; else echo "token-to-css.js not found, skipping"; fi
+
+      - name: Upload tokens artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-tokens
+          path: |
+            design-system/tokens.json
+            design-system/export/**
+            public/**
+          if-no-files-found: warn
+
+  deploy:
+    name: Deploy to Vercel (main only)
+    needs: figma_sync
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel Environment Information
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+
+      - name: Build Project Artifacts
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel build --prod --token=$VERCEL_TOKEN
+
+      - name: Deploy Project Artifacts to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel deploy --prod --prebuilt --token=$VERCEL_TOKEN
