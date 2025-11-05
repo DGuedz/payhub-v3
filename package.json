@@ -13,7 +13,12 @@
     "dev": "vite",
     "preview": "vite preview",
     "start": "node server.js",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx"
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "security:init": "node src/backend/security/security-init.js",
+    "security:rotate-tokens": "node src/backend/security/token-rotation-system.js",
+    "security:check": "node scripts/secure-deploy.js --check",
+    "security:deploy": "node scripts/secure-deploy.js",
+    "security:scan": "node scripts/security-scan.js"
   },
   "repository": {
     "type": "git",

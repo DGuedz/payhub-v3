@@ -159,8 +159,13 @@ export async function demonstrateAIChat() {
 
     // Teste 2: Com token JWT (se disponível)
     console.log('\n2. Teste com token JWT (exemplo):');
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZHVqbWN4YmlmaHNzaXBzemRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMDMzODUsImV4cCI6MjA3NzY3OTM4NX0.KwckQ53El1bHj2OA0yEb30s1_aQBgPKTmFfacWJbdv8';
-    const gptResponse = await sendMessage('Como posso ajudar no hackathon XRPL?', token);
+    const token = process.env.JWT_TOKEN || ''; // Token deve vir de variável de ambiente
+    if (token) {
+      const gptResponse = await sendMessage('Como posso ajudar no hackathon XRPL?', token);
+      console.log('Resposta GPT:', gptResponse);
+    } else {
+      console.log('Token JWT não disponível - usando modo sandbox');
+    }
     console.log('Resposta GPT:', gptResponse);
 
   } catch (error) {

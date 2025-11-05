@@ -93,11 +93,11 @@ export class IncidentResponseEngine {
       const { userId, sessionId, allSessions } = action.parameters;
       
       if (allSessions) {
-        console.log(`🔒 Invalidando todas as sessões do usuário: ${userId || 'todos'}`);
+        console.log(`Invalidando todas as sessões do usuário: ${userId || 'todos'}`);
         // Implementar invalidação de sessões via Supabase
         return { invalidatedSessions: 'all', timestamp: new Date() };
       } else if (sessionId) {
-        console.log(`🔒 Invalidando sessão: ${sessionId}`);
+        console.log(`Invalidando sessão: ${sessionId}`);
         return { invalidatedSession: sessionId, timestamp: new Date() };
       }
       
@@ -107,7 +107,7 @@ export class IncidentResponseEngine {
     // Rotação de chaves de API
     this.actionExecutors.set('rotate_api_keys', async (action) => {
       const { service, environment } = action.parameters;
-      console.log(`🔄 Rotacionando chaves de API para: ${service} (${environment})`);
+      console.log(`Rotacionando chaves de API para: ${service} (${environment})`);
       
       // Simular rotação de chaves
       const newKeys = {
@@ -124,7 +124,7 @@ export class IncidentResponseEngine {
     // Bloqueio de IP
     this.actionExecutors.set('block_ip_address', async (action) => {
       const { ipAddress, duration, reason } = action.parameters;
-      console.log(`🚫 Bloqueando IP: ${ipAddress} por ${duration}s - Motivo: ${reason}`);
+      console.log(`Bloqueando IP: ${ipAddress} por ${duration}s - Motivo: ${reason}`);
       
       // Implementar bloqueio de IP (firewall, WAF, etc.)
       const blockInfo = {
@@ -141,7 +141,7 @@ export class IncidentResponseEngine {
     // Desabilitar carteira
     this.actionExecutors.set('disable_wallet', async (action) => {
       const { walletAddress, reason } = action.parameters;
-      console.log(`💳 Desabilitando carteira: ${walletAddress} - Motivo: ${reason}`);
+      console.log(`Desabilitando carteira: ${walletAddress} - Motivo: ${reason}`);
       
       return {
         walletAddress,
@@ -154,7 +154,7 @@ export class IncidentResponseEngine {
     // Notificação de segurança
     this.actionExecutors.set('notify_security_team', async (action) => {
       const { alert, channels } = action.parameters;
-      console.log(`📢 Notificando equipe de segurança sobre: ${alert.id}`);
+      console.log(`Notificando equipe de segurança sobre: ${alert.id}`);
       
       // Simular envio de notificações
       const notifications = {
@@ -179,14 +179,14 @@ export class IncidentResponseEngine {
         loggedAt: new Date()
       };
       
-      console.log(`📝 Incidente registrado: ${incident.id} (${severity})`);
+      console.log(`Incidente registrado: ${incident.id} (${severity})`);
       return logEntry;
     });
 
     // Escalonamento para admin
     this.actionExecutors.set('escalate_to_admin', async (action) => {
       const { alert, adminLevel } = action.parameters;
-      console.log(`🚨 Escalonando para admin nível ${adminLevel}: ${alert.id}`);
+      console.log(`Escalonando para admin nível ${adminLevel}: ${alert.id}`);
       
       return {
         alertId: alert.id,
@@ -213,7 +213,7 @@ export class IncidentResponseEngine {
     // Backup de dados críticos
     this.actionExecutors.set('backup_critical_data', async (action) => {
       const { dataTypes, urgency } = action.parameters;
-      console.log(`💾 Backup crítico iniciado: ${dataTypes.join(', ')} (${urgency})`);
+      console.log(`Backup crítico iniciado: ${dataTypes.join(', ')} (${urgency})`);
       
       return {
         backupId: `backup_${Date.now()}`,
@@ -227,7 +227,7 @@ export class IncidentResponseEngine {
     // Isolamento de sistemas
     this.actionExecutors.set('isolate_affected_systems', async (action) => {
       const { systems, isolationLevel } = action.parameters;
-      console.log(`🔒 Isolando sistemas: ${systems.join(', ')} (nível: ${isolationLevel})`);
+      console.log(`Isolando sistemas: ${systems.join(', ')} (nível: ${isolationLevel})`);
       
       return {
         systems,

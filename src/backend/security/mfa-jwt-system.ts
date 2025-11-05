@@ -484,10 +484,14 @@ export class MFAJWTSystem {
   private userSecrets: Map<string, string> = new Map(); // Simulação - usar banco em produção
 
   constructor(config?: Partial<SecurityConfig>) {
-    const jwtSecret = typeof Deno !== 'undefined' ? Deno.env.get("JWT_SECRET") : 'payhub-secure-secret-key';
+    const jwtSecret = typeof Deno !== 'undefined' ? Deno.env.get("JWT_SECRET") : process.env.JWT_SECRET;
+    
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is required');
+    }
     
     this.config = {
-      jwtSecret: jwtSecret || 'payhub-secure-secret-key',
+      jwtSecret: jwtSecret,
       jwtExpiration: 900, // 15 minutos
       jwtRefreshExpiration: 86400, // 24 horas
       mfaExpiration: 300, // 5 minutos

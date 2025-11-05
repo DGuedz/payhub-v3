@@ -178,7 +178,7 @@ export class KMSProtectionSystem {
 
       if (attempts >= this.config.maxAccessAttempts) {
         this.lockedPrincipals.set(principal, new Date());
-        console.log(`🔒 Principal bloqueado: ${principal} (${attempts} tentativas)`);
+        console.log(`Principal bloqueado: ${principal} (${attempts} tentativas)`);
       }
     }
   }
@@ -262,7 +262,7 @@ export class KMSProtectionSystem {
       this.logAccess(keyId, 'create', principal, true, 'Chave criada com sucesso', metadata);
       this.recordAccessAttempt(principal, true);
 
-      console.log(`🔐 Chave protegida criada: ${keyId} (${keyType})`);
+      console.log(`Chave protegida criada: ${keyId} (${keyType})`);
       return protectedKey;
 
     } catch (error) {
@@ -320,7 +320,7 @@ export class KMSProtectionSystem {
       this.logAccess(keyId, 'read', principal, true, reason, metadata);
       this.recordAccessAttempt(principal, true);
 
-      console.log(`🔓 Chave acessada: ${keyId} por ${principal}`);
+      console.log(`Chave acessada: ${keyId} por ${principal}`);
       return decryptedData;
 
     } catch (error) {
@@ -371,7 +371,7 @@ export class KMSProtectionSystem {
       this.logAccess(keyId, 'rotate', principal, true, 'Chave rotacionada com sucesso', metadata);
       this.recordAccessAttempt(principal, true);
 
-      console.log(`🔄 Chave rotacionada: ${keyId} (${protectedKey.keyMetadata.rotationCount} rotações)`);
+      console.log(`Chave rotacionada: ${keyId} (${protectedKey.keyMetadata.rotationCount} rotações)`);
       return protectedKey;
 
     } catch (error) {

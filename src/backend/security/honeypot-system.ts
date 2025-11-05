@@ -151,7 +151,7 @@ export class HoneypotManager {
     };
 
     this.honeypotWallets.set(honeypotWallet.address, honeypotWallet);
-    console.log(`🍯 Honeypot criado: ${honeypotWallet.address} (${description})`);
+    console.log(`Honeypot criado: ${honeypotWallet.address} (${description})`);
     
     return honeypotWallet;
   }

@@ -87,7 +87,7 @@ export class PAYHUBSecuritySystem {
    * Inicializa o sistema de segurança completo
    */
   public async initialize(): Promise<void> {
-    console.log('🛡️ Inicializando Sistema de Segurança PAYHUB_V3...');
+    console.log('Inicializando Sistema de Segurança PAYHUB_V3...');
     
     try {
       // Inicializar subsistemas
@@ -115,12 +115,12 @@ export class PAYHUBSecuritySystem {
    * Inicializa todos os subsistemas
    */
   private async initializeSubsystems(): Promise<void> {
-    console.log('🔧 Inicializando subsistemas de segurança...');
+    console.log('Inicializando subsistemas de segurança...');
 
     // Honeypot
     if (this.configuration.enableHoneypot) {
       try {
-        console.log('🍯 Configurando honeypots...');
+        console.log('Configurando honeypots...');
         // Honeypot já é inicializado automaticamente
         this.status.subsystems.honeypot = true;
       } catch (error) {
@@ -131,7 +131,7 @@ export class PAYHUBSecuritySystem {
     // Incident Response
     if (this.configuration.enableIncidentResponse) {
       try {
-        console.log('🚨 Configurando sistema de resposta a incidentes...');
+        console.log('Configurando sistema de resposta a incidentes...');
         // Incident Response já é inicializado automaticamente
         this.status.subsystems.incidentResponse = true;
       } catch (error) {
@@ -142,7 +142,7 @@ export class PAYHUBSecuritySystem {
     // KMS
     if (this.configuration.enableKMS) {
       try {
-        console.log('🔐 Configurando sistema KMS...');
+        console.log('Configurando sistema KMS...');
         // KMS já é inicializado automaticamente
         this.status.subsystems.kms = true;
       } catch (error) {
@@ -153,7 +153,7 @@ export class PAYHUBSecuritySystem {
     // MFA
     if (this.configuration.enableMFA) {
       try {
-        console.log('🔑 Configurando sistema MFA...');
+        console.log('Configurando sistema MFA...');
         // MFA já é inicializado automaticamente
         this.status.subsystems.mfa = true;
       } catch (error) {
@@ -164,7 +164,7 @@ export class PAYHUBSecuritySystem {
     // Dashboard
     if (this.configuration.enableDashboard) {
       try {
-        console.log('📊 Configurando dashboard de segurança...');
+        console.log('Configurando dashboard de segurança...');
         // Dashboard já é inicializado automaticamente
         this.status.subsystems.dashboard = true;
       } catch (error) {
@@ -177,12 +177,12 @@ export class PAYHUBSecuritySystem {
    * Configura integrações entre subsistemas
    */
   private setupIntegrations(): void {
-    console.log('🔗 Configurando integrações entre subsistemas...');
+    console.log('Configurando integrações entre subsistemas...');
 
     // Integração Honeypot -> Incident Response
     if (this.configuration.enableHoneypot && this.configuration.enableIncidentResponse) {
       honeypotManager.onAlert((alert) => {
-        console.log(`🍯 Alerta de honeypot detectado: ${alert.id}`);
+        console.log(`Alerta de honeypot detectado: ${alert.id}`);
         
         if (this.configuration.autoResponseEnabled) {
           incidentResponseEngine.processSecurityAlert(alert).catch(error => {
@@ -196,7 +196,7 @@ export class PAYHUBSecuritySystem {
     if (this.configuration.enableDashboard) {
       // Monitorar alertas de todos os sistemas
       // O dashboard já coleta métricas automaticamente
-      console.log('📊 Dashboard de segurança configurado para coleta automática');
+      console.log('Dashboard de segurança configurado para coleta automática');
     }
   }
 
@@ -204,7 +204,7 @@ export class PAYHUBSecuritySystem {
    * Inicia monitoramento contínuo
    */
   private startMonitoring(): void {
-    console.log('📡 Iniciando monitoramento de segurança...');
+    console.log('Iniciando monitoramento de segurança...');
     
     this.threatDetectionActive = true;
     
@@ -287,7 +287,7 @@ export class PAYHUBSecuritySystem {
    */
   private async escalateThreatLevel(newLevel: 'low' | 'medium' | 'high' | 'critical'): Promise<void> {
     if (this.configuration.threatLevel !== newLevel) {
-      console.log(`🚨 Escalonando nível de ameaça: ${this.configuration.threatLevel} -> ${newLevel}`);
+      console.log(`Escalonando nível de ameaça: ${this.configuration.threatLevel} -> ${newLevel}`);
       
       this.configuration.threatLevel = newLevel;
       
@@ -311,7 +311,7 @@ export class PAYHUBSecuritySystem {
    * Ativa modo de alta segurança
    */
   private async activateHighSecurityMode(): Promise<void> {
-    console.log('🔒 Ativando modo de alta segurança...');
+    console.log('Ativando modo de alta segurança...');
     
     // Aumentar frequência de monitoramento
     if (this.monitoringInterval) {
@@ -325,7 +325,7 @@ export class PAYHUBSecuritySystem {
     if (this.configuration.enableMFA) {
       const stats = mfaJWTSystem.getSecurityStats();
       if (stats.highRiskSessions > 0) {
-        console.log(`🚨 Invalidando ${stats.highRiskSessions} sessões de alto risco`);
+        console.log(`Invalidando ${stats.highRiskSessions} sessões de alto risco`);
       }
     }
     
@@ -336,7 +336,7 @@ export class PAYHUBSecuritySystem {
    * Ativa modo de segurança padrão
    */
   private async activateStandardSecurityMode(): Promise<void> {
-    console.log('🛡️ Ativando modo de segurança padrão...');
+    console.log('Ativando modo de segurança padrão...');
     
     // Restaurar frequência normal de monitoramento
     if (this.monitoringInterval) {
@@ -353,7 +353,7 @@ export class PAYHUBSecuritySystem {
    * Ativa modo de segurança relaxada
    */
   private async activateRelaxedSecurityMode(): Promise<void> {
-    console.log('😌 Ativando modo de segurança relaxada...');
+    console.log('Ativando modo de segurança relaxada...');
     
     // Reduzir frequência de monitoramento
     if (this.monitoringInterval) {
@@ -370,26 +370,26 @@ export class PAYHUBSecuritySystem {
    * Realiza verificação inicial
    */
   private async performInitialCheck(): Promise<void> {
-    console.log('🔍 Executando verificação inicial de segurança...');
+    console.log('Executando verificação inicial de segurança...');
     
     // Gerar relatório inicial
     const report = securityDashboard.generateSecurityReport();
     
-    console.log(`📊 Resumo de segurança:`);
+    console.log(`Resumo de segurança:`);
     console.log(`   - Score de segurança: ${report.statistics.averageRiskScore.toFixed(1)}/100`);
     console.log(`   - Alertas ativos: ${report.alerts.length}`);
     console.log(`   - Status: ${report.executiveSummary}`);
     
     // Executar teste de segurança
     const testResults = securityDashboard.runSecurityTest();
-    console.log(`🧪 Teste de segurança: ${testResults.overallScore.toFixed(1)}% aprovado`);
+    console.log(`Teste de segurança: ${testResults.overallScore.toFixed(1)}% aprovado`);
   }
 
   /**
    * Manipula alertas do dashboard
    */
   private handleDashboardAlert(alert: any): void {
-    console.log(`📊 Alerta recebido: ${alert.title} (${alert.severity})`);
+    console.log(`Alerta recebido: ${alert.title} (${alert.severity})`);
     
     // Atualizar último incidente
     this.status.lastIncident = alert.timestamp;
@@ -425,7 +425,7 @@ export class PAYHUBSecuritySystem {
     testResults: any;
     recommendations: string[];
   }> {
-    console.log('🧪 Executando teste de segurança completo...');
+    console.log('Executando teste de segurança completo...');
     
     const testResults = securityDashboard.runSecurityTest();
     const currentStatus = this.getSystemStatus();
@@ -457,7 +457,7 @@ export class PAYHUBSecuritySystem {
    * Para o sistema de segurança
    */
   public async shutdown(): Promise<void> {
-    console.log('🛑 Desligando sistema de segurança PAYHUB_V3...');
+    console.log('Desligando sistema de segurança PAYHUB_V3...');
     
     this.threatDetectionActive = false;
     

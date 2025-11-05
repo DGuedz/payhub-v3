@@ -1,4 +1,4 @@
-# 🛡️ PAYHUB_V3 - Apresentação de Resiliência para Jurados
+# PAYHUB_V3 - Apresentação de Resiliência para Jurados
 ## Hackathon XRPL Vega House
 
 ---
@@ -117,15 +117,15 @@ node src/frontend/demo-resiliencia.js
 
 # 3. Testes individuais via curl
 # Teste de mensagem válida
-curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \\
+curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $JWT_TOKEN" \
   -d '{"message":"Como funciona o Escrow XRPL?"}'
 
 # Teste de mensagem vazia
-curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \\
+curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $JWT_TOKEN" \
   -d '{"message":""}'
 ```
 
