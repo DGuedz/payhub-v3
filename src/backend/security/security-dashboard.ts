@@ -90,7 +90,7 @@ export class SecurityDashboard {
    * Inicializa o dashboard e configura integrações
    */
   private initializeDashboard(): void {
-    console.log('🛡️ Inicializando Dashboard de Segurança PAYHUB_V3');
+    console.log('Inicializando Dashboard de Segurança PAYHUB_V3');
     
     // Configurar callbacks para sistemas de segurança
     this.setupHoneypotIntegration();
