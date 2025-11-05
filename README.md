@@ -1,4 +1,4 @@
-# 🚀 PAYHUB V3 — Executive README (EN)
+# PAYHUB V3 — Executive README (EN)
 
 <div align="center">
 
