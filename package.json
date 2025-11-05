@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo \"Build OK\"",
+    "build": "node scripts/simple-static-build.js",
     "vercel-build": "npm run build",
     "dev": "vite",
     "preview": "vite preview",

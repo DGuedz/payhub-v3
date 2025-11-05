@@ -13,3 +13,8 @@ figma-prototype/
 .env.*
 **/.npmrc
 .vercel
+dist/
+.git.backup/
+temp_backup/
+deploy-report.log
+*.log
