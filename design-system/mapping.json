@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "description": "Mapeamento inicial entre nodes do Figma e componentes de código.",
+    "usage": "Adicione pares {alias: {figmaNodeId, component}} para rastrear telas/componentes.",
+    "example": {
+      "button/primary": { "figmaNodeId": "1234:5678", "component": "src/components/ButtonPrimary.tsx" }
+    }
+  },
+  "aliases": {
+  }
+}

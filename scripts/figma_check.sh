@@ -1,46 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Figma integration diagnostic for TRAE
-# Usage:
-#   export FIGMA_TOKEN="<your_pat>"
-#   export FIGMA_FILE_KEY="<file_key>"
-#   bash scripts/figma_check.sh
+# Checagem de acesso ao Figma e validação do FILE_KEY
+# Requer:
+#  - FIGMA_TOKEN (Personal Access Token do Figma)
+#  - FIGMA_FILE_KEY (chave do arquivo Figma)
 
 FIGMA_TOKEN=${FIGMA_TOKEN:-}
 FIGMA_FILE_KEY=${FIGMA_FILE_KEY:-}
-JQ=${JQ:-jq}
 
-fail() { echo "[ERROR] $1"; exit 1; }
-info() { echo "[INFO] $1"; }
-
-[ -z "$FIGMA_TOKEN" ] && fail "FIGMA_TOKEN não definido. Crie um PAT em Figma > Settings > Personal access tokens."
-[ -z "$FIGMA_FILE_KEY" ] && fail "FIGMA_FILE_KEY não definido. Copie da URL: https://www.figma.com/file/<FILE_KEY>/..."
-
-info "Testando meta do arquivo (files endpoint)"
-RESP1=$(curl -s -H "X-FIGMA-TOKEN: $FIGMA_TOKEN" "https://api.figma.com/v1/files/$FIGMA_FILE_KEY" || true)
-if echo "$RESP1" | grep -q '"name"'; then
-  if command -v $JQ >/dev/null 2>&1; then
-    echo "$RESP1" | $JQ '{name: .name, last_modified: .lastModified, components_count: (.components|length)}'
-  else
-    echo "$RESP1"
-  fi
-else
-  echo "$RESP1"
-  fail "files/$FIGMA_FILE_KEY falhou. Possível token inválido (401/403) ou file_key incorreto (404)."
+if [[ -z "$FIGMA_TOKEN" ]]; then
+  echo "Erro: FIGMA_TOKEN não definido (export FIGMA_TOKEN=...)" >&2
+  exit 1
 fi
 
-info "Testando nodes (document root 0:1)"
-RESP2=$(curl -s -H "X-FIGMA-TOKEN: $FIGMA_TOKEN" "https://api.figma.com/v1/files/$FIGMA_FILE_KEY/nodes?ids=0:1" || true)
-if echo "$RESP2" | grep -q '"nodes"'; then
-  if command -v $JQ >/dev/null 2>&1; then
-    echo "$RESP2" | $JQ '.nodes["0:1"].document | {id: .id, name: .name, children_count: (.children|length)}'
-  else
-    echo "$RESP2"
-  fi
-else
-  echo "$RESP2"
-  fail "nodes endpoint falhou. Verifique escopo do token e acessos ao arquivo."
+if [[ -z "$FIGMA_FILE_KEY" ]]; then
+  echo "Erro: FIGMA_FILE_KEY não definido (export FIGMA_FILE_KEY=...)" >&2
+  exit 1
 fi
 
-info "Diagnóstico concluído com sucesso."
+API_URL="https://api.figma.com/v1/files/${FIGMA_FILE_KEY}"
+
+echo "[figma_check] Consultando ${API_URL}"
+STATUS=$(curl -s -o /tmp/figma_file.json -w "%{http_code}" -H "X-Figma-Token: ${FIGMA_TOKEN}" "${API_URL}") || STATUS=$?
+
+if [[ "$STATUS" != "200" ]]; then
+  echo "Falha ao acessar Figma (HTTP $STATUS). Verifique FIGMA_TOKEN/FIGMA_FILE_KEY." >&2
+  exit 2
+fi
+
+NAME=$(jq -r '.name // "(sem nome)"' /tmp/figma_file.json 2>/dev/null || echo "(jq indisponível)")
+PUBLISH_DIR="design-system"
+mkdir -p "$PUBLISH_DIR"
+cp /tmp/figma_file.json "$PUBLISH_DIR/figma_file_info.json"
+
+echo "OK: acesso ao Figma validado. Arquivo: ${NAME}"
