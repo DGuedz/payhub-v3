@@ -1,0 +1,112 @@
+{
+  "name": "HubAI Escrow Lifecycle",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "Manual Trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/escrow-create",
+        "method": "POST",
+        "options": {
+          "headerParameters": [
+            { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "jsonParameters": true,
+        "bodyParametersJson": "{\n  \"value\": 100,\n  \"finishAfterUnix\": 0\n}"
+      },
+      "name": "EscrowCreate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "offerSequence", "value": "={{$json.offerSequence}}" },
+            { "name": "owner", "value": "={{$json.owner || $json.account || ''}}" }
+          ]
+        }
+      },
+      "name": "ExtractSequence",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": { "amount": 20, "unit": "seconds" },
+      "name": "Delay",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/escrow-finish",
+        "method": "POST",
+        "options": {
+          "headerParameters": [
+            { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \n  \"owner\": $json.owner, \n  \"offerSequence\": {{$json.offerSequence}} \n}"
+      },
+      "name": "EscrowFinish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/v1/connect/erp/reconcile",
+        "method": "POST",
+        "options": {
+          "headerParameters": [
+            { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \n  \"periodStart\": {{$now.minus( { days: 1 } ).toISODate()}}, \n  \"periodEnd\": {{$now.toISODate()}} \n}"
+      },
+      "name": "ERP Reconcile",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/v1/compliance/report",
+        "method": "GET",
+        "options": {
+          "headerParameters": [
+            { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" }
+          ]
+        }
+      },
+      "name": "Compliance Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [ [ { "node": "EscrowCreate", "type": "main", "index": 0 } ] ] },
+    "EscrowCreate": { "main": [ [ { "node": "ExtractSequence", "type": "main", "index": 0 } ] ] },
+    "ExtractSequence": { "main": [ [ { "node": "Delay", "type": "main", "index": 0 } ] ] },
+    "Delay": { "main": [ [ { "node": "EscrowFinish", "type": "main", "index": 0 } ] ] },
+    "EscrowFinish": { "main": [ [ { "node": "ERP Reconcile", "type": "main", "index": 0 } ] ] },
+    "ERP Reconcile": { "main": [ [ { "node": "Compliance Report", "type": "main", "index": 0 } ] ] }
+  }
+}

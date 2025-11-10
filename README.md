@@ -94,6 +94,8 @@ npm run dev
 [![Documentation Index](https://img.shields.io/badge/INDEX-Full%20Documentation-0088CC?logo=read-the-docs&logoColor=white&style=for-the-badge)](docs/INDEX.md)
 [![Technical Report](https://img.shields.io/badge/Technical%20Report-Detailed%20Analysis-6B46C1?logo=bookstack&logoColor=white&style=for-the-badge)](docs/RELATORIO_TECNICO_COMPLETO.md)
 [![Executive Summary](https://img.shields.io/badge/Executive%20Summary-Business%20Overview-FF6B35?logo=google-docs&logoColor=white&style=for-the-badge)](README_EXECUTIVO_EN.md)
+[![XRPL Demo (PT)](https://img.shields.io/badge/XRPL-Demo%20Completa%20(PT)-23292F?logo=xrp&logoColor=white&style=for-the-badge)](docs/SIMULACAO_COMPLETA_DEVNET.md)
+[![Devnet Artifacts (PT)](https://img.shields.io/badge/Devnet-Artefatos%20de%20Execu%C3%A7%C3%A3o%20(PT)-008C73?logo=data&logoColor=white&style=for-the-badge)](docs/DEMO_ARTIFACTS_DEVNET.md)
 
 ## 🔗 References & Ecosystem
 

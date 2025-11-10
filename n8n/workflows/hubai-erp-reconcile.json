@@ -1,0 +1,29 @@
+{
+  "name": "ERP Reconcile",
+  "nodes": [
+    {
+      "parameters": { "triggerTimes": { "item": [ { "weekday": "mon", "hour": 7, "minutes": 0 } ] } },
+      "id": "WeeklyCron",
+      "name": "WeeklyCron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/v1/connect/erp/reconcile",
+        "method": "POST",
+        "options": { "headerParameters": [ { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" }, { "name": "Content-Type", "value": "application/json" } ] },
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \n  \"periodStart\": {{$now.minus( { weeks: 1 } ).toISODate()}}, \n  \"periodEnd\": {{$now.toISODate()}} \n}"
+      },
+      "name": "Reconcile",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [480, 300]
+    }
+  ],
+  "connections": {
+    "WeeklyCron": { "main": [ [ { "node": "Reconcile", "type": "main", "index": 0 } ] ] }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Yield Activation",
+  "nodes": [
+    { "parameters": {}, "id": "Manual", "name": "Manual", "type": "n8n-nodes-base.manualTrigger", "typeVersion": 1, "position": [260, 300] },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/v1/merchant/yield/activate",
+        "method": "POST",
+        "options": { "headerParameters": [ { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" }, { "name": "Content-Type", "value": "application/json" } ] },
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \n  \"merchantAccount\": \"REPLACE_MERCHANT\", \n  \"targetApy\": \"5-8% APY\" \n}"
+      },
+      "name": "ActivateYield",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [480, 300]
+    }
+  ],
+  "connections": {
+    "Manual": { "main": [ [ { "node": "ActivateYield", "type": "main", "index": 0 } ] ] }
+  }
+}

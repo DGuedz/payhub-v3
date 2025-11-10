@@ -14,11 +14,16 @@
     "preview": "vite preview",
     "start": "node server.js",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "security:init": "node src/backend/security/security-init.js",
-    "security:rotate-tokens": "node src/backend/security/token-rotation-system.js",
+    "security:build": "tsc -p tsconfig.security.json",
+    "security:init": "npm run security:build && node dist/security/security-init.js",
+    "security:rotate-tokens": "npm run security:build && node dist/security/token-rotation-system.js",
     "security:check": "node scripts/secure-deploy.js --check",
     "security:deploy": "node scripts/secure-deploy.js",
-    "security:scan": "node scripts/security-scan.js"
+    "security:scan": "node scripts/security-scan.js",
+    "n8n:validate": "node scripts/n8n-validate.js",
+    "security:demo-simple": "node src/backend/security/security-demo-simple.js",
+    "security:honeypot-trigger": "npm run security:build && node dist/security/security-demo-trigger.js",
+    "demo:artifacts": "OUTPUT_FILE=docs/ARTIFACTS_DEVNET.json node scripts/xrpl-smoke-demo.js"
   },
   "repository": {
     "type": "git",
@@ -32,13 +37,19 @@
   },
   "homepage": "https://github.com/DGuedz/PAYHUB_V3#readme",
   "dependencies": {
+    "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-hot-toast": "^2.6.0",
+    "xrpl": "^2.9.0"
   },
   "devDependencies": {
+    "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
   }

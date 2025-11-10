@@ -1,0 +1,27 @@
+{
+  "name": "Compliance Report Export",
+  "nodes": [
+    {
+      "parameters": { "triggerTimes": { "item": [ { "hour": 6, "minutes": 0 } ] } },
+      "id": "Cron",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/v1/compliance/report",
+        "method": "GET",
+        "options": { "headerParameters": [ { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" } ] }
+      },
+      "name": "FetchReport",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [480, 300]
+    }
+  ],
+  "connections": {
+    "Cron": { "main": [ [ { "node": "FetchReport", "type": "main", "index": 0 } ] ] }
+  }
+}

@@ -7,6 +7,8 @@
 - Estratégia XRPL Hackathon: `src/frontend/RELATORIO-ESTRATEGICO-HACKATHON.md`
 - Executive README (EN): `README_EXECUTIVO_EN.md`
 - Glossary — XRPL & RLUSD (EN): `docs/GLOSSARIO_XRPL_RLUSD.md`
+ - Simulação Completa (Devnet/Testnet): `docs/SIMULACAO_COMPLETA_DEVNET.md`
+ - Artefatos Devnet/Testnet: `docs/DEMO_ARTIFACTS_DEVNET.md`
 
 ## Como Exportar para PDF (opções)
 - Abrir os arquivos em um editor com exportação PDF (Typora/Obsidian).

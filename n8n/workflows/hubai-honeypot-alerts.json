@@ -1,0 +1,49 @@
+{
+  "name": "Honeypot Security Alerts",
+  "nodes": [
+    {
+      "parameters": { "triggerTimes": { "item": [ { "minutes": 0 } ] } },
+      "id": "Poll",
+      "name": "Poll",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BASE_URL}}/api/security/alerts",
+        "method": "GET",
+        "options": { "headerParameters": [ { "name": "Authorization", "value": "{{$env.PAYHUB_JWT}}" } ] }
+      },
+      "name": "FetchAlerts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": { "conditions": { "string": [ { "value1": "={{$json.severity}}", "operation": "contains", "value2": "high" } ] } },
+      "name": "FilterHigh",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://soc.example.com/ingest",
+        "method": "POST",
+        "options": { "headerParameters": [ { "name": "Content-Type", "value": "application/json" } ] },
+        "jsonParameters": true,
+        "bodyParametersJson": "={{$json}}"
+      },
+      "name": "SendToSOC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [920, 300]
+    }
+  ],
+  "connections": {
+    "Poll": { "main": [ [ { "node": "FetchAlerts", "type": "main", "index": 0 } ] ] },
+    "FetchAlerts": { "main": [ [ { "node": "FilterHigh", "type": "main", "index": 0 } ] ] },
+    "FilterHigh": { "main": [ [ { "node": "SendToSOC", "type": "main", "index": 0 } ] ] }
+  }
+}

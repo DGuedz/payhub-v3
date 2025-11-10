@@ -517,6 +517,18 @@ export class MFAJWTSystem {
   }
 
   /**
+   * Cria sessão segura (delegação pública para o demo/honeypot)
+   */
+  public createSession(
+    userId: string,
+    jwtToken: JWTToken,
+    mfaVerified: boolean,
+    deviceInfo?: MFACredentials['deviceInfo']
+  ): SecuritySession {
+    return this.sessionManager.createSession(userId, jwtToken, mfaVerified, deviceInfo);
+  }
+
+  /**
    * Inicia processo de autenticação MFA
    */
   public async initiateMFA(userId: string, factorType: MFACredentials['factorType']): Promise<{
