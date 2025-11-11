@@ -2,6 +2,8 @@
 
 Este guia habilita deploy automático (push → build → deploy) com previews em Pull Requests.
 
+Monorepo: frontend (Next.js) em `payhub-frontend` e backend (Serverless API) na raiz. Serão dois projetos Vercel.
+
 ## Pré-requisitos
 - Conta Vercel (gratuita)
 - Repositório GitHub com acesso a Secrets
@@ -9,10 +11,10 @@ Este guia habilita deploy automático (push → build → deploy) com previews e
 
 ## Passo-a-passo
 
-1) Criar Projeto na Vercel
-- Acesse `https://vercel.com/new` e importe seu repo (PAYHUB_V3)
-- Defina `Framework Preset: Other` (sem framework específico)
-- Finalize para gerar: `ORG_ID` e `PROJECT_ID`
+1) Criar Projetos na Vercel
+- Projeto Backend: importe o repo e defina `Root Directory: /` (raiz). Preset: `Other`.
+- Projeto Frontend: importe novamente o mesmo repo e defina `Root Directory: payhub-frontend`. Preset: `Next.js`.
+- Após criar, você terá `ORG_ID` e dois `PROJECT_ID` distintos.
 
 2) Obter Secrets
 - `VERCEL_TOKEN`: no dashboard Vercel → Settings → Tokens → “Create Token”
@@ -24,7 +26,8 @@ Este guia habilita deploy automático (push → build → deploy) com previews e
 - Adicione:
   - `VERCEL_TOKEN`
   - `VERCEL_ORG_ID`
-  - `VERCEL_PROJECT_ID`
+  - `VERCEL_PROJECT_ID_FRONTEND` (Next.js)
+  - `VERCEL_PROJECT_ID_BACKEND` (Serverless API)
 
 4) Primeiro Deploy Automático
 - Faça `git push` para `main`:
@@ -33,15 +36,26 @@ git add .
 git commit -m "chore(ci): add vercel deploy workflow"
 git push origin main
 ```
-- O workflow executa: checkout → install → type-check → build → deploy Vercel
+- O workflow `Vercel Monorepo Deploy` executa dois deploys: frontend e backend.
 
 5) Preview em Pull Requests
 - Ao abrir um PR, o workflow cria um deployment de preview
 - O link aparece nos checks do PR
 
-## Variáveis de Ambiente (opcional)
-- Configure envs no Vercel (Project → Settings → Environment Variables)
-- Alternativamente, use `vercel env` via CLI
+## Variáveis de Ambiente (obrigatórias)
+Configure nos dois projetos:
+
+Frontend (Next.js):
+- `API_BASE_URL` → URL do backend (ex.: `https://payhub-backend.vercel.app`)
+- `NEXT_PUBLIC_XRPL_NETWORK` → `devnet` | `testnet`
+- `NEXT_PUBLIC_ESCROW_OWNER_ADDRESS` → endereço público do owner
+
+Backend (Serverless API):
+- `XRPL_SEED` → via Secret/KMS (NUNCA expor)
+- `RLUSD_ISSUER_ADDRESS` → emissor RLUSD
+- `TREASURY_VAULT_ADDRESS` → destino de colateral
+- `JWT_SECRET`, `JWT_ISSUER` → autenticação
+- `XRPL_NETWORK` ou `XRPL_WS_URL` → rede XRPL
 
 ## Troubleshooting
 - Passo de install falhou? Verifique se existe `package.json` (workflow é condicional)
@@ -50,8 +64,8 @@ git push origin main
 - Sem framework? Use `Other`; é o modo genérico compatível
 
 ## Resultado Esperado
-- Push na `main` → deploy em ~3 minutos
-- Pull Requests → preview automático
+- Push na `main` → dois deploys (frontend e backend) em ~3 minutos
+- Pull Requests → dois previews automáticos
 - CDN + HTTPS por padrão
 
 ## Referências
