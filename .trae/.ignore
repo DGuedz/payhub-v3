@@ -1,0 +1,6 @@
+Ação,Arquivos a Ignorar,Por que Ignorar? (Segurança/Performance)
+Segurança Máxima (Chaves),".env, .env.local, keys.json, secrets.yaml","CRÍTICO: Previne a exposição de XRPL_SEED, chaves KMS, senhas de banco de dados ou chaves JWT para o modelo de IA."
+Dependências,node_modules/,Aumenta drasticamente a velocidade de indexação e evita que a IA analise bibliotecas de terceiros.
+Metadados da IDE,".git/, .gitignore, .trae/ (com exceção de .trae/rules)",Arquivos de controle de versão e configurações internas que não contêm lógica de aplicação.
+Builds e Cache,".next/, dist/, build/, package-lock.json",Arquivos gerados e de compilação. Reduz o ruído e foca no código-fonte.
+Documentação/Contexto,"RELATORIO-ESTRATEGICO-HACKATHON.md, pitchdeck.md",O conteúdo já será carregado na seção Docs (abaixo).

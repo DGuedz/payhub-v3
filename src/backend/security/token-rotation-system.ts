@@ -2,6 +2,10 @@
  * Sistema de Rotação Automática de Tokens JWT
  * Implementa rotação periódica de tokens para mitigar riscos de vazamento
  */
+// Declarações mínimas para execução CLI sem @types/node
+declare const process: any;
+declare const require: any;
+declare const module: any;
 
 export interface TokenRotationConfig {
   rotationInterval: number; // ms
@@ -22,7 +26,7 @@ export class TokenRotationSystem {
   private config: TokenRotationConfig;
   private activeTokens: Map<string, RotatedToken>;
   private tokenHistory: RotatedToken[];
-  private rotationTimer?: NodeJS.Timeout;
+  private rotationTimer?: ReturnType<typeof setInterval>;
 
   constructor(config?: Partial<TokenRotationConfig>) {
     this.config = {
@@ -159,7 +163,11 @@ export class TokenRotationSystem {
    */
   private generateTokenId(token: string): string {
     // Usa hash simples para identificar tokens
-    return Buffer.from(token).toString('base64').substring(0, 16);
+    // Compat base64 sem depender de tipos Node
+    const base64 = (typeof Buffer !== 'undefined' && Buffer?.from)
+      ? Buffer.from(token).toString('base64')
+      : (typeof btoa !== 'undefined' ? btoa(token) : token);
+    return base64.substring(0, 16);
   }
 
   /**
@@ -258,3 +266,28 @@ export function initializeTokenRotation(config?: Partial<TokenRotationConfig>): 
   globalTokenRotationSystem = new TokenRotationSystem(config);
   return globalTokenRotationSystem;
 }
+
+// Execução CLI
+try {
+  if (typeof require !== 'undefined' && typeof module !== 'undefined' && require.main === module) {
+    const args: string[] = Array.isArray(process?.argv) ? process.argv.slice(2) : [];
+    const system = getTokenRotationSystem();
+
+    const run = async () => {
+      if (args.includes('--emergency')) {
+        await system.emergencyRotation();
+        console.log('✅ Rotação de emergência concluída');
+      } else {
+        await system.rotateTokens('manual');
+        console.log('✅ Rotação manual concluída');
+      }
+      system.stopAutoRotation();
+    };
+
+    run().catch((err) => {
+      console.error('❌ Falha ao executar rotação de tokens:', err);
+      try { system.stopAutoRotation(); } catch {}
+      process?.exit?.(1);
+    });
+  }
+} catch {}

@@ -378,6 +378,18 @@ export class HoneypotManager {
   }
 
   /**
+   * Lista endereços de carteiras isca ativas (não expõe seeds)
+   */
+  public listActiveWalletAddresses(limit?: number): string[] {
+    const addresses = Array
+      .from(this.honeypotWallets.values())
+      .filter(w => w.isActive)
+      .map(w => w.address);
+
+    return typeof limit === 'number' ? addresses.slice(0, limit) : addresses;
+  }
+
+  /**
    * Notifica todos os callbacks sobre novo alerta
    */
   private notifyAlertCallbacks(alert: SecurityAlert): void {

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PAYHUB | Liquidar Parcelado (SDK P4YHU3)</title>
+    <style>
+      :root { color-scheme: dark; }
+      body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; background:#0b0f14; color:#e5e7eb; }
+      header { position: sticky; top:0; background:#0e131a; border-bottom:1px solid #1f2937; padding:16px; display:flex; align-items:center; justify-content:space-between; }
+      .badge { font-size:12px; background:#1f2937; color:#93c5fd; padding:4px 8px; border-radius:999px; border:1px solid #374151; }
+      main { max-width:720px; margin:40px auto; padding:0 16px; }
+      .card { background:#0e131a; border:1px solid #1f2937; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.25); }
+      .grid { display:grid; grid-template-columns:1fr; gap:12px; }
+      label { font-size:13px; color:#9ca3af; }
+      input, textarea { width:100%; color:#e5e7eb; background:#0b0f14; border:1px solid #1f2937; border-radius:8px; padding:10px; font-size:14px; }
+      input:focus, textarea:focus { outline:2px solid #2563eb; border-color:#2563eb; }
+      button { appearance:none; border:1px solid #2563eb; background:#1f2937; color:#bfdbfe; padding:10px 14px; border-radius:8px; font-weight:600; cursor:pointer; }
+      button:hover { background:#0b1220; }
+      button[disabled] { opacity:0.55; cursor:not-allowed; }
+      .status { margin-top:8px; font-size:13px; color:#9ca3af; }
+      .logs { margin-top:16px; background:#0b0f14; border:1px solid #1f2937; border-radius:8px; padding:12px; min-height:80px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; color:#93c5fd; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>PAYHUB • SDK P4YHU3</div>
+      <div class="badge">Liquidar Parcelado — Orquestração</div>
+    </header>
+    <main>
+      <section class="card" aria-labelledby="title">
+        <h2 id="title" style="margin:0 0 8px">Endpoint: POST /api/v1/sdk_p4yhu3/liquidar-parcelado</h2>
+        <p style="margin:0 0 16px; color:#9ca3af">Preencha os campos e dispare a orquestração mockada (Capital → Assurance → Rails → Reporting). Use JWT curto conforme testes.</p>
+        <div class="grid">
+          <div>
+            <label for="jwt">JWT (Bearer)</label>
+            <input id="jwt" type="text" placeholder="cole seu JWT aqui" aria-describedby="jwtHelp" />
+            <div id="jwtHelp" class="status">Para hackathon, é aceitável JWT hardcoded no cliente.</div>
+          </div>
+          <div>
+            <label for="valor">Valor BRL</label>
+            <input id="valor" type="number" step="0.01" value="1000.00" />
+          </div>
+          <div>
+            <label for="parcelas">Parcelas</label>
+            <input id="parcelas" type="number" value="10" />
+          </div>
+          <div>
+            <label for="wallet">Recebedor Wallet</label>
+            <input id="wallet" type="text" placeholder="rMERCHANT_WALLET_ADDRESS" />
+          </div>
+          <div>
+            <label for="prova">Prova Serviço ID (hash do ticket)</label>
+            <input id="prova" type="text" placeholder="NFTICKET_HASH_001" />
+          </div>
+          <div>
+            <button id="btn">Disparar Orquestração</button>
+            <div id="status" class="status" aria-live="polite">Pronto.</div>
+          </div>
+          <div>
+            <label for="logs">Logs</label>
+            <textarea id="logs" class="logs" readonly placeholder="Saída e eventos aparecerão aqui"></textarea>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const btn = document.getElementById('btn');
+      const jwtEl = document.getElementById('jwt');
+      const valorEl = document.getElementById('valor');
+      const parcelasEl = document.getElementById('parcelas');
+      const walletEl = document.getElementById('wallet');
+      const provaEl = document.getElementById('prova');
+      const statusEl = document.getElementById('status');
+      const logsEl = document.getElementById('logs');
+
+      function log(line) {
+        const ts = new Date().toISOString();
+        logsEl.value += `[${ts}] ${line}\n`;
+        logsEl.scrollTop = logsEl.scrollHeight;
+      }
+
+      async function callApi() {
+        const jwt = jwtEl.value.trim();
+        const valor_brl = Number(valorEl.value);
+        const parcelas = Number(parcelasEl.value);
+        const recebedor_wallet = walletEl.value.trim();
+        const prova_servico_id = provaEl.value.trim();
+        if (!jwt) { statusEl.textContent = 'Informe o JWT.'; return; }
+        btn.disabled = true; statusEl.textContent = 'Disparando...'; log('Iniciando orquestração');
+        try {
+          const resp = await fetch('http://localhost:3000/api/v1/sdk_p4yhu3/liquidar-parcelado', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${jwt}`,
+            },
+            body: JSON.stringify({ valor_brl, parcelas, recebedor_wallet, prova_servico_id })
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            statusEl.textContent = `Erro: ${data && data.error ? data.error : resp.status}`;
+            log(`Erro: ${JSON.stringify(data)}`);
+          } else {
+            statusEl.textContent = 'Sucesso';
+            log(`Sucesso: operationId=${data.operationId} txHash=${data.txHash}`);
+            alert(`Sucesso: Operação ID ${data.operationId}`);
+          }
+        } catch (err) {
+          statusEl.textContent = 'Falha de rede';
+          log(`Falha: ${err && err.message ? err.message : String(err)}`);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      btn.addEventListener('click', callApi);
+    </script>
+  </body>
+</html>

@@ -1,15 +1,12 @@
 "use client";
-import { Toaster, toast } from "react-hot-toast";
-import { LiquidarParceladoForm } from "../../../../src/components/merchant/LiquidarParceladoForm";
+import { Toaster } from "react-hot-toast";
+import { LiquidarParceladoForm } from "../../../components/LiquidarParceladoForm";
 
 export default function TicketingPage() {
   return (
     <main style={{ padding: 20 }}>
       <Toaster position="top-right" />
-      <LiquidarParceladoForm
-        onSuccess={(data) => toast.success(`Sucesso: operationId=${data.operationId} txHash=${data.txHash}`)}
-        onError={(msg) => toast.error(`Falha: ${msg}`)}
-      />
+      <LiquidarParceladoForm />
     </main>
   );
 }

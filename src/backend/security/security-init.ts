@@ -2,6 +2,10 @@
  * Sistema de Inicialização de Segurança
  * Integra todas as camadas de proteção e gerencia a inicialização segura
  */
+// Declaração mínima para compatibilidade sem @types/node
+declare const process: any;
+declare const require: any;
+declare const module: any;
 
 import { getTokenRotationSystem, TokenRotationSystem } from './token-rotation-system';
 import { env, EnvironmentManager } from './environment-manager';
@@ -73,7 +77,8 @@ export class SecurityInitSystem {
 
     } catch (error) {
       console.error('❌ Falha na inicialização de segurança:', error);
-      throw new Error(`Erro na inicializacao de seguranca: ${error.message}`);
+      const message = (error instanceof Error) ? error.message : String(error);
+      throw new Error(`Erro na inicializacao de seguranca: ${message}`);
     }
   }
 
@@ -189,7 +194,7 @@ export class SecurityInitSystem {
    * Configura handler para exceções não capturadas
    */
   private setupExceptionHandler(): void {
-    process.on('uncaughtException', (error) => {
+    process.on('uncaughtException', (error: any) => {
       console.error('💥 Exceção não capturada:', error);
       
       // Log de segurança para exceções críticas
@@ -203,8 +208,8 @@ export class SecurityInitSystem {
         requestSize: 0,
         responseSize: 0,
         metadata: {
-          error: error.message,
-          stack: error.stack
+          error: (error && error.message) ? error.message : String(error),
+          stack: (error && error.stack) ? error.stack : undefined
         }
       });
 
@@ -349,3 +354,18 @@ export {
   env as environment,
   getAccessMonitor
 };
+
+// Execução CLI para inicialização de segurança
+try {
+  if (typeof require !== 'undefined' && typeof module !== 'undefined' && require.main === module) {
+    const run = async () => {
+      const system = getSecurityInitSystem();
+      await system.initialize();
+    };
+    run().catch((err) => {
+      const message = (err instanceof Error) ? err.message : String(err);
+      console.error('❌ Falha na inicialização de segurança (CLI):', message);
+      process?.exit?.(1);
+    });
+  }
+} catch {}

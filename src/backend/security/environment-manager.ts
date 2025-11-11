@@ -2,6 +2,8 @@
  * Gerenciador Seguro de Variáveis de Ambiente
  * Centraliza e valida todas as variáveis de ambiente do sistema
  */
+// Declaração mínima para compatibilidade em ambientes sem @types/node
+declare const Deno: any;
 
 interface EnvironmentValidation {
   required: boolean;
@@ -149,7 +151,8 @@ export class EnvironmentManager {
       try {
         this.get(key); // Tenta obter e valida automaticamente
       } catch (error) {
-        this.validationErrors.push(`Falha na validacao de ${key}: ${error.message}`);
+        const message = (error instanceof Error) ? error.message : String(error);
+        this.validationErrors.push(`Falha na validacao de ${key}: ${message}`);
       }
     }
 

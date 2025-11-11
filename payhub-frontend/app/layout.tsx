@@ -7,7 +7,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-br">
-      <body style={{ background: '#0b0f14', color: '#e5e7eb', minHeight: '100vh', margin: 0 }}>{children}</body>
+      <body className="payhub-body">{children}</body>
     </html>
   );
 }

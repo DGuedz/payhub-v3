@@ -117,7 +117,8 @@ async function demonstrateKMSProtection(): Promise<void> {
   console.log('🔑 Protegendo chaves críticas com criptografia institucional...');
   
   // Criar chave protegida
-  const keyData = 'XRPL_SEED_sEd7q7o9a8b5c3d2e1f0g9h8i7j6k5l4m3n2o1p0';
+  // Nunca usar seeds reais em código. Em produção, carregar via ENV + KMS.
+  const keyData = '[REDACTED_SAMPLE_NOT_A_REAL_SEED]';
   const protectedKey = await kmsProtectionSystem.createProtectedKey(
     'xrpl_seed',
     keyData,
@@ -142,8 +143,8 @@ async function demonstrateKMSProtection(): Promise<void> {
       'Acesso para assinatura de transação',
       { ipAddress: '192.168.1.100' }
     );
-    
-    console.log(`   ✅ Acesso concedido (chave parcialmente visível): ${decryptedKey.substring(0, 20)}...`);
+    // Não exibir conteúdo da chave em logs. Apenas confirmar acesso auditado.
+    console.log('   ✅ Acesso concedido (chave não exibida; acesso auditado)');
   } catch (error: unknown) {
     console.log(`   ❌ Acesso negado: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -298,14 +299,14 @@ async function simulateFullAttack(): Promise<void> {
   console.log('\n🔍 FASE 1: Reconhecimento e Exploração');
   console.log('   🕵️ Atacante escaneando honeypots...');
   
-  const wallets = Array.from(honeypotManager.honeypotWallets.values()).slice(0, 3);
+  // Usa API pública para obter endereços de carteiras ativas (sem acessar campos privados)
+  const addresses = honeypotManager.listActiveWalletAddresses(3);
   
-  for (let i = 0; i < wallets.length; i++) {
-    honeypotManager.recordActivity(wallets[i].address, 'metadata_request', {
+  for (const address of addresses) {
+    await honeypotManager.recordActivity(address, 'metadata_request', {
       sourceIp: '10.0.0.1',
       userAgent: 'nmap/7.80'
     });
-    
     await new Promise(resolve => setTimeout(resolve, 500));
   }
   

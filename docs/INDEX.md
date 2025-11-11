@@ -6,6 +6,7 @@
 - Relatório Demo Crypto Point: `docs/RELATORIO_DEMO_CRYPTO_POINT.md`
 - Estratégia XRPL Hackathon: `src/frontend/RELATORIO-ESTRATEGICO-HACKATHON.md`
 - Executive README (EN): `README_EXECUTIVO_EN.md`
+- Lean Canvas (Modelo de Negócio): `lean-canvas/README.md`
 - Glossary — XRPL & RLUSD (EN): `docs/GLOSSARIO_XRPL_RLUSD.md`
  - Simulação Completa (Devnet/Testnet): `docs/SIMULACAO_COMPLETA_DEVNET.md`
  - Artefatos Devnet/Testnet: `docs/DEMO_ARTIFACTS_DEVNET.md`
