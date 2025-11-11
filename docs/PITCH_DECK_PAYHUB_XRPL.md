@@ -1,4 +1,4 @@
-# PAYHUB — Pitch Deck (10 Slides)
+# PAYHUB — Pitch Deck 
 
 ## 1. Problema
 - MDR e desconto corroem 10–20% da margem do comércio.
