@@ -1,7 +1,3 @@
-// Serverless API (Vercel) — EscrowFinish
-// Entrada: { owner, offerSequence }
-// Segurança: Assinar somente no backend usando XRPL_SEED de env/KMS
-
 const { requireAuth } = require('./_auth');
 const { getWsUrl } = require('./_xrpl-config');
 const { withRetry } = require('./_retry');
@@ -12,34 +8,34 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
   }
-
   try {
     const authUser = requireAuth(req, res);
-    if (!authUser) return; // resposta já enviada com erro
+    if (!authUser) return;
 
-    const { owner, offerSequence } = req.body || {};
+    const { destination, amountXrp, amountDrops } = req.body || {};
+    if (!destination) {
+      return res.status(400).json({ ok: false, error: 'Missing destination' });
+    }
+
     let seed;
-    try {
-      seed = await getDecryptedXRPLSeed();
-    } catch (e) {
+    try { seed = await getDecryptedXRPLSeed(); } catch (e) {
       return res.status(500).json({ ok: false, error: e && e.message ? e.message : 'KMS adapter error' });
     }
     const wsUrl = getWsUrl();
 
-    if (!owner || typeof offerSequence !== 'number') {
-      return res.status(400).json({ ok: false, error: 'Missing owner or offerSequence' });
+    let xrpl;
+    try { xrpl = require('xrpl'); } catch (e) {
+      return res.status(500).json({ ok: false, error: 'Dependency xrpl missing. npm i xrpl' });
     }
 
-    const screening = await screenPayment({ type: 'EscrowFinish', owner, offerSequence });
+    const drops = amountDrops ? String(amountDrops) : (amountXrp ? xrpl.xrpToDrops(String(amountXrp)) : null);
+    if (!drops) {
+      return res.status(400).json({ ok: false, error: 'Missing amountXrp or amountDrops' });
+    }
+
+    const screening = await screenPayment({ type: 'DirectXrpPayment', currency: 'XRP', value: Number(xrpl.dropsToXrp(drops)) });
     if (!screening.allowed) {
       return res.status(403).json({ ok: false, error: screening.reason || 'SCREENING_FAILED' });
-    }
-
-    let xrpl;
-    try {
-      xrpl = require('xrpl');
-    } catch (e) {
-      return res.status(500).json({ ok: false, error: 'Dependency xrpl missing. npm i xrpl' });
     }
 
     const client = new xrpl.Client(wsUrl);
@@ -47,28 +43,22 @@ module.exports = async (req, res) => {
     try {
       const wallet = xrpl.Wallet.fromSeed(seed);
       const tx = {
-        TransactionType: 'EscrowFinish',
+        TransactionType: 'Payment',
         Account: wallet.address,
-        Owner: owner,
-        OfferSequence: offerSequence,
+        Destination: destination,
+        Amount: drops,
       };
-
       const prepared = await client.autofill(tx);
-      const signed = wallet.sign(prepared);
-      const result = await withRetry(() => client.submitAndWait(signed.tx_blob), {
-        retries: 3,
-        baseMs: 500,
-      });
-      const txHash = result.result?.hash || result?.tx_json?.hash;
       const sequence = prepared.Sequence;
-      // Auditoria (sem expor segredos)
+      const signed = wallet.sign(prepared);
+      const result = await withRetry(() => client.submitAndWait(signed.tx_blob), { retries: 3, baseMs: 500 });
+      const txHash = result.result?.hash || result?.tx_json?.hash;
       try {
         const { logger } = require('./_logger');
         if (logger && typeof logger.logTxAudit === 'function') {
-          logger.logTxAudit(txHash || 'unknown', sequence || -1, { type: 'EscrowFinish', owner, account: wallet.address });
+          logger.logTxAudit(txHash || 'unknown', sequence || -1, { type: 'Payment', currency: 'XRP', destination });
         }
       } catch {}
-
       return res.status(200).json({ ok: true, txHash, sequence });
     } finally {
       await client.disconnect();

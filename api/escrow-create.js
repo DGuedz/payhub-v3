@@ -4,6 +4,7 @@
 const { requireAuth } = require('./_auth');
 const { getWsUrl } = require('./_xrpl-config');
 const { withRetry } = require('./_retry');
+const { screenPayment } = require('./_screening');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -25,6 +26,11 @@ module.exports = async (req, res) => {
     }
     if (!value) {
       return res.status(400).json({ ok: false, error: 'Missing value' });
+    }
+
+    const screening = await screenPayment({ type: 'EscrowCreate', currency: 'RLUSD', value, issuer });
+    if (!screening.allowed) {
+      return res.status(403).json({ ok: false, error: screening.reason || 'SCREENING_FAILED' });
     }
 
     let xrpl;
