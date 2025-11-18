@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     const authUser = requireAuth(req, res);
     if (!authUser) return; // resposta já enviada com erro
 
-    const { owner, offerSequence } = req.body || {};
+    const { owner, offerSequence, fulfillmentHex, policy } = req.body || {};
     let seed;
     try {
       seed = await getDecryptedXRPLSeed();
@@ -36,21 +36,24 @@ module.exports = async (req, res) => {
     }
 
     let xrpl;
-    try {
-      xrpl = require('xrpl');
-    } catch (e) {
-      return res.status(500).json({ ok: false, error: 'Dependency xrpl missing. npm i xrpl' });
-    }
+    try { xrpl = require('xrpl'); } catch (e) { return res.status(500).json({ ok: false, error: 'Dependency xrpl missing. npm i xrpl' }); }
+    const { enforcePolicy } = require('../src/backend/smart-escrow-policy');
 
     const client = new xrpl.Client(wsUrl);
     await client.connect();
     try {
       const wallet = xrpl.Wallet.fromSeed(seed);
+      const screenPayment = require('./_screening').screenPayment;
+      const okPolicy = await enforcePolicy(policy, { xrpl, client, screenPayment });
+      if (!okPolicy) {
+        return res.status(403).json({ ok: false, error: 'SMART_ESCROW_POLICY_BLOCKED' });
+      }
       const tx = {
         TransactionType: 'EscrowFinish',
         Account: wallet.address,
         Owner: owner,
         OfferSequence: offerSequence,
+        ...(fulfillmentHex && /^[0-9A-Fa-f]+$/.test(fulfillmentHex) ? { Fulfillment: fulfillmentHex.toUpperCase() } : {}),
       };
 
       const prepared = await client.autofill(tx);
