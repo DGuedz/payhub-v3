@@ -41,8 +41,6 @@ module.exports = async (req, res) => {
     } catch (e) {
       return res.status(500).json({ ok: false, error: 'Dependency xrpl missing. npm i xrpl' });
     }
-    }
-
     const { enforcePolicy } = require('../src/backend/smart-escrow-policy');
 
     const client = new xrpl.Client(wsUrl);
