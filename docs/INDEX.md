@@ -9,10 +9,10 @@
 - Lean Canvas (Modelo de Negócio): `lean-canvas/README.md`
 - Glossary — XRPL & RLUSD (EN): `docs/GLOSSARIO_XRPL_RLUSD.md`
  - Simulação Completa (Devnet/Testnet): `docs/SIMULACAO_COMPLETA_DEVNET.md`
-- Artefatos Devnet/Testnet: `docs/DEMO_ARTIFACTS_DEVNET.md`
-- Relatório de Análise Estratégica: `docs/RELATORIO_ANALISE_ESTRATEGICA.md`
-- Preview Figma: `/preview` (embed) ou `public/figma-interface-complete.html`
-- Privacidade no PIX via PAYHUB e XRPL: `docs/PRIVACIDADE_PIX_XRPL.md`
+ - Artefatos Devnet/Testnet: `docs/DEMO_ARTIFACTS_DEVNET.md`
+ - Relatório de Análise Estratégica: `docs/RELATORIO_ANALISE_ESTRATEGICA.md`
+ - Preview Figma: `/preview` (embed) ou `public/figma-interface-complete.html`
+ - Privacidade no PIX via PAYHUB e XRPL: `docs/PRIVACIDADE_PIX_XRPL.md`
 
 ## Como Exportar para PDF (opções)
 - Abrir os arquivos em um editor com exportação PDF (Typora/Obsidian).

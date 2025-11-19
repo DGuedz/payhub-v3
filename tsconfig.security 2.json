@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "outDir": "dist/security",
+    "rootDir": "src/backend/security",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/backend/security/token-rotation-system.ts",
+    "src/backend/security/environment-manager.ts",
+    "src/backend/security/access-monitor.ts",
+    "src/backend/security/security-init.ts"
+  ]
+}

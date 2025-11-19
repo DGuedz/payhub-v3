@@ -5,13 +5,13 @@ Este documento descreve como conectar o design no Figma ao código no GitHub, au
 ## Visão Geral
 - Fonte de verdade de design: Figma (`FIGMA_FILE_KEY=UQwbW2cybw7SGzlBWHlgcr`).
 - Automação CI/CD: GitHub Actions (`.github/workflows/sync-figma-tokens.yml`).
-- Deploy: Vercel (via `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`).
+- Deploy: Vercel (via `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_FRONTEND`, `VERCEL_PROJECT_ID_BACKEND`).
 - Desenvolvimento local: Trae IDE + scripts em `scripts/`.
 
 ## Secrets e Variáveis
 - GitHub (Actions → Repository secrets):
-  - `FIGMA_TOKEN`, `FIGMA_FILE_KEY` (já configurado com a chave do arquivo)
-  - `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+  - `FIGMA_TOKEN`, `FIGMA_FILE_KEY`
+  - `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_FRONTEND`, `VERCEL_PROJECT_ID_BACKEND`
   - Opcionais: `SUPABASE_URL`, `SUPABASE_ANON_KEY`
 - Vercel (Settings → Environment Variables):
   - Replicar `FIGMA_TOKEN` e `FIGMA_FILE_KEY` se necessário pelo app.
@@ -35,10 +35,10 @@ FIGMA_TOKEN=<seu_token_figma>
 FIGMA_FILE_KEY=UQwbW2cybw7SGzlBWHlgcr
 ```
 - Scripts úteis (rodar no terminal integrado do Trae):
-  - `bash scripts/figma_check.sh` → valida acesso ao Figma
-  - `node scripts/figma-tokens-sync.js` → baixa e normaliza tokens
-  - `node scripts/token-to-css.js` → gera CSS/variables
-  - `bash scripts/setup-gh-secrets.sh .env.ci` → popula secrets no GitHub via `gh`
+  - `bash scripts/figma_check.sh`
+  - `node scripts/figma-tokens-sync.js`
+  - `node scripts/token-to-css.js`
+  - `bash scripts/setup-gh-secrets.sh .env.ci`
 
 ## Mapeamento Design → Código
 Crie/atualize um arquivo `design-system/mapping.json` para relacionar nodes do Figma a componentes:

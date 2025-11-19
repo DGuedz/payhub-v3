@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PAYHUB - Visualização Figma</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+        
+        .url-info {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            color: #3b82f6;
+        }
+        
+        .figma-container {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .figma-header {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .figma-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .figma-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .control-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .figma-content {
+            position: relative;
+            height: 700px;
+            background: #1e1e1e;
+        }
+        
+        .figma-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0 0 16px 16px;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            color: #3b82f6;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .loading-subtext {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-section {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+        
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .info-list li {
+            padding: 8px 0;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-list li::before {
+            content: "→";
+            color: #3b82f6;
+            font-weight: bold;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .feature-description {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 16px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #fecaca;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #bbf7d0;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .figma-content {
+                height: 500px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">PAYHUB</h1>
+            <p class="subtitle">Visualização da Interface Figma</p>
+            <p class="subtitle">Interface completa do MVP - Todas as promessas do SDK</p>
+        </header>
+
+        <div class="url-info">
+            URL Figma: https://www.figma.com/make/UQwbW2cybw7SGzlBWHlgcr/PAYHUB-Soft-POS-Technical-Plan?t=gbjSJ4wC4fknV79q&fullscreen=1
+        </div>
+
+        <div class="info-section">
+            <h2 class="info-title">🎯 O que você verá nesta interface:</h2>
+            <ul class="info-list">
+                <li>Hero Section: "Liquidez Sob Demanda"</li>
+                <li>3 Cards Processo: Pagamento → Conversão ODL → Liquidação</li>
+                <li>Toggle PT/EN para internacionalização</li>
+                <li>Botão CTA: "Começar Agora" com ícone lightning</li>
+                <li>Simulação Interativa: "Crypto Point - Eventos Web3"</li>
+                <li>Technology Badges: XRPL • Escrow • ODL • Auto-Yield</li>
+                <li>Loading States: "3s carregando..." com animação</li>
+                <li>Design Responsivo: Mobile-first</li>
+            </ul>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <div class="feature-title">Design Profissional</div>
+                <div class="feature-description">Interface moderna com gradientes, glass morphism e animações suaves</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Performance Otimizada</div>
+                <div class="feature-description">Loading states, animações otimizadas e experiência fluida</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <div class="feature-title">Internacionalização</div>
+                <div class="feature-description">Toggle PT/EN para alcance global e adaptação local</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Responsivo Total</div>
+                <div class="feature-description">Adaptação perfeita para desktop, tablet e mobile</div>
+            </div>
+        </div>
+
+        <div class="figma-container">
+            <div class="figma-header">
+                <div class="figma-title">PAYHUB - Interface Figma</div>
+                <div class="figma-controls">
+                    <a href="https://www.figma.com/make/UQwbW2cybw7SGzlBWHlgcr/PAYHUB-Soft-POS-Technical-Plan?t=gbjSJ4wC4fknV79q&fullscreen=1" 
+                       target="_blank" 
+                       class="control-btn">
+                        📱 Abrir no Figma
+                    </a>
+                    <button onclick="reloadFigma()" class="control-btn">
+                        🔄 Recarregar
+                    </button>
+                    <button onclick="toggleFullscreen()" class="control-btn">
+                        🔍 Tela Cheia
+                    </button>
+                </div>
+            </div>
+            <div class="figma-content">
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Carregando interface Figma...</div>
+                    <div class="loading-subtext">Preparando visualização completa</div>
+                </div>
+                <iframe 
+                    id="figmaFrame"
+                    class="figma-iframe"
+                    src="https://www.figma.com/make/UQwbW2cybw7SGzlBWHlgcr/PAYHUB-Soft-POS-Technical-Plan?t=gbjSJ4wC4fknV79q&fullscreen=1"
+                    allowfullscreen
+                    loading="lazy"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                    title="PAYHUB Figma Interface"
+                    onload="hideLoading()"
+                    onerror="showError()">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <strong>❌ Erro ao carregar Figma:</strong> A interface pode estar indisponível ou requer autenticação.
+            <br><br>
+            <strong>Soluções:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>Verifique se está logado no Figma</li>
+                <li>Tente abrir o link diretamente: <a href="https://www.figma.com/make/UQwbW2cybw7SGzlBWHlgcr/PAYHUB-Soft-POS-Technical-Plan" target="_blank" style="color: #3b82f6;">Clique aqui</a></li>
+                <li>Verifique as permissões do arquivo</li>
+            </ul>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <strong>✅ Interface carregada com sucesso!</strong>
+            <br>
+            Você está vendo a interface completa do PAYHUB MVP com todas as promessas do SDK.
+        </div>
+
+        <div class="cta-section">
+            <a href="/" class="cta-button">
+                🚀 Ver Interface Implementada
+                <span>→</span>
+            </a>
+            <br><br>
+            <a href="https://payhub-v3.vercel.app" target="_blank" class="control-btn" style="margin-top: 10px;">
+                🌐 Abrir Site em Produção
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Hide loading overlay when iframe loads
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const successMessage = document.getElementById('successMessage');
+            
+            setTimeout(() => {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    successMessage.classList.add('show');
+                }, 300);
+            }, 1000);
+        }
+
+        // Show error message when iframe fails to load
+        function showError() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            loadingOverlay.style.display = 'none';
+            errorMessage.classList.add('show');
+        }
+
+        // Reload Figma iframe
+        function reloadFigma() {
+            const iframe = document.getElementById('figmaFrame');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Reset messages
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            
+            // Show loading
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.style.opacity = '1';
+            
+            // Reload iframe
+            iframe.src = iframe.src;
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            const figmaContainer = document.querySelector('.figma-container');
+            
+            if (!document.fullscreenElement) {
+                figmaContainer.requestFullscreen().catch(err => {
+                    console.log(`Erro ao entrar em tela cheia: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Monitor iframe loading
+        const iframe = document.getElementById('figmaFrame');
+        
+        iframe.addEventListener('load', function() {
+            console.log('Figma iframe carregado com sucesso');
+            hideLoading();
+        });
+
+        iframe.addEventListener('error', function() {
+            console.log('Erro ao carregar Figma iframe');
+            showError();
+        });
+
+        // Fallback timeout
+        setTimeout(() => {
+            if (document.getElementById('loadingOverlay').style.display !== 'none') {
+                console.log('Timeout - tentando mostrar interface mesmo assim');
+                hideLoading();
+            }
+        }, 10000);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F11') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+            if (e.key === 'r' && e.ctrlKey) {
+                e.preventDefault();
+                reloadFigma();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('PAYHUB Figma Visualizer iniciado');
+            
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

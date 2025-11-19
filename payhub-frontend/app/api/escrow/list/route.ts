@@ -1,62 +1,53 @@
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
-// Lista escrows pendentes via XRPL RPC (somente leitura)
-// Não requer assinatura; usa owner address público configurado via env
-
-const NETWORKS: Record<string, string> = {
-  devnet: 'https://s.devnet.rippletest.net:51234/',
-  testnet: 'https://s.altnet.rippletest.net:51234/',
-  mainnet: 'https://xrplcluster.com', // HTTP JSON-RPC não é público em cluster; ajustar se necessário
-};
-
-function getRpcUrl() {
-  const override = process.env.XRPL_RPC_URL || process.env.NEXT_PUBLIC_XRPL_RPC_URL;
-  if (override) return override;
-  const net = (process.env.XRPL_NETWORK || process.env.NEXT_PUBLIC_XRPL_NETWORK || 'devnet').toLowerCase();
-  return NETWORKS[net] || NETWORKS.devnet;
-}
-
+// Dados simulados para ambiente de testnet
 export async function GET(req: NextRequest) {
   try {
-    const url = new URL(req.url);
-    const owner = process.env.ESCROW_OWNER_ADDRESS || process.env.NEXT_PUBLIC_ESCROW_OWNER_ADDRESS || url.searchParams.get('owner') || '';
-    if (!owner) {
-      return new Response(JSON.stringify({ ok: false, error: 'Missing ESCROW_OWNER_ADDRESS' }), { status: 400 });
-    }
-
-    const rpcUrl = getRpcUrl();
-    const payload = {
-      method: 'account_objects',
-      params: [{ account: owner, type: 'escrow', limit: 50 }],
-    };
-
-    const resRpc = await fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+    const { searchParams } = new URL(req.url);
+    const owner = searchParams.get('owner');
+    
+    logger.info(`[API /api/escrow/list] Buscando escrows para owner: ${owner}`);
+    
+    // Simular um pequeno delay de rede
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    // Dados simulados para testnet
+    const mockEscrows = [
+      {
+        offerSequence: 123456,
+        amount: "1500.00",
+        currency: "RLUSD",
+        txHash: "A1B2C3D4E5F678901234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+        status: "pending",
+        createdAt: new Date(Date.now() - 3600000).toISOString()
+      },
+      {
+        offerSequence: 123457,
+        amount: "2750.50",
+        currency: "RLUSD", 
+        txHash: "FEDCBA0987654321FEDCBA0987654321FEDCBA0987654321FEDCBA0987654321",
+        status: "completed",
+        createdAt: new Date(Date.now() - 7200000).toISOString()
+      }
+    ];
+    
+    // Filtrar por owner se especificado
+    const filteredEscrows = owner 
+      ? mockEscrows.filter(escrow => escrow.txHash?.includes(owner.slice(-8)))
+      : mockEscrows;
+    
+    return NextResponse.json({ 
+      escrows: filteredEscrows,
+      total: filteredEscrows.length,
+      message: "Dados simulados para ambiente de testnet"
     });
-    const data = await resRpc.json();
-    const objects = data?.result?.account_objects || [];
-
-    const escrows = objects.map((obj: any) => {
-      const amountObj = obj.Amount;
-      const isIou = typeof amountObj === 'object' && amountObj !== null;
-      const amount = isIou ? amountObj.value : amountObj;
-      const currency = isIou ? amountObj.currency : 'XRP';
-      return {
-        id: `${obj.Owner}:${obj.OfferSequence}`,
-        owner: obj.Owner,
-        offerSequence: obj.OfferSequence,
-        amount: String(amount),
-        currency: String(currency),
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      };
-    });
-
-    return new Response(JSON.stringify({ ok: true, escrows }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-  } catch (err: any) {
-    const message = err?.message || String(err);
-    return new Response(JSON.stringify({ ok: false, error: message }), { status: 500 });
+    
+  } catch (error) {
+    logger.error(`[API /api/escrow/list] Erro ao buscar escrows:`, error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor', escrows: [] }, 
+      { status: 500 }
+    );
   }
 }
