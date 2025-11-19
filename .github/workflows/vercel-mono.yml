@@ -23,7 +23,7 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND || secrets.VERCEL_PROJECT_ID }}
           working-directory: payhub-frontend
           vercel-args: '--prod'
 
@@ -43,5 +43,5 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_BACKEND || secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'

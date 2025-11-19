@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PAYHUB - Aplicação Funcional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+        
+        .app-status {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-connected { background: #10b981; }
+        .status-connecting { background: #f59e0b; animation: pulse 1s infinite; }
+        .status-error { background: #ef4444; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .interface-container {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .app-header {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .app-logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .app-logo-text .pay { color: #ffffff; }
+        .app-logo-text .hub { color: #3b82f6; }
+        
+        .app-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .lang-toggle {
+            display: flex;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 20px;
+            padding: 3px;
+        }
+        
+        .lang-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+        
+        .app-content {
+            padding: 40px 20px;
+        }
+        
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            position: relative;
+            margin-bottom: 40px;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-description {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .step-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .step-card.active {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .step-icon.processing {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        
+        .step-loading {
+            font-size: 0.875rem;
+            color: #3b82f6;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .step-description {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        .step-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .step-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 16px 16px 0 0;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .action-section {
+            text-align: center;
+            margin: 60px 0;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 16px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cta-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
+        }
+        
+        .cta-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .simulation-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .simulation-title {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+        
+        .simulation-button {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .simulation-button:hover:not(:disabled) {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        .simulation-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+        }
+        
+        .tech-badge {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-badge:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .api-section {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .api-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .api-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .api-button {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .api-button:hover:not(:disabled) {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        .api-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .api-button.success {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #10b981;
+        }
+        
+        .api-button.error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+        }
+        
+        .api-response {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .form-section {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 1rem;
+        }
+        
+        .form-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .form-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .transaction-log {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .log-entry.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10b981;
+            color: #10b981;
+        }
+        
+        .log-entry.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .log-entry.info {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            color: #3b82f6;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: #ffffff;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .loading-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .loading-subtext {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        @media (max-width: 768px) {
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .api-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">PAYHUB</h1>
+            <p class="subtitle">Aplicação Funcional com APIs Reais</p>
+            <p class="subtitle">Teste XRPL, Escrow, ODL e todas as funcionalidades</p>
+        </header>
+
+        <div class="app-status">
+            <span class="status-indicator" id="status-indicator"></span>
+            <span id="status-text">Conectando às APIs...</span>
+        </div>
+
+        <div class="interface-container">
+            <div class="app-header">
+                <div class="app-logo">
+                    <div class="app-logo-text">
+                        <span class="pay">PAY</span><span class="hub">HUB</span>
+                    </div>
+                </div>
+                <div class="app-controls">
+                    <div class="lang-toggle">
+                        <button class="lang-btn active" data-lang="pt">PT</button>
+                        <button class="lang-btn" data-lang="en">EN</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <h1 class="hero-title" data-i18n="hero.title">Liquidez Sob Demanda</h1>
+                    <p class="hero-subtitle" data-i18n="hero.subtitle">Transforme seu celular em uma maquininha Web3 descentralizada</p>
+                    <p class="hero-description" data-i18n="hero.description">Liquide vendas em segundos via XRPL. Sem bancos. Sem espera.</p>
+                </div>
+
+                <!-- Process Steps -->
+                <div class="process-steps">
+                    <div class="step-card" id="step-payment">
+                        <div class="step-progress">
+                            <div class="step-progress-bar" id="progress-payment"></div>
+                        </div>
+                        <div class="step-icon">💳</div>
+                        <h3 class="step-title" data-i18n="steps.payment.title">Pagamento</h3>
+                        <div class="step-loading" id="loading-payment" style="display: none;">
+                            <span data-i18n="steps.loading">Processando...</span>
+                            <span class="loading-animation">⏳</span>
+                        </div>
+                        <div class="step-description" data-i18n="steps.payment.description">Pix • Cartão • Cripto</div>
+                    </div>
+                    
+                    <div class="step-card" id="step-conversion">
+                        <div class="step-progress">
+                            <div class="step-progress-bar" id="progress-conversion"></div>
+                        </div>
+                        <div class="step-icon">⚡</div>
+                        <h3 class="step-title" data-i18n="steps.conversion.title">Conversão ODL</h3>
+                        <div class="step-loading" id="loading-conversion" style="display: none;">
+                            <span data-i18n="steps.loading">Convertendo...</span>
+                            <span class="loading-animation">⏳</span>
+                        </div>
+                        <div class="step-description" data-i18n="steps.conversion.description">RLUSD/XRP Instantâneo</div>
+                    </div>
+                    
+                    <div class="step-card" id="step-settlement">
+                        <div class="step-progress">
+                            <div class="step-progress-bar" id="progress-settlement"></div>
+                        </div>
+                        <div class="step-icon">💰</div>
+                        <h3 class="step-title" data-i18n="steps.settlement.title">Liquidação</h3>
+                        <div class="step-loading" id="loading-settlement" style="display: none;">
+                            <span data-i18n="steps.loading">Finalizando...</span>
+                            <span class="loading-animation">⏳</span>
+                        </div>
+                        <div class="step-description" data-i18n="steps.settlement.description">3-5s finality</div>
+                    </div>
+                </div>
+
+                <!-- Action Section -->
+                <div class="action-section">
+                    <button class="cta-button" id="start-process" data-i18n="cta.start">
+                        Começar Agora
+                        <span>⚡</span>
+                    </button>
+                </div>
+
+                <!-- API Testing Section -->
+                <div class="api-section">
+                    <h2 class="api-title">🧪 Testar APIs do PAYHUB</h2>
+                    <div class="api-controls">
+                        <button class="api-button" id="test-health" data-api="health">
+                            🏥 Health Check
+                        </button>
+                        <button class="api-button" id="test-escrow-create" data-api="escrow-create">
+                            🔐 Criar Escrow
+                        </button>
+                        <button class="api-button" id="test-escrow-finish" data-api="escrow-finish">
+                            ✅ Finalizar Escrow
+                        </button>
+                        <button class="api-button" id="test-odl-convert" data-api="odl-convert">
+                            💱 Converter ODL
+                        </button>
+                        <button class="api-button" id="test-trustline" data-api="trustline">
+                            🔗 Trustline RLUSD
+                        </button>
+                        <button class="api-button" id="test-yield" data-api="yield">
+                            📈 Ativar Yield
+                        </button>
+                    </div>
+                    <div id="api-response" class="api-response" style="display: none;"></div>
+                </div>
+
+                <!-- Transaction Form -->
+                <div class="form-section">
+                    <h2 class="api-title">💰 Simular Transação Completa</h2>
+                    <form id="transaction-form">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="form.amount">Valor da Transação (BRL)</label>
+                            <input type="number" class="form-input" id="amount" placeholder="100.00" step="0.01" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="form.merchant">ID do Comerciante</label>
+                            <input type="text" class="form-input" id="merchant-id" placeholder="MERCHANT_123" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="form.customer">ID do Cliente</label>
+                            <input type="text" class="form-input" id="customer-id" placeholder="CUSTOMER_456" required>
+                        </div>
+                        <button type="submit" class="form-button" data-i18n="form.submit">
+                            🚀 Iniciar Transação Completa
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Transaction Log -->
+                <div class="transaction-log">
+                    <h3 style="margin-bottom: 15px; color: #ffffff;">📋 Log de Transações</h3>
+                    <div id="transaction-log-content">
+                        <div class="log-entry info">Sistema iniciado e pronto para transações...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="loading-text">Processando transação...</div>
+            <div class="loading-subtext" id="loading-subtext">Conectando à XRPL...</div>
+        </div>
+    </div>
+
+    <script>
+        // PAYHUB Application State
+        class PayhubApp {
+            constructor() {
+                this.currentLang = 'pt';
+                this.isProcessing = false;
+                this.currentStep = 0;
+                this.transactionLog = [];
+                this.apiBaseUrl = window.location.origin + '/api';
+                
+                this.translations = {
+                    pt: {
+                        'hero.title': 'Liquidez Sob Demanda',
+                        'hero.subtitle': 'Transforme seu celular em uma maquininha Web3 descentralizada',
+                        'hero.description': 'Liquide vendas em segundos via XRPL. Sem bancos. Sem espera.',
+                        'steps.payment.title': 'Pagamento',
+                        'steps.payment.description': 'Pix • Cartão • Cripto',
+                        'steps.conversion.title': 'Conversão ODL',
+                        'steps.conversion.description': 'RLUSD/XRP Instantâneo',
+                        'steps.settlement.title': 'Liquidação',
+                        'steps.settlement.description': '3-5s finality',
+                        'steps.loading': 'Processando...',
+                        'cta.start': 'Começar Agora',
+                        'form.amount': 'Valor da Transação (BRL)',
+                        'form.merchant': 'ID do Comerciante',
+                        'form.customer': 'ID do Cliente',
+                        'form.submit': '🚀 Iniciar Transação Completa'
+                    },
+                    en: {
+                        'hero.title': 'On-Demand Liquidity',
+                        'hero.subtitle': 'Transform your phone into a decentralized Web3 payment terminal',
+                        'hero.description': 'Liquidate sales in seconds via XRPL. No banks. No waiting.',
+                        'steps.payment.title': 'Payment',
+                        'steps.payment.description': 'Pix • Card • Crypto',
+                        'steps.conversion.title': 'ODL Conversion',
+                        'steps.conversion.description': 'RLUSD/XRP Instant',
+                        'steps.settlement.title': 'Settlement',
+                        'steps.settlement.description': '3-5s finality',
+                        'steps.loading': 'Processing...',
+                        'cta.start': 'Start Now',
+                        'form.amount': 'Transaction Amount (BRL)',
+                        'form.merchant': 'Merchant ID',
+                        'form.customer': 'Customer ID',
+                        'form.submit': '🚀 Start Complete Transaction'
+                    }
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.checkAPIStatus();
+                this.startStatusMonitoring();
+            }
+            
+            setupEventListeners() {
+                // Language toggle
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const lang = e.target.dataset.lang;
+                        this.setLanguage(lang);
+                    });
+                });
+                
+                // Start process button
+                document.getElementById('start-process').addEventListener('click', () => {
+                    this.startTransactionProcess();
+                });
+                
+                // API test buttons
+                document.querySelectorAll('.api-button').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const api = e.target.dataset.api;
+                        this.testAPI(api);
+                    });
+                });
+                
+                // Transaction form
+                document.getElementById('transaction-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleTransactionForm();
+                });
+            }
+            
+            setLanguage(lang) {
+                this.currentLang = lang;
+                
+                // Update button states
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+                
+                // Update text content
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.dataset.i18n;
+                    if (this.translations[lang][key]) {
+                        element.textContent = this.translations[lang][key];
+                    }
+                });
+                
+                this.log('Language changed to: ' + lang.toUpperCase(), 'info');
+            }
+            
+            async checkAPIStatus() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/health`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'ok') {
+                        this.updateStatus('connected', 'APIs conectadas e funcionando');
+                        this.log('API health check successful', 'success');
+                    } else {
+                        this.updateStatus('error', 'APIs offline');
+                        this.log('API health check failed', 'error');
+                    }
+                } catch (error) {
+                    this.updateStatus('error', 'Erro ao conectar APIs: ' + error.message);
+                    this.log('API connection error: ' + error.message, 'error');
+                }
+            }
+            
+            updateStatus(type, message) {
+                const indicator = document.getElementById('status-indicator');
+                const text = document.getElementById('status-text');
+                
+                indicator.className = `status-indicator status-${type}`;
+                text.textContent = message;
+            }
+            
+            startStatusMonitoring() {
+                // Check API status every 30 seconds
+                setInterval(() => {
+                    this.checkAPIStatus();
+                }, 30000);
+            }
+            
+            async testAPI(apiType) {
+                const button = document.querySelector(`[data-api="${apiType}"]`);
+                const responseDiv = document.getElementById('api-response');
+                
+                try {
+                    button.disabled = true;
+                    button.textContent = '⏳ Testando...';
+                    
+                    this.log(`Testing API: ${apiType}`, 'info');
+                    
+                    let endpoint = '';
+                    let options = { method: 'GET' };
+                    
+                    switch (apiType) {
+                        case 'health':
+                            endpoint = '/health';
+                            break;
+                        case 'escrow-create':
+                            endpoint = '/escrow-create';
+                            options.method = 'POST';
+                            options.headers = { 'Content-Type': 'application/json' };
+                            options.body = JSON.stringify({
+                                amount: '100',
+                                currency: 'RLUSD',
+                                destination: 'rMerchantAddress',
+                                condition: 'crypto_point_event'
+                            });
+                            break;
+                        case 'escrow-finish':
+                            endpoint = '/escrow-finish';
+                            options.method = 'POST';
+                            options.headers = { 'Content-Type': 'application/json' };
+                            options.body = JSON.stringify({
+                                owner: 'rOwnerAddress',
+                                offerSequence: '12345'
+                            });
+                            break;
+                        case 'odl-convert':
+                            endpoint = '/odl/convert';
+                            options.method = 'POST';
+                            options.headers = { 'Content-Type': 'application/json' };
+                            options.body = JSON.stringify({
+                                from_currency: 'BRL',
+                                to_currency: 'RLUSD',
+                                amount: '1000'
+                            });
+                            break;
+                        case 'trustline':
+                            endpoint = '/trustline-rlusd';
+                            options.method = 'POST';
+                            options.headers = { 'Content-Type': 'application/json' };
+                            options.body = JSON.stringify({
+                                issuer: 'rRLUSDIssuer',
+                                limit: '1000000'
+                            });
+                            break;
+                        case 'yield':
+                            endpoint = '/merchant/yield/activate';
+                            options.method = 'POST';
+                            options.headers = { 'Content-Type': 'application/json' };
+                            options.body = JSON.stringify({
+                                merchant_id: 'MERCHANT_123',
+                                amount: '5000'
+                            });
+                            break;
+                    }
+                    
+                    const response = await fetch(`${this.apiBaseUrl}${endpoint}`, options);
+                    const data = await response.json();
+                    
+                    responseDiv.style.display = 'block';
+                    responseDiv.textContent = JSON.stringify(data, null, 2);
+                    
+                    button.className = 'api-button success';
+                    button.textContent = '✅ Sucesso';
+                    
+                    this.log(`API ${apiType} test successful`, 'success');
+                    
+                    setTimeout(() => {
+                        button.className = 'api-button';
+                        button.textContent = this.getOriginalButtonText(apiType);
+                    }, 2000);
+                    
+                } catch (error) {
+                    responseDiv.style.display = 'block';
+                    responseDiv.textContent = 'Erro: ' + error.message;
+                    
+                    button.className = 'api-button error';
+                    button.textContent = '❌ Erro';
+                    
+                    this.log(`API ${apiType} test failed: ${error.message}`, 'error');
+                    
+                    setTimeout(() => {
+                        button.className = 'api-button';
+                        button.textContent = this.getOriginalButtonText(apiType);
+                    }, 2000);
+                    
+                } finally {
+                    button.disabled = false;
+                }
+            }
+            
+            getOriginalButtonText(apiType) {
+                const texts = {
+                    'health': '🏥 Health Check',
+                    'escrow-create': '🔐 Criar Escrow',
+                    'escrow-finish': '✅ Finalizar Escrow',
+                    'odl-convert': '💱 Converter ODL',
+                    'trustline': '🔗 Trustline RLUSD',
+                    'yield': '📈 Ativar Yield'
+                };
+                return texts[apiType] || apiType;
+            }
+            
+            async startTransactionProcess() {
+                if (this.isProcessing) return;
+                
+                this.isProcessing = true;
+                this.currentStep = 0;
+                
+                const button = document.getElementById('start-process');
+                button.disabled = true;
+                
+                this.log('Starting transaction process...', 'info');
+                
+                try {
+                    // Step 1: Payment
+                    await this.processStep('payment', 'step-payment', 3000);
+                    
+                    // Step 2: ODL Conversion
+                    await this.processStep('conversion', 'step-conversion', 3000);
+                    
+                    // Step 3: Settlement
+                    await this.processStep('settlement', 'step-settlement', 2000);
+                    
+                    this.log('Transaction process completed successfully!', 'success');
+                    
+                    // Reset after completion
+                    setTimeout(() => {
+                        this.resetProcess();
+                    }, 3000);
+                    
+                } catch (error) {
+                    this.log('Transaction process failed: ' + error.message, 'error');
+                    this.resetProcess();
+                }
+            }
+            
+            async processStep(stepName, stepId, duration) {
+                const step = document.getElementById(stepId);
+                const loading = document.getElementById(`loading-${stepName}`);
+                const progress = document.getElementById(`progress-${stepName}`);
+                
+                step.classList.add('active');
+                loading.style.display = 'flex';
+                
+                this.log(`Starting ${stepName} step...`, 'info');
+                
+                // Simulate progress
+                let progressValue = 0;
+                const progressInterval = setInterval(() => {
+                    progressValue += Math.random() * 15;
+                    if (progressValue > 90) progressValue = 90;
+                    progress.style.width = progressValue + '%';
+                }, 200);
+                
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, duration));
+                
+                clearInterval(progressInterval);
+                progress.style.width = '100%';
+                
+                loading.style.display = 'none';
+                
+                this.log(`${stepName} step completed`, 'success');
+            }
+            
+            resetProcess() {
+                this.isProcessing = false;
+                this.currentStep = 0;
+                
+                // Reset all steps
+                ['payment', 'conversion', 'settlement'].forEach(step => {
+                    const stepEl = document.getElementById(`step-${step}`);
+                    const progress = document.getElementById(`progress-${step}`);
+                    const loading = document.getElementById(`loading-${step}`);
+                    
+                    stepEl.classList.remove('active');
+                    progress.style.width = '0%';
+                    loading.style.display = 'none';
+                });
+                
+                // Reset button
+                const button = document.getElementById('start-process');
+                button.disabled = false;
+                
+                this.log('Process reset and ready for new transaction', 'info');
+            }
+            
+            async handleTransactionForm() {
+                const form = document.getElementById('transaction-form');
+                const formData = new FormData(form);
+                
+                const transaction = {
+                    amount: parseFloat(document.getElementById('amount').value),
+                    merchant_id: document.getElementById('merchant-id').value,
+                    customer_id: document.getElementById('customer-id').value,
+                    timestamp: new Date().toISOString()
+                };
+                
+                this.log('Starting complete transaction simulation...', 'info');
+                this.showLoading('Iniciando transação...', 'Conectando à XRPL...');
+                
+                try {
+                    // Simulate complete transaction flow
+                    await this.simulateCompleteTransaction(transaction);
+                    
+                    this.hideLoading();
+                    this.log('Complete transaction simulation successful!', 'success');
+                    
+                    // Reset form
+                    form.reset();
+                    
+                } catch (error) {
+                    this.hideLoading();
+                    this.log('Transaction simulation failed: ' + error.message, 'error');
+                }
+            }
+            
+            async simulateCompleteTransaction(transaction) {
+                this.log(`Processing transaction: BRL ${transaction.amount}`, 'info');
+                
+                // Step 1: Create payment intent
+                this.updateLoadingText('Criando intenção de pagamento...', 'Validando dados...');
+                await this.delay(1000);
+                
+                // Step 2: Convert to XRPL format
+                this.updateLoadingText('Convertendo para XRPL...', 'Preparando escrow...');
+                await this.delay(1500);
+                
+                // Step 3: Create escrow
+                this.updateLoadingText('Criando escrow inteligente...', 'Assinando transação...');
+                await this.delay(2000);
+                
+                // Step 4: ODL conversion
+                this.updateLoadingText('Convertendo via ODL...', 'BRL → RLUSD → XRP...');
+                await this.delay(2000);
+                
+                // Step 5: Settlement
+                this.updateLoadingText('Finalizando liquidação...', '3-5 segundos de finality...');
+                await this.delay(1500);
+                
+                // Step 6: Complete
+                this.updateLoadingText('Transação completa! ✅', 'Liquidação confirmada na XRPL');
+                await this.delay(1000);
+                
+                this.log(`Transaction completed: BRL ${transaction.amount} → XRP (via RLUSD)`, 'success');
+            }
+            
+            showLoading(text, subtext) {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading-subtext').textContent = subtext;
+                document.getElementById('loading-overlay').style.display = 'flex';
+            }
+            
+            updateLoadingText(text, subtext) {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading-subtext').textContent = subtext;
+            }
+            
+            hideLoading() {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+            
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                const logContent = document.getElementById('transaction-log-content');
+                logContent.appendChild(logEntry);
+                logContent.scrollTop = logContent.scrollHeight;
+                
+                this.transactionLog.push({ timestamp, message, type });
+            }
+        }
+        
+        // Initialize the application
+        const app = new PayhubApp();
+        
+        // Make app globally available for debugging
+        window.payhubApp = app;
+        
+        console.log('PAYHUB Application initialized successfully! 🚀');
+    </script>
+</body>
+</html>

@@ -37,19 +37,29 @@ require_var() {
   fi
 }
 
-# Obrigatórias
 require_var FIGMA_TOKEN
 require_var FIGMA_FILE_KEY
 require_var VERCEL_TOKEN
 require_var VERCEL_ORG_ID
-require_var VERCEL_PROJECT_ID
+
+# Fallback para projetos Vercel: se apenas VERCEL_PROJECT_ID existir, usa para ambos
+if [ -z "${VERCEL_PROJECT_ID_FRONTEND:-}" ] && [ -n "${VERCEL_PROJECT_ID:-}" ]; then
+  VERCEL_PROJECT_ID_FRONTEND="$VERCEL_PROJECT_ID"
+fi
+if [ -z "${VERCEL_PROJECT_ID_BACKEND:-}" ] && [ -n "${VERCEL_PROJECT_ID:-}" ]; then
+  VERCEL_PROJECT_ID_BACKEND="$VERCEL_PROJECT_ID"
+fi
+
+require_var VERCEL_PROJECT_ID_FRONTEND
+require_var VERCEL_PROJECT_ID_BACKEND
 
 echo "Configurando secrets do GitHub Actions..."
 gh secret set FIGMA_TOKEN --body "$FIGMA_TOKEN"
 gh secret set FIGMA_FILE_KEY --body "$FIGMA_FILE_KEY"
 gh secret set VERCEL_TOKEN --body "$VERCEL_TOKEN"
 gh secret set VERCEL_ORG_ID --body "$VERCEL_ORG_ID"
-gh secret set VERCEL_PROJECT_ID --body "$VERCEL_PROJECT_ID"
+gh secret set VERCEL_PROJECT_ID_FRONTEND --body "$VERCEL_PROJECT_ID_FRONTEND"
+gh secret set VERCEL_PROJECT_ID_BACKEND --body "$VERCEL_PROJECT_ID_BACKEND"
 
 # Opcionais
 if [ -n "${SUPABASE_URL:-}" ]; then

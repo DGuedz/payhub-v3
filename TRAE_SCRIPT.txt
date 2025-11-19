@@ -1,0 +1,110 @@
+Olá Trae! Preciso configurar deploy automático do PAYHUB no Vercel com integração completa. 
+
+## 📋 O QUE PRECISO
+
+✅ **Deploy Automático**: Push → Build → Deploy
+✅ **Preview URLs**: Cada PR tem ambiente de preview
+✅ **Monorepo**: Frontend (payhub-frontend/) + Backend (raiz)
+✅ **Figma Sync**: Design tokens automáticos
+✅ **Health Checks**: Verificação pós-deploy
+
+## 🔧 ARQUIVOS JÁ CRIADOS
+
+| Arquivo | Status | Descrição |
+|---------|--------|-----------|
+| `.github/workflows/deploy-vercel.yml` | ✅ Criado | Deploy automático frontend/backend |
+| `vercel-optimized.json` | ✅ Criado | Config Vercel otimizada |
+| `setup-trae-vercel.sh` | ✅ Criado | Script de setup completo |
+
+## 🚀 CONFIGURAÇÕES NECESSÁRIAS
+
+### 1. SECRETS DO GITHUB (Settings → Secrets → Actions)
+```
+VERCEL_TOKEN=seu_token_aqui
+VERCEL_ORG_ID=sua_org_aqui  
+VERCEL_PROJECT_ID_FRONTEND=id_frontend_aqui
+VERCEL_PROJECT_ID_BACKEND=id_backend_aqui
+SUPABASE_URL=sua_url_aqui
+SUPABASE_ANON_KEY=sua_chave_aqui
+FIGMA_TOKEN=seu_token_figma
+FIGMA_FILE_KEY=UQwbW2cybw7SGzlBWHlgcr
+```
+
+### 2. VARIÁVEIS DO VERCEL (Settings → Environment Variables)
+```
+Frontend (payhub-frontend):
+- API_BASE_URL=https://payhub-backend.vercel.app
+- NEXT_PUBLIC_XRPL_NETWORK=devnet
+- NEXT_PUBLIC_ESCROW_OWNER_ADDRESS=seu_endereco
+
+Backend (raiz):
+- XRPL_SEED=via_KMS (nunca expor)
+- RLUSD_ISSUER_ADDRESS=endereco_emissor
+- TREASURY_VAULT_ADDRESS=endereco_tesouraria
+- JWT_SECRET=seu_jwt_secret
+- JWT_ISSUER=payhub-v3
+- XRPL_NETWORK=devnet
+```
+
+## 📱 COMANDOS PARA EXECUTAR
+
+### Setup Inicial
+```bash
+# 1. Tornar script executável
+chmod +x setup-trae-vercel.sh
+
+# 2. Executar setup
+./setup-trae-vercel.sh
+
+# 3. Verificar secrets
+gh secret list
+
+# 4. Testar deploy manual
+vercel --prod
+```
+
+### Verificação
+```bash
+# Health check
+curl https://payhub-v3.vercel.app/api/health
+
+# Ver deploys
+vercel ls
+
+# Logs
+vercel logs
+```
+
+## 🎯 FLUXO DE TRABALHO
+
+```
+Git Push → GitHub Actions → Vercel Deploy → Health Check → Preview URL
+     ↓              ↓              ↓              ↓           ↓
+  Código novo   Build & Test   Deploy auto   Verifica     Comentário
+  Commit/PR     Frontend+BK    Produção      Health       PR Preview
+```
+
+## 🚨 TROUBLESHOOTING
+
+| Problema | Solução |
+|----------|---------|
+| Deploy falha | Verificar secrets no GitHub |
+| Build error | Checar package.json scripts |
+| Health check fail | Confirmar api/health.js existe |
+| Preview URL não gera | Verificar VERCEL_PROJECT_IDs |
+
+## 📊 MONITORAMENTO
+
+- Deploy status: https://vercel.com/dashboard
+- Actions: https://github.com/DGuedz/PAYHUB_V3/actions
+- Health: https://payhub-v3.vercel.app/api/health
+
+## 🎉 RESULTADO ESPERADO
+
+✅ Push na `main` → Deploy automático (~3 min)
+✅ PR aberto → Preview URL gerada
+✅ Figma update → Tokens sincronizados
+✅ Health check → Sistema verificado
+✅ Rollback → 1 clique no Vercel
+
+Por favor, execute os comandos acima e me avise quando terminar! 🚀

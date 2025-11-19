@@ -3,9 +3,9 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathname === '/') {
+  if (pathname === '/app/merchant') {
     const url = req.nextUrl.clone();
-    url.pathname = '/ticketing';
+    url.pathname = '/app/portal';
     return NextResponse.rewrite(url);
   }
   return NextResponse.next();
