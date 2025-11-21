@@ -77,6 +77,13 @@ Assunto: Análise abrangente de Segurança, Desenvolvimento, Atualização GitHu
 - Conclusão: O DApp evoluiu para um Aplicativo de Produtividade Comercial com abstração máxima. O comerciante só interage com valor, saldo e lucro (RLUSD), enquanto o PAYHUB HUB AI orquestra JWT → Trustline → EscrowCreate → EscrowFinish → Yield e Compliance, com segurança KMS e auditoria (txHash/sequence). A ativação do rendimento e a geração de relatórios de conformidade são automatizadas através de endpoints dedicados, provando a capacidade do sistema como um Agente de Tesouraria Ativo. Integração GTreasury simulada via módulo Reporting, garantindo rastreabilidade corporativa. Resiliência UX implementada com fallback de serviços e loading states no Portal do Comerciante, garantindo operação fluida mesmo sob falhas temporárias.
 - Exportar este arquivo para PDF conforme `docs/INDEX.md`. Comando: `pandoc -o RELATORIO_ANALISE_ESTRATEGICA.pdf docs/RELATORIO_ANALISE_ESTRATEGICA.md`.
 
+### Adendo — Integração VTC (PAYHUB como Gateway)
+- Endpoint publicado: `POST /api/v1/payment/vtc-subscription` com JWT curto e logging padronizado
+- Webhook: `POST /api/webhooks/WEBHOOK_PAYHUB_TO_VTC` finaliza Escrow no backend (KMS/ENV) e notifica VTC
+- Liquidação: Escrow RLUSD (IOU) com auditoria por `escrowHash/sequence`
+- Swagger: `docs/swagger/vtc-subscription.yaml`
+
+
 ## 11. Tabela de Evidências de Transações On-Chain
 
 | Operação | txHash | Sequence | Link no Explorer |
