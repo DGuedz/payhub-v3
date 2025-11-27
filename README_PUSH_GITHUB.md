@@ -16,7 +16,7 @@ chmod +x git-push-audit.sh
 
 ```bash
 git add .
-git commit -m "🔍 Auditoria Financeira Completa - Series A Ready"
+git commit -m " Auditoria Financeira Completa - Series A Ready"
 git push origin main
 ```
 

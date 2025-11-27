@@ -93,7 +93,7 @@
         try {
           const btn = el('finishBtn');
           btn.disabled = true;
-          btn.textContent = '🔒 Enviando…';
+          btn.textContent = ' Enviando…';
           setStatus('hint', 'Processando transação no backend…');
           const resp = await fetch('/api/escrow-finish', {
             method: 'POST',
@@ -118,7 +118,7 @@
         } finally {
           const btn = el('finishBtn');
           btn.disabled = false;
-          btn.textContent = '✅ Finalizar Escrow';
+          btn.textContent = ' Finalizar Escrow';
         }
       }
 

@@ -1,13 +1,13 @@
-# 🎨 PAYHUB_V3 Design System - Figma Integration
+#  PAYHUB_V3 Design System - Figma Integration
 
-## 📋 Visão Geral
+##  Visão Geral
 
 Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 - **Experiência institucional** - Interface bancária profissional
 - **Performance XRPL** - Velocidade e confiabilidade visual
 - **Segurança visual** - Cores e elementos que transmitem confiança
 
-## 🎯 Princípios de Design
+##  Princípios de Design
 
 ### 1. Confiança Institucional
 - **Cores**: Azul institucional (#2563EB) + Verde financeiro (#10B981)
@@ -24,7 +24,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 - **Feedback visual**: Confirmações claras de transações
 - **Prevenção de erros**: Validação em tempo real
 
-## 🎨 Paleta de Cores
+##  Paleta de Cores
 
 ### Primária (Institucional)
 ```css
@@ -48,7 +48,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 --gray-900: #111827;
 ```
 
-## 🖋️ Tipografia
+## ️ Tipografia
 
 ### Fontes
 - **Inter**: Texto corporativo (400, 500, 600)
@@ -65,7 +65,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 --text-2xl: 1.5rem;    /* Headers */
 ```
 
-## 📐 Sistema de Layout
+##  Sistema de Layout
 
 ### Grid System
 - **Base**: 8px increment system
@@ -81,7 +81,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 --space-8: 2rem;       /* 32px */
 ```
 
-## 🧩 Componentes Principais
+##  Componentes Principais
 
 ### 1. Card de Transação XRPL
 ```css
@@ -127,7 +127,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 }
 ```
 
-## 🎭 Estados de Interface
+##  Estados de Interface
 
 ### Loading States
 ```css
@@ -148,7 +148,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 - **Success**: Green checkmark + confirmation message
 - **Error**: Red alert + clear error explanation
 
-## 📱 Responsividade
+##  Responsividade
 
 ### Mobile First
 ```css
@@ -175,7 +175,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 }
 ```
 
-## 🛡️ Componentes de Segurança
+## ️ Componentes de Segurança
 
 ### Honeypot Indicator
 ```css
@@ -202,7 +202,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 }
 ```
 
-## 🎨 Tokens do Figma
+##  Tokens do Figma
 
 ### Cores Exportáveis
 ```json
@@ -222,7 +222,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 - **Navigation**: Sidebar, header, footer
 - **Modals**: Confirmation, error, success
 
-## 📊 Métricas de Design
+##  Métricas de Design
 
 ### Performance Visual
 - **FCP**: < 1.0s (First Contentful Paint)
@@ -234,7 +234,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 - **Zoom**: Suporte a 200% sem quebra
 - **Navegação**: Keyboard accessible
 
-## 🔄 Fluxo de Trabalho
+##  Fluxo de Trabalho
 
 ### 1. Design no Figma
 - Criar componentes no Figma Design System
@@ -251,7 +251,7 @@ Este design system foi criado para o **PAYHUB_V3 AI Chat** com foco em:
 - Teste de acessibilidade
 - Performance auditing
 
-## 🚀 Implementação
+##  Implementação
 
 ### CSS Variables
 ```css
@@ -288,7 +288,7 @@ function XRPLTransactionCard({ transaction }) {
 }
 ```
 
-## 📋 Checklist de Implementação
+##  Checklist de Implementação
 
 - [ ] Configurar CSS variables base
 - [ ] Implementar componente Button
@@ -300,4 +300,4 @@ function XRPLTransactionCard({ transaction }) {
 
 ---
 
-**🎨 Design System criado para impressionar jurados e usuários com profissionalismo institucional!**
+** Design System criado para impressionar jurados e usuários com profissionalismo institucional!**

@@ -1,22 +1,22 @@
 Olá Trae! Preciso configurar deploy automático do PAYHUB no Vercel com integração completa. 
 
-## 📋 O QUE PRECISO
+##  O QUE PRECISO
 
-✅ **Deploy Automático**: Push → Build → Deploy
-✅ **Preview URLs**: Cada PR tem ambiente de preview
-✅ **Monorepo**: Frontend (payhub-frontend/) + Backend (raiz)
-✅ **Figma Sync**: Design tokens automáticos
-✅ **Health Checks**: Verificação pós-deploy
+ **Deploy Automático**: Push → Build → Deploy
+ **Preview URLs**: Cada PR tem ambiente de preview
+ **Monorepo**: Frontend (payhub-frontend/) + Backend (raiz)
+ **Figma Sync**: Design tokens automáticos
+ **Health Checks**: Verificação pós-deploy
 
-## 🔧 ARQUIVOS JÁ CRIADOS
+##  ARQUIVOS JÁ CRIADOS
 
 | Arquivo | Status | Descrição |
 |---------|--------|-----------|
-| `.github/workflows/deploy-vercel.yml` | ✅ Criado | Deploy automático frontend/backend |
-| `vercel-optimized.json` | ✅ Criado | Config Vercel otimizada |
-| `setup-trae-vercel.sh` | ✅ Criado | Script de setup completo |
+| `.github/workflows/deploy-vercel.yml` |  Criado | Deploy automático frontend/backend |
+| `vercel-optimized.json` |  Criado | Config Vercel otimizada |
+| `setup-trae-vercel.sh` |  Criado | Script de setup completo |
 
-## 🚀 CONFIGURAÇÕES NECESSÁRIAS
+##  CONFIGURAÇÕES NECESSÁRIAS
 
 ### 1. SECRETS DO GITHUB (Settings → Secrets → Actions)
 ```
@@ -46,7 +46,7 @@ Backend (raiz):
 - XRPL_NETWORK=devnet
 ```
 
-## 📱 COMANDOS PARA EXECUTAR
+##  COMANDOS PARA EXECUTAR
 
 ### Setup Inicial
 ```bash
@@ -75,7 +75,7 @@ vercel ls
 vercel logs
 ```
 
-## 🎯 FLUXO DE TRABALHO
+##  FLUXO DE TRABALHO
 
 ```
 Git Push → GitHub Actions → Vercel Deploy → Health Check → Preview URL
@@ -84,7 +84,7 @@ Git Push → GitHub Actions → Vercel Deploy → Health Check → Preview URL
   Commit/PR     Frontend+BK    Produção      Health       PR Preview
 ```
 
-## 🚨 TROUBLESHOOTING
+##  TROUBLESHOOTING
 
 | Problema | Solução |
 |----------|---------|
@@ -93,18 +93,18 @@ Git Push → GitHub Actions → Vercel Deploy → Health Check → Preview URL
 | Health check fail | Confirmar api/health.js existe |
 | Preview URL não gera | Verificar VERCEL_PROJECT_IDs |
 
-## 📊 MONITORAMENTO
+##  MONITORAMENTO
 
 - Deploy status: https://vercel.com/dashboard
 - Actions: https://github.com/DGuedz/PAYHUB_V3/actions
 - Health: https://payhub-v3.vercel.app/api/health
 
-## 🎉 RESULTADO ESPERADO
+##  RESULTADO ESPERADO
 
-✅ Push na `main` → Deploy automático (~3 min)
-✅ PR aberto → Preview URL gerada
-✅ Figma update → Tokens sincronizados
-✅ Health check → Sistema verificado
-✅ Rollback → 1 clique no Vercel
+ Push na `main` → Deploy automático (~3 min)
+ PR aberto → Preview URL gerada
+ Figma update → Tokens sincronizados
+ Health check → Sistema verificado
+ Rollback → 1 clique no Vercel
 
-Por favor, execute os comandos acima e me avise quando terminar! 🚀
+Por favor, execute os comandos acima e me avise quando terminar! 

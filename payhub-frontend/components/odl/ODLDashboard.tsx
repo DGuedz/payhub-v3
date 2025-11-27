@@ -218,9 +218,9 @@ export const ODLDashboard: React.FC<ODLDashboardProps> = ({ merchantId }) => {
       <div className="mt-8 bg-white rounded-lg shadow-md p-4">
         <div className="flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center space-x-4">
-            <span>🔒 Segurança Nível Bancário</span>
-            <span>⚡ Liquidação D+0</span>
-            <span>📈 Yield 5-8% APY</span>
+            <span> Segurança Nível Bancário</span>
+            <span> Liquidação D+0</span>
+            <span> Yield 5-8% APY</span>
           </div>
           <span>v3.0.0 | XRPL Vega House Hackathon</span>
         </div>

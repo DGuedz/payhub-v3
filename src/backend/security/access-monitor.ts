@@ -221,7 +221,7 @@ export class AccessMonitor {
     // - Sistema de tickets
     
     const message = `
-🚨 ALERTA DE SEGURANCA 🚨
+ ALERTA DE SEGURANCA 
 
 Severidade: ${alert.severity.toUpperCase()}
 Padrão: ${alert.pattern}

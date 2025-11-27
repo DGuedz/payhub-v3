@@ -87,7 +87,7 @@ function analyzeResponse(response, data) {
  * Cenário 1: Teste de Sobrecarga (Simulação de DDoS)
  */
 async function testOverloadScenario() {
-    console.log("\n🚨 CENÁRIO 1: Teste de Sobrecarga (Simulação 429)");
+    console.log("\n CENÁRIO 1: Teste de Sobrecarga (Simulação 429)");
     console.log("=" .repeat(60));
     
     const messages = [
@@ -98,8 +98,8 @@ async function testOverloadScenario() {
         "Integração XRPL com PAYHUB_V3?"
     ];
 
-    console.log("📡 Enviando múltiplas requisições simultâneas...");
-    console.log("🎯 Objetivo: Demonstrar que o sistema não trava sob carga");
+    console.log(" Enviando múltiplas requisições simultâneas...");
+    console.log(" Objetivo: Demonstrar que o sistema não trava sob carga");
 
     const startTime = Date.now();
     const results = [];
@@ -126,15 +126,15 @@ async function testOverloadScenario() {
     const failedRequests = allResults.filter(r => !r.result.success).length;
     const avgResponseTime = allResults.reduce((sum, r) => sum + r.requestTime, 0) / allResults.length;
 
-    console.log(`\n📊 RESULTADOS DO TESTE DE SOBRECARGA:`);
-    console.log(`✅ Requisições bem-sucedidas: ${successfulRequests}/${messages.length}`);
-    console.log(`❌ Requisições com falha: ${failedRequests}/${messages.length}`);
+    console.log(`\n RESULTADOS DO TESTE DE SOBRECARGA:`);
+    console.log(` Requisições bem-sucedidas: ${successfulRequests}/${messages.length}`);
+    console.log(` Requisições com falha: ${failedRequests}/${messages.length}`);
     console.log(`⏱️  Tempo médio de resposta: ${avgResponseTime.toFixed(0)}ms`);
     console.log(`⏰ Tempo total do teste: ${totalTime}ms`);
 
     // Demonstrar resiliência
     allResults.forEach((item, index) => {
-        const status = item.result.success ? "✅" : "❌";
+        const status = item.result.success ? "" : "";
         const mode = item.result.data?.mode || "N/A";
         const error = item.result.data?.error || "Nenhum";
         
@@ -142,11 +142,11 @@ async function testOverloadScenario() {
         console.log(`   Modo: ${mode} | Tempo: ${item.requestTime}ms | Erro: ${error}`);
         
         if (item.result.security?.potentialThreats.length > 0) {
-            console.log(`   🛡️ Proteções ativadas: ${item.result.security.potentialThreats.join(', ')}`);
+            console.log(`   ️ Proteções ativadas: ${item.result.security.potentialThreats.join(', ')}`);
         }
     });
 
-    console.log(`\n🛡️ CONCLUSÃO: Sistema resiliente!`);
+    console.log(`\n️ CONCLUSÃO: Sistema resiliente!`);
     console.log(`   - Nenhum crash detectado`);
     console.log(`   - Tempo de resposta consistente`);
     console.log(`   - Modo sandbox ativado quando necessário`);
@@ -157,7 +157,7 @@ async function testOverloadScenario() {
  * Cenário 2: Teste de Validação de Entrada
  */
 async function testValidationScenario() {
-    console.log("\n📝 CENÁRIO 2: Teste de Validação de Entrada");
+    console.log("\n CENÁRIO 2: Teste de Validação de Entrada");
     console.log("=" .repeat(60));
     
     const testCases = [
@@ -168,27 +168,27 @@ async function testValidationScenario() {
         { message: "mensagem=test", description: "Formato query string" }
     ];
 
-    console.log("🔍 Testando validação de entrada com dados inválidos...");
-    console.log("🎯 Objetivo: Demonstrar que o sistema valida e rejeita entradas malformadas");
+    console.log(" Testando validação de entrada com dados inválidos...");
+    console.log(" Objetivo: Demonstrar que o sistema valida e rejeita entradas malformadas");
 
     for (const testCase of testCases) {
-        console.log(`\n📋 Testando: ${testCase.description}`);
+        console.log(`\n Testando: ${testCase.description}`);
         console.log(`   Input: "${testCase.message}"`);
         
         const result = await sendMessage(testCase.message, TEST_JWT);
         
         if (result.success) {
-            console.log(`   ✅ Processado com sucesso (modo: ${result.data.mode})`);
+            console.log(`    Processado com sucesso (modo: ${result.data.mode})`);
         } else {
-            console.log(`   ⚠️  Entrada inválida detectada: ${result.data.error || 'Erro desconhecido'}`);
+            console.log(`   ️  Entrada inválida detectada: ${result.data.error || 'Erro desconhecido'}`);
         }
         
         if (result.security?.hasErrorHandling) {
-            console.log(`   🛡️  Sistema de tratamento de erros ativado`);
+            console.log(`   ️  Sistema de tratamento de erros ativado`);
         }
     }
 
-    console.log(`\n✅ CONCLUSÃO: Validação robusta implementada!`);
+    console.log(`\n CONCLUSÃO: Validação robusta implementada!`);
     console.log(`   - Entradas vazias são detectadas`);
     console.log(`   - JSON malformado é tratado`);
     console.log(`   - Mensagens claras de erro para o usuário`);
@@ -198,7 +198,7 @@ async function testValidationScenario() {
  * Cenário 3: Teste de JSON Malformado
  */
 async function testMalformedJSONScenario() {
-    console.log("\n🔧 CENÁRIO 3: Teste de JSON Malformado");
+    console.log("\n CENÁRIO 3: Teste de JSON Malformado");
     console.log("=" .repeat(60));
     
     const malformedPayloads = [
@@ -209,11 +209,11 @@ async function testMalformedJSONScenario() {
         { payload: "{\"message\": \"test\", invalid}", description: "JSON sintaticamente incorreto" }
     ];
 
-    console.log("🚨 Testando robustez com payloads malformados...");
-    console.log("🎯 Objetivo: Demonstrar proteção contra injeção de dados");
+    console.log(" Testando robustez com payloads malformados...");
+    console.log(" Objetivo: Demonstrar proteção contra injeção de dados");
 
     for (const test of malformedPayloads) {
-        console.log(`\n📄 Testando: ${test.description}`);
+        console.log(`\n Testando: ${test.description}`);
         console.log(`   Payload: ${test.payload}`);
         
         try {
@@ -233,21 +233,21 @@ async function testMalformedJSONScenario() {
             }
 
             if (response.ok && data.ok === true) {
-                console.log(`   ✅ Payload recuperado com sucesso`);
+                console.log(`    Payload recuperado com sucesso`);
                 console.log(`   Resposta: ${data.reply || data.mode}`);
             } else {
-                console.log(`   ⚠️  Payload malformado tratado`);
+                console.log(`   ️  Payload malformado tratado`);
                 console.log(`   Status: ${response.status}`);
                 console.log(`   Erro: ${data.error || 'Erro de parsing'}`);
             }
 
         } catch (error) {
-            console.log(`   ❌ Exceção capturada: ${error.message}`);
-            console.log(`   🛡️  Sistema protegido contra falha de parsing`);
+            console.log(`    Exceção capturada: ${error.message}`);
+            console.log(`   ️  Sistema protegido contra falha de parsing`);
         }
     }
 
-    console.log(`\n🛡️ CONCLUSÃO: Proteção contra injeção de dados!`);
+    console.log(`\n️ CONCLUSÃO: Proteção contra injeção de dados!`);
     console.log(`   - JSON malformado não quebra o parser`);
     console.log(`   - Tentativas XSS são neutralizadas`);
     console.log(`   - Sistema continua operacional`);
@@ -257,7 +257,7 @@ async function testMalformedJSONScenario() {
  * Cenário 4: Assistente Financeiro PAYHUB
  */
 async function testFinancialAssistant() {
-    console.log("\n💰 CENÁRIO 4: Assistente Financeiro PAYHUB");
+    console.log("\n CENÁRIO 4: Assistente Financeiro PAYHUB");
     console.log("=" .repeat(60));
     
     const financialQueries = [
@@ -268,27 +268,27 @@ async function testFinancialAssistant() {
         "Como funciona o pagamento com criptomoedas no PAYHUB?"
     ];
 
-    console.log("🤖 Testando assistente financeiro integrado...");
-    console.log("🎯 Objetivo: Demonstrar integração com ecossistema financeiro XRPL");
+    console.log(" Testando assistente financeiro integrado...");
+    console.log(" Objetivo: Demonstrar integração com ecossistema financeiro XRPL");
 
     for (const query of financialQueries) {
-        console.log(`\n❓ Pergunta: "${query}"`);
+        console.log(`\n Pergunta: "${query}"`);
         
         const result = await sendMessage(query, TEST_JWT);
         
         if (result.success) {
-            console.log(`   ✅ Resposta: "${result.data.reply}"`);
-            console.log(`   🧩 Modo: ${result.data.mode || 'GPT'}`);
+            console.log(`    Resposta: "${result.data.reply}"`);
+            console.log(`    Modo: ${result.data.mode || 'GPT'}`);
         } else {
-            console.log(`   ⚠️  Erro: ${result.data.error || 'Erro desconhecido'}`);
+            console.log(`   ️  Erro: ${result.data.error || 'Erro desconhecido'}`);
         }
         
         if (result.security?.potentialThreats.includes('insufficient_quota')) {
-            console.log(`   📊 Quota OpenAI esgotada - usando modo sandbox`);
+            console.log(`    Quota OpenAI esgotada - usando modo sandbox`);
         }
     }
 
-    console.log(`\n🎯 CONCLUSÃO: Assistente financeiro integrado!`);
+    console.log(`\n CONCLUSÃO: Assistente financeiro integrado!`);
     console.log(`   - Respostas contextualizadas para XRPL`);
     console.log(`   - Fallback para sandbox quando necessário`);
     console.log(`   - Integração perfeita com ecossistema DeFi`);
@@ -298,16 +298,16 @@ async function testFinancialAssistant() {
  * Análise de Segurança Completa
  */
 function securityAnalysisReport(results) {
-    console.log("\n🛡️ ANÁLISE DE SEGURANÇA COMPLETA");
+    console.log("\n️ ANÁLISE DE SEGURANÇA COMPLETA");
     console.log("=" .repeat(60));
     
     const totalTests = results.length;
     const passedTests = results.filter(r => r.success).length;
     const failedTests = totalTests - passedTests;
     
-    console.log(`📊 Resumo de Segurança:`);
-    console.log(`   ✅ Testes bem-sucedidos: ${passedTests}/${totalTests}`);
-    console.log(`   ⚠️  Testes com falhas controladas: ${failedTests}/${totalTests}`);
+    console.log(` Resumo de Segurança:`);
+    console.log(`    Testes bem-sucedidos: ${passedTests}/${totalTests}`);
+    console.log(`   ️  Testes com falhas controladas: ${failedTests}/${totalTests}`);
     
     // Verificar proteções específicas
     const hasRateLimiting = results.some(r => 
@@ -320,15 +320,15 @@ function securityAnalysisReport(results) {
         r.security?.potentialThreats.includes('insufficient_quota')
     );
     
-    console.log(`\n🔒 Proteções Detectadas:`);
-    console.log(`   ${hasRateLimiting ? '✅' : '❌'} Proteção contra sobrecarga (429)`);
-    console.log(`   ${hasFallbackMode ? '✅' : '❌'} Modo sandbox de fallback`);
-    console.log(`   ${hasQuotaProtection ? '✅' : '❌'} Proteção de quota OpenAI`);
-    console.log(`   ✅ Tratamento global de exceções`);
-    console.log(`   ✅ Validação de entrada robusta`);
-    console.log(`   ✅ Parsing seguro de JSON`);
+    console.log(`\n Proteções Detectadas:`);
+    console.log(`   ${hasRateLimiting ? '' : ''} Proteção contra sobrecarga (429)`);
+    console.log(`   ${hasFallbackMode ? '' : ''} Modo sandbox de fallback`);
+    console.log(`   ${hasQuotaProtection ? '' : ''} Proteção de quota OpenAI`);
+    console.log(`    Tratamento global de exceções`);
+    console.log(`    Validação de entrada robusta`);
+    console.log(`    Parsing seguro de JSON`);
     
-    console.log(`\n🏆 AVALIAÇÃO FINAL:`);
+    console.log(`\n AVALIAÇÃO FINAL:`);
     console.log(`   O PAYHUB_V3 AI Chat demonstra maturidade de engenharia`);
     console.log(`   com foco em segurança e resiliência, adequado para`);
     console.log(`   ambientes de produção e demonstrações profissionais.`);
@@ -338,10 +338,10 @@ function securityAnalysisReport(results) {
  * Executar todos os testes de resiliência
  */
 async function runAllResilienceTests() {
-    console.log("🚀 INICIANDO TESTES DE RESILIÊNCIA PAYHUB_V3");
+    console.log(" INICIANDO TESTES DE RESILIÊNCIA PAYHUB_V3");
     console.log("=" .repeat(80));
-    console.log("📋 Objetivo: Demonstrar robustez, segurança e maturidade de engenharia");
-    console.log("🎯 Público-alvo: Jurados do Hackathon XRPL Vega House");
+    console.log(" Objetivo: Demonstrar robustez, segurança e maturidade de engenharia");
+    console.log(" Público-alvo: Jurados do Hackathon XRPL Vega House");
     console.log("=" .repeat(80));
     
     const allResults = [];
@@ -353,68 +353,68 @@ async function runAllResilienceTests() {
         await testFinancialAssistant();
         
         console.log("\n" + "=" .repeat(80));
-        console.log("🎉 TODOS OS TESTES DE RESILIÊNCIA CONCLUÍDOS COM SUCESSO!");
+        console.log(" TODOS OS TESTES DE RESILIÊNCIA CONCLUÍDOS COM SUCESSO!");
         console.log("=" .repeat(80));
         
     } catch (error) {
-        console.error("❌ Erro durante os testes:", error.message);
+        console.error(" Erro durante os testes:", error.message);
     }
     
     // Gerar relatório final
-    console.log("\n📄 RELATÓRIO DE RESILIÊNCIA GERADO");
-    console.log("💡 Use este script para demonstrar a qualidade do código aos jurados");
-    console.log("🔧 O sistema PAYHUB_V3 está pronto para produção!");
+    console.log("\n RELATÓRIO DE RESILIÊNCIA GERADO");
+    console.log(" Use este script para demonstrar a qualidade do código aos jurados");
+    console.log(" O sistema PAYHUB_V3 está pronto para produção!");
 }
 
 // Executar os testes se este script for executado diretamente
 if (typeof window === 'undefined') {
     // Node.js environment
-    console.log("⚠️  Este script require fetch global. Execute em ambiente com fetch.");
-    console.log("💡 Dica: Use o navegador ou Node.js com fetch polyfill.");
+    console.log("️  Este script require fetch global. Execute em ambiente com fetch.");
+    console.log(" Dica: Use o navegador ou Node.js com fetch polyfill.");
     
     // Para demonstração, vamos criar uma versão simplificada
-    console.log("\n📋 SIMULAÇÃO DE TESTES DE RESILIÊNCIA:");
+    console.log("\n SIMULAÇÃO DE TESTES DE RESILIÊNCIA:");
     console.log("=====================================");
     
     const scenarios = [
         {
             name: "Sobrecarga (429)",
             description: "Múltiplas requisições simultâneas",
-            result: "✅ Sistema resiliente - sem crashes",
-            security: "🛡️ Rate limiting ativado"
+            result: " Sistema resiliente - sem crashes",
+            security: "️ Rate limiting ativado"
         },
         {
             name: "Validação de Entrada",
             description: "Dados malformados e vazios",
-            result: "✅ Validação robusta implementada",
-            security: "🛡️ Rejeição de entradas inválidas"
+            result: " Validação robusta implementada",
+            security: "️ Rejeição de entradas inválidas"
         },
         {
             name: "JSON Malformado",
             description: "Payloads sintaticamente incorretos",
-            result: "✅ Parsing seguro com fallback",
-            security: "🛡️ Proteção contra injeção de dados"
+            result: " Parsing seguro com fallback",
+            security: "️ Proteção contra injeção de dados"
         },
         {
             name: "Assistente Financeiro",
             description: "Integração com ecossistema XRPL",
-            result: "✅ Respostas contextualizadas",
-            security: "🛡️ Modo sandbox como fallback"
+            result: " Respostas contextualizadas",
+            security: "️ Modo sandbox como fallback"
         }
     ];
     
     scenarios.forEach(scenario => {
-        console.log(`\n🧪 ${scenario.name}`);
-        console.log(`   📋 ${scenario.description}`);
+        console.log(`\n ${scenario.name}`);
+        console.log(`    ${scenario.description}`);
         console.log(`   ${scenario.result}`);
         console.log(`   ${scenario.security}`);
     });
     
-    console.log("\n🏆 CONCLUSÃO: PAYHUB_V3 demonstra maturidade de engenharia!");
+    console.log("\n CONCLUSÃO: PAYHUB_V3 demonstra maturidade de engenharia!");
     console.log("   Sistema pronto para demonstração profissional.");
 } else {
     // Browser environment
-    console.log("🛡️ Script de Resiliência carregado! Use as funções disponíveis:");
+    console.log("️ Script de Resiliência carregado! Use as funções disponíveis:");
     console.log("   - runAllResilienceTests()");
     console.log("   - testOverloadScenario()");
     console.log("   - testValidationScenario()");

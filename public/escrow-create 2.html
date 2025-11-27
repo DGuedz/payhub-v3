@@ -82,7 +82,7 @@
 
         try {
           const btn = el('createBtn');
-          btn.disabled = true; btn.textContent = '🔒 Enviando…';
+          btn.disabled = true; btn.textContent = ' Enviando…';
           setStatus('hint', 'Processando transação no backend…');
           const resp = await fetch('/api/escrow-create', {
             method: 'POST',
@@ -98,7 +98,7 @@
           log(`Erro de rede: ${err && err.message ? err.message : String(err)}`);
         } finally {
           const btn = el('createBtn');
-          btn.disabled = false; btn.textContent = '✅ Criar Escrow';
+          btn.disabled = false; btn.textContent = ' Criar Escrow';
         }
       }
 

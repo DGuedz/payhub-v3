@@ -360,7 +360,7 @@
 
         <section class="process-steps">
             <div class="step-card">
-                <div class="step-icon">💳</div>
+                <div class="step-icon"></div>
                 <h3 class="step-title pt-content">Pagamento</h3>
                 <h3 class="step-title en-content">Payment</h3>
                 <div class="step-description pt-content">Pix • Cartão • Cripto</div>
@@ -368,7 +368,7 @@
             </div>
 
             <div class="step-card">
-                <div class="step-icon">⚡</div>
+                <div class="step-icon"></div>
                 <h3 class="step-title pt-content">Conversão ODL</h3>
                 <h3 class="step-title en-content">ODL Conversion</h3>
                 <div class="step-loading">
@@ -381,7 +381,7 @@
             </div>
 
             <div class="step-card">
-                <div class="step-icon">💰</div>
+                <div class="step-icon"></div>
                 <h3 class="step-title pt-content">Liquidação</h3>
                 <h3 class="step-title en-content">Settlement</h3>
                 <div class="step-description">3-5s finality</div>
@@ -392,7 +392,7 @@
             <button class="cta-button" onclick="startSimulation()">
                 <span class="pt-content">Começar Agora</span>
                 <span class="en-content">Start Now</span>
-                <span>⚡</span>
+                <span></span>
             </button>
         </section>
 
@@ -402,7 +402,7 @@
             <a href="#" class="simulation-button" onclick="openCryptoPoint()">
                 <span class="pt-content">Crypto Point - Eventos Web3</span>
                 <span class="en-content">Crypto Point - Web3 Events</span>
-                <span>🎯</span>
+                <span></span>
             </a>
         </section>
 
@@ -449,7 +449,7 @@
                 <span class="${document.documentElement.lang === 'pt-BR' ? 'pt-content' : 'en-content'}">
                     ${document.documentElement.lang === 'pt-BR' ? 'Convertendo...' : 'Converting...'}
                 </span>
-                <span class="loading">⚡</span>
+                <span class="loading"></span>
             `;
             
             setTimeout(() => {
@@ -458,8 +458,8 @@
                 // Show success message
                 const lang = document.documentElement.lang;
                 const message = lang === 'pt-BR' 
-                    ? '✅ Conversão completa! Liquidação em 3-5 segundos.'
-                    : '✅ Conversion complete! Settlement in 3-5 seconds.';
+                    ? ' Conversão completa! Liquidação em 3-5 segundos.'
+                    : ' Conversion complete! Settlement in 3-5 seconds.';
                 
                 alert(message);
             }, 3000);
@@ -469,8 +469,8 @@
         function openCryptoPoint() {
             const lang = document.documentElement.lang;
             const message = lang === 'pt-BR'
-                ? '🎯 Abrindo simulador Crypto Point para eventos Web3...'
-                : '🎯 Opening Crypto Point simulator for Web3 events...';
+                ? ' Abrindo simulador Crypto Point para eventos Web3...'
+                : ' Opening Crypto Point simulator for Web3 events...';
             
             alert(message);
             

@@ -1,15 +1,15 @@
-# 🚀 PAYHUB - Setup Trae + Vercel + GitHub Actions
+#  PAYHUB - Setup Trae + Vercel + GitHub Actions
 
-## 📋 Visão Geral
+##  Visão Geral
 
 Este guia configura deploy automático do PAYHUB com:
-- ✅ **Deploy automático** a cada push
-- ✅ **Preview URLs** para PRs
-- ✅ **Monorepo** (frontend + backend)
-- ✅ **Figma sync** automático
-- ✅ **Health checks** pós-deploy
+-  **Deploy automático** a cada push
+-  **Preview URLs** para PRs
+-  **Monorepo** (frontend + backend)
+-  **Figma sync** automático
+-  **Health checks** pós-deploy
 
-## 🎯 Arquitetura
+##  Arquitetura
 
 ```
 PAYHUB/
@@ -23,7 +23,7 @@ PAYHUB/
 └── setup-trae-vercel.sh     # Script setup
 ```
 
-## 🔧 Configuração Passo-a-Passo
+##  Configuração Passo-a-Passo
 
 ### 1. Preparar Ambiente
 
@@ -104,11 +104,11 @@ curl https://payhub-v3.vercel.app/api/health
 
 ```bash
 git add .
-git commit -m "🚀 Setup Vercel + GitHub Actions complete"
+git commit -m " Setup Vercel + GitHub Actions complete"
 git push origin main
 ```
 
-## 📊 Monitoramento
+##  Monitoramento
 
 | Serviço | URL | Descrição |
 |---------|-----|-----------|
@@ -117,7 +117,7 @@ git push origin main
 | Health Check | https://payhub-v3.vercel.app/api/health | Status API |
 | Preview URLs | Nos PRs | Ambientes de teste |
 
-## 🚨 Troubleshooting
+##  Troubleshooting
 
 ### Deploy Falhou
 ```bash
@@ -150,7 +150,7 @@ echo $VERCEL_PROJECT_ID_BACKEND
 gh run list
 ```
 
-## 🎯 Fluxo de Trabalho Completo
+##  Fluxo de Trabalho Completo
 
 1. **Developer push** → GitHub
 2. **GitHub Actions** → Build + Test
@@ -159,7 +159,7 @@ gh run list
 5. **Preview URL** → Comentado no PR
 6. **Production** → Deploy automático
 
-## 📱 Comandos Úteis
+##  Comandos Úteis
 
 ```bash
 # Deploy manual
@@ -180,15 +180,15 @@ gh run list
 gh run view --log
 ```
 
-## 🎉 Resultado
+##  Resultado
 
-✅ **Push na main** → Deploy automático (~3 min)
-✅ **PR aberto** → Preview URL disponível
-✅ **Figma update** → Tokens sincronizados
-✅ **Health check** → Sistema verificado
-✅ **Rollback** → 1 clique no Vercel
+ **Push na main** → Deploy automático (~3 min)
+ **PR aberto** → Preview URL disponível
+ **Figma update** → Tokens sincronizados
+ **Health check** → Sistema verificado
+ **Rollback** → 1 clique no Vercel
 
-## 📞 Suporte
+##  Suporte
 
 Se precisar de ajuda:
 1. Verifique os logs no Vercel
@@ -198,4 +198,4 @@ Se precisar de ajuda:
 
 ---
 
-**Pronto para produção!** 🚀
+**Pronto para produção!** 

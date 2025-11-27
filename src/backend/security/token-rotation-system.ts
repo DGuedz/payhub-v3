@@ -276,16 +276,16 @@ try {
     const run = async () => {
       if (args.includes('--emergency')) {
         await system.emergencyRotation();
-        console.log('✅ Rotação de emergência concluída');
+        console.log(' Rotação de emergência concluída');
       } else {
         await system.rotateTokens('manual');
-        console.log('✅ Rotação manual concluída');
+        console.log(' Rotação manual concluída');
       }
       system.stopAutoRotation();
     };
 
     run().catch((err) => {
-      console.error('❌ Falha ao executar rotação de tokens:', err);
+      console.error(' Falha ao executar rotação de tokens:', err);
       try { system.stopAutoRotation(); } catch {}
       process?.exit?.(1);
     });

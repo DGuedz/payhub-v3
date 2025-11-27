@@ -67,7 +67,7 @@ export class SecurityDashboard {
    * Inicializa o dashboard
    */
   private initializeDashboard(): void {
-    console.log('🛡️ Inicializando Dashboard de Segurança PAYHUB_V3');
+    console.log('️ Inicializando Dashboard de Segurança PAYHUB_V3');
     this.startMetricsCollection();
   }
 

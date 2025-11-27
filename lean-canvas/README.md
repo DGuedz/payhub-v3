@@ -1,12 +1,12 @@
 # Lean Canvas - PAYHUB V3
 
-## 📋 Modelo de Negócio
+##  Modelo de Negócio
 
 O Lean Canvas do PAYHUB V3 está disponível online através do Figma:
 
-🔗 **Link do Lean Canvas:** https://july-feed-11253018.figma.site/
+ **Link do Lean Canvas:** https://july-feed-11253018.figma.site/
 
-## 📊 Estrutura do Canvas
+##  Estrutura do Canvas
 
 O Lean Canvas inclui:
 
@@ -56,7 +56,7 @@ O Lean Canvas inclui:
 - Primeiro-mover no Brasil XRPL DeFi
 - Parcerias estratégicas com XRPL Foundation
 
-## 🚀 Próximos Passos
+##  Próximos Passos
 
 1. **Validação com Clientes** - Testar com pilotos controlados
 2. **Scale Infrastructure** - Preparar para volume production
@@ -65,6 +65,6 @@ O Lean Canvas inclui:
 
 ---
 
-📞 **Contato:** Equipe PAYHUB - dg@payhub.com.br
+ **Contato:** Equipe PAYHUB - dg@payhub.com.br
 
-🔐 **Status:** Em desenvolvimento - MVP funcional com simulação completa DevNet
+ **Status:** Em desenvolvimento - MVP funcional com simulação completa DevNet

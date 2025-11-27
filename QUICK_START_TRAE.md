@@ -1,6 +1,6 @@
-# ⚡ PAYHUB - Quick Start Trae + Vercel
+#  PAYHUB - Quick Start Trae + Vercel
 
-## 🚀 3 Passos para Deploy Automático
+##  3 Passos para Deploy Automático
 
 ### 1. COPIAR SCRIPT PARA TRAE
 ```bash
@@ -28,16 +28,16 @@ vercel --prod
 curl https://payhub-v3.vercel.app/api/health
 ```
 
-## ✅ PRONTO!
+##  PRONTO!
 
-- ✅ Push automático → Deploy
-- ✅ Preview URLs em PRs
-- ✅ Health checks automáticos
-- ✅ Figma sync integrado
+-  Push automático → Deploy
+-  Preview URLs em PRs
+-  Health checks automáticos
+-  Figma sync integrado
 
-**Tempo total: ~5 minutos** 🎉
+**Tempo total: ~5 minutos** 
 
-## 📞 Se Precisar
+##  Se Precisar
 
 1. Verifique `TRAE_SETUP_GUIDE.md` para detalhes
 2. Execute `./setup-trae-vercel.sh` para setup completo
@@ -45,4 +45,4 @@ curl https://payhub-v3.vercel.app/api/health
 
 ---
 
-**Deploy automático configurado!** 🚀
+**Deploy automático configurado!** 
