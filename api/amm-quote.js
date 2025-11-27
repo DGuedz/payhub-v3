@@ -5,6 +5,10 @@ module.exports = async (req, res) => {
     const body = req.body || {};
     const { sourceAccount, destinationAccount, deliverCurrency, deliverIssuer, deliverValue, sendMaxCurrency, sendMaxIssuer, sendMaxValue } = body;
     if (!sourceAccount || !destinationAccount || !deliverCurrency || !deliverIssuer || !deliverValue) return res.status(400).json({ ok: false, error: 'Missing params' });
+    const isAddr = (a) => typeof a === 'string' && /^r[1-9A-HJ-NP-Za-km-z]{24,34}$/.test(a);
+    if (!isAddr(sourceAccount) || !isAddr(destinationAccount) || !isAddr(deliverIssuer)) return res.status(400).json({ ok: false, error: 'Invalid XRPL address' });
+    const val = Number(String(deliverValue));
+    if (!isFinite(val) || val <= 0) return res.status(400).json({ ok: false, error: 'Invalid deliverValue' });
     let xrpl;
     try { xrpl = require('xrpl'); } catch (e) { return res.status(500).json({ ok: false, error: 'Dependency xrpl missing. npm i xrpl' }); }
     const wsUrl = getWsUrl();
@@ -25,4 +29,3 @@ module.exports = async (req, res) => {
     return res.status(500).json({ ok: false, error: message });
   }
 };
-
