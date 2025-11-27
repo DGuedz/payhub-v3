@@ -15,6 +15,8 @@
     "start": "node server.js",
     "lint": "eslint sdk app payhub-frontend/app --ext .ts,.tsx --max-warnings=0",
     "typecheck": "tsc -p tsconfig.json",
+    "check:emoji": "node scripts/check-emojis.js",
+    "postinstall": "node scripts/install-hooks.js || true",
     "security:build": "tsc -p tsconfig.security.json",
     "security:init": "npm run security:build && node dist/security/security-init.js",
     "security:rotate-tokens": "npm run security:build && node dist/security/token-rotation-system.js",
@@ -61,4 +63,3 @@
     "eslint-plugin-react-hooks": "^4.6.0"
   }
 }
-    "postinstall": "node scripts/install-hooks.js || true",
