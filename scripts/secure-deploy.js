@@ -32,16 +32,16 @@ class SecureDeploy {
    * Executa todas as verificações de segurança
    */
   async runSecurityChecks() {
-    console.log('🔍 Executando verificações de segurança pré-deploy...\n');
+    console.log(' Executando verificações de segurança pré-deploy...\n');
     
     let allChecksPassed = true;
     
     for (const check of this.deployChecks) {
       try {
         await check();
-        console.log('✅');
+        console.log('');
       } catch (error) {
-        console.error('❌ Falha na verificação:', error.message);
+        console.error(' Falha na verificação:', error.message);
         allChecksPassed = false;
       }
     }
@@ -50,26 +50,26 @@ class SecureDeploy {
       throw new Error('Verificações de segurança falharam. Deploy abortado.');
     }
     
-    console.log('\n✅ Todas as verificações de segurança passaram!\n');
+    console.log('\n Todas as verificações de segurança passaram!\n');
   }
 
   /**
    * Executa processo de deploy seguro
    */
   async executeSecureDeploy() {
-    console.log('🚀 Iniciando deploy seguro...\n');
+    console.log(' Iniciando deploy seguro...\n');
     
     for (const step of this.deploySteps) {
       try {
         await step();
-        console.log('✅');
+        console.log('');
       } catch (error) {
-        console.error('❌ Erro no deploy:', error.message);
+        console.error(' Erro no deploy:', error.message);
         throw error;
       }
     }
     
-    console.log('\n🎉 Deploy seguro concluído com sucesso!');
+    console.log('\n Deploy seguro concluído com sucesso!');
   }
 
   /**
@@ -94,7 +94,7 @@ class SecureDeploy {
       }
     }
     
-    console.log('   ✅ Variáveis de ambiente validadas');
+    console.log('    Variáveis de ambiente validadas');
   }
 
   /**
@@ -116,17 +116,17 @@ class SecureDeploy {
       const result = execSync(grepCommand, { encoding: 'utf8' });
       
       if (result.trim()) {
-        console.warn('   ⚠️  Possíveis dados sensíveis encontrados:');
+        console.warn('   ️  Possíveis dados sensíveis encontrados:');
         console.warn(result);
         throw new Error('Dados sensíveis detectados no código. Verifique acima.');
       }
       
-      console.log('   ✅ Nenhum dado sensível detectado');
+      console.log('    Nenhum dado sensível detectado');
     } catch (error) {
       if (error.message.includes('Verifique acima')) {
         throw error;
       }
-      console.log('   ✅ Verificação de dados sensíveis concluída');
+      console.log('    Verificação de dados sensíveis concluída');
     }
   }
 
@@ -150,12 +150,12 @@ class SecureDeploy {
           stdio: 'pipe',
           timeout: 30000 
         });
-        console.log('   ✅ npm audit disponível');
+        console.log('    npm audit disponível');
       } catch {
-        console.warn('   ⚠️  npm audit não disponível');
+        console.warn('   ️  npm audit não disponível');
       }
       
-      console.log('   ✅ Dependências verificadas');
+      console.log('    Dependências verificadas');
     } catch (error) {
       throw new Error(`Erro na verificação de dependências: ${error.message}`);
     }
@@ -175,7 +175,7 @@ class SecureDeploy {
         timeout: 60000 
       });
       
-      console.log('   ✅ Processo de build verificado');
+      console.log('    Processo de build verificado');
     } catch (error) {
       throw new Error(`Erro no processo de build: ${error.message}`);
     }
@@ -195,11 +195,11 @@ class SecureDeploy {
     
     for (const script of securityScripts) {
       if (fs.existsSync(script)) {
-        console.log(`   ✅ Script de segurança encontrado: ${script}`);
+        console.log(`    Script de segurança encontrado: ${script}`);
       }
     }
     
-    console.log('   ✅ Verificações de segurança concluídas');
+    console.log('    Verificações de segurança concluídas');
   }
 
   /**
@@ -213,7 +213,7 @@ class SecureDeploy {
     // - Rotação de chaves de API
     // - Invalidamento de sessões antigas
     
-    console.log('   ✅ Segredos rotacionados (simulado)');
+    console.log('    Segredos rotacionados (simulado)');
   }
 
   /**
@@ -239,7 +239,7 @@ class SecureDeploy {
     
     fs.writeFileSync(backupFile, JSON.stringify(backupData, null, 2));
     
-    console.log(`   ✅ Backup criado: ${backupFile}`);
+    console.log(`    Backup criado: ${backupFile}`);
   }
 
   /**
@@ -258,7 +258,7 @@ class SecureDeploy {
         timeout: 300000 // 5 minutos
       });
       
-      console.log('   ✅ Deploy executado');
+      console.log('    Deploy executado');
     } catch (error) {
       throw new Error(`Falha no deploy: ${error.message}`);
     }
@@ -279,9 +279,9 @@ class SecureDeploy {
         timeout: 30000
       });
       
-      console.log('   ✅ Health check passou');
+      console.log('    Health check passou');
     } catch (error) {
-      console.warn('   ⚠️  Health check falhou, continuando...');
+      console.warn('   ️  Health check falhou, continuando...');
     }
   }
 
@@ -292,7 +292,7 @@ class SecureDeploy {
     console.log('5. Iniciando monitoramento pós-deploy...');
     
     // Inicia monitoramento
-    console.log('   ✅ Monitoramento iniciado (simulado)');
+    console.log('    Monitoramento iniciado (simulado)');
     
     // Log de deploy bem-sucedido
     this.logDeploySuccess();
@@ -327,14 +327,14 @@ class SecureDeploy {
   async run() {
     try {
       console.log('='.repeat(60));
-      console.log('🛡️   SISTEMA DE DEPLOY SEGURO');
+      console.log('️   SISTEMA DE DEPLOY SEGURO');
       console.log('='.repeat(60));
       
       await this.runSecurityChecks();
       await this.executeSecureDeploy();
       
     } catch (error) {
-      console.error('\n💥 DEPLOY FALHOU:', error.message);
+      console.error('\n DEPLOY FALHOU:', error.message);
       process.exit(1);
     }
   }

@@ -1,6 +1,6 @@
-# 🎨 Integração com Figma - PAYHUB_V3
+#  Integração com Figma - PAYHUB_V3
 
-## 📋 Como Trazer o Protótipo do Figma
+##  Como Trazer o Protótipo do Figma
 
 ### 1. Obter o File Key
 Acesse seu arquivo no Figma e copie o **FILE_KEY** da URL:
@@ -11,19 +11,19 @@ https://www.figma.com/file/FILE_KEY/Nome-do-Projeto
 ### 2. Estrutura de Pastas Preparada
 ```
 design-system/
-├── 📁 export/           → Assets exportados do Figma
-├── 📁 components/       → Componentes convertidos para código
-├── 📁 assets/           → Imagens e recursos
-└── 📄 FIGMA-INTEGRATION.md → Este guia
+├──  export/           → Assets exportados do Figma
+├──  components/       → Componentes convertidos para código
+├──  assets/           → Imagens e recursos
+└──  FIGMA-INTEGRATION.md → Este guia
 ```
 
 ### 3. Componentes que Podemos Exportar
-- ✅ **Botões** (Primary, Secondary, Danger)
-- ✅ **Cards** (Transação, Saldo, Segurança)  
-- ✅ **Formulários** (Inputs, validações)
-- ✅ **Ícones** (SVG exportável)
-- ✅ **Cores** (Paleta completa)
-- ✅ **Tipografia** (Font scales)
+-  **Botões** (Primary, Secondary, Danger)
+-  **Cards** (Transação, Saldo, Segurança)  
+-  **Formulários** (Inputs, validações)
+-  **Ícones** (SVG exportável)
+-  **Cores** (Paleta completa)
+-  **Tipografia** (Font scales)
 
 ### 4. Comandos para Exportação
 
@@ -53,7 +53,7 @@ design-system/
 - Input.jsx
 ```
 
-## 🚀 Fluxo de Trabalho Recomendado
+##  Fluxo de Trabalho Recomendado
 
 ### Passo 1: Preparar no Figma
 1. Organizar componentes em frames nomeados
@@ -70,7 +70,7 @@ design-system/
 2. Implementar componentes React
 3. Testar responsividade
 
-## 📊 O Que Conseguimos Exportar
+##  O Que Conseguimos Exportar
 
 ### Design Tokens
 ```css
@@ -114,7 +114,7 @@ function TransactionCard({ amount, to, status }) {
 }
 ```
 
-## 🎯 Para Começar Agora
+##  Para Começar Agora
 
 ### 1. Me forneça o FILE_KEY do Figma
 ```
@@ -134,15 +134,15 @@ File Key: ________________
 # Indicadores de segurança
 ```
 
-## 📱 Responsividade Garantida
+##  Responsividade Garantida
 
 Todos os componentes serão:
-- ✅ Mobile-first
-- ✅ Testados em 320px, 768px, 1024px  
-- ✅ Acessíveis (keyboard + screen readers)
-- ✅ Performance otimizada
+-  Mobile-first
+-  Testados em 320px, 768px, 1024px  
+-  Acessíveis (keyboard + screen readers)
+-  Performance otimizada
 
-## 🛡️ Componentes de Segurança Visual
+## ️ Componentes de Segurança Visual
 
 ### Honeypot Indicator
 ```jsx
@@ -162,7 +162,7 @@ Todos os componentes serão:
 />
 ```
 
-## 🔄 Integração com Código Existente
+##  Integração com Código Existente
 
 ### CSS Variables
 ```css
@@ -196,7 +196,7 @@ function PaymentForm() {
 }
 ```
 
-## 📋 Checklist de Integração
+##  Checklist de Integração
 
 - [ ] Obter FILE_KEY do Figma
 - [ ] Exportar cores principais
@@ -208,6 +208,6 @@ function PaymentForm() {
 
 ---
 
-**🎨 Pronto para transformar seu design Figma em código de produção!**
+** Pronto para transformar seu design Figma em código de produção!**
 
 Forneça o FILE_KEY ou descreva os componentes que quer priorizar.

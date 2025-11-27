@@ -129,7 +129,7 @@ export default function MerchantPage() {
               </div>
             </div>
             <details style={{ marginTop: 20, padding: 10, border: `1px solid ${COLORS.BACKGROUND}`, borderRadius: 8 }}>
-              <summary style={{ fontWeight: 700, cursor: "pointer" }}>🛠️ Configuração de Teste (Júri/Dev)</summary>
+              <summary style={{ fontWeight: 700, cursor: "pointer" }}>️ Configuração de Teste (Júri/Dev)</summary>
               <div style={{ marginTop: 10 }}>
                 <label style={{ opacity: 0.9 }}>JWT Token</label>
                 <input value={token} onChange={(e) => setManual(e.target.value)} placeholder="Bearer token (para Testes)" style={{ marginTop: 6, width: "100%", padding: 10, borderRadius: 8, backgroundColor: COLORS.BACKGROUND, color: COLORS.TEXT_LIGHT }} />

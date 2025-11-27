@@ -3,7 +3,7 @@
 
 ---
 
-## 🎯 **O Que Vamos Demonstrar Hoje**
+##  **O Que Vamos Demonstrar Hoje**
 
 **Não é apenas uma IA Chat. É um sistema que prova maturidade de engenharia.**
 
@@ -11,7 +11,7 @@ Vamos mostrar que o PAYHUB_V3 não apenas **funciona**, mas **resiste a falhas**
 
 ---
 
-## 🚀 **Demonstração Rápida (2 minutos)**
+##  **Demonstração Rápida (2 minutos)**
 
 ### **1. Teste de Sobrecarga (Simulação de Ataque DDoS)**
 ```bash
@@ -20,10 +20,10 @@ node src/frontend/demo-resiliencia.js
 ```
 
 **O que os jurados verão:**
-- ✅ Sistema processa múltiplas requisições sem travar
-- ✅ Tempo de resposta consistente (&lt;200ms)
-- ✅ Tratamento elegante de erros 429
-- ✅ Modo sandbox ativa automaticamente
+-  Sistema processa múltiplas requisições sem travar
+-  Tempo de resposta consistente (&lt;200ms)
+-  Tratamento elegante de erros 429
+-  Modo sandbox ativa automaticamente
 
 ### **2. Teste de Validação de Entrada**
 ```bash
@@ -35,14 +35,14 @@ curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \\
 ```
 
 **O que os jurados verão:**
-- ✅ Rejeição de entradas inválidas
-- ✅ Mensagens de erro claras para o usuário
-- ✅ Nenhum crash do sistema
-- ✅ Logging estruturado para auditoria
+-  Rejeição de entradas inválidas
+-  Mensagens de erro claras para o usuário
+-  Nenhum crash do sistema
+-  Logging estruturado para auditoria
 
 ---
 
-## 🛡️ **Segurança em Ação**
+## ️ **Segurança em Ação**
 
 ### **Proteções Implementadas:**
 
@@ -56,7 +56,7 @@ curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \\
 
 ---
 
-## 📊 **Métricas de Resiliência**
+##  **Métricas de Resiliência**
 
 ### **Performance Sob Carga:**
 - **Taxa de Sucesso:** 100% (mesmo com falhas controladas)
@@ -66,17 +66,17 @@ curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \\
 
 ### **Resiliência Comprovada:**
 ```
-✅ Tratamento Global de Exceções (try-catch)
-✅ Parsing Seguro de JSON com Fallback
-✅ Modo Sandbox quando Sem Quota OpenAI
-✅ Logging Estruturado para Auditoria
-✅ Validação de Entrada Robusta
-✅ Respostas Padronizadas com Status Codes
+ Tratamento Global de Exceções (try-catch)
+ Parsing Seguro de JSON com Fallback
+ Modo Sandbox quando Sem Quota OpenAI
+ Logging Estruturado para Auditoria
+ Validação de Entrada Robusta
+ Respostas Padronizadas com Status Codes
 ```
 
 ---
 
-## 🎯 **Demonstração para os Jurados**
+##  **Demonstração para os Jurados**
 
 ### **Script de Apresentação:**
 
@@ -105,7 +105,7 @@ Execute testes com:
 
 ---
 
-## 🔧 **Comandos Prontos para Execução**
+##  **Comandos Prontos para Execução**
 
 ### **Setup Rápido:**
 ```bash
@@ -131,13 +131,13 @@ curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \
 
 ---
 
-## 🏆 **Mensagem Final para os Jurados**
+##  **Mensagem Final para os Jurados**
 
 **"O PAYHUB_V3 demonstra maturidade de engenharia ao implementar um sistema que antecipa e lida com falhas de forma profissional. Nossa abordagem de 'fail gracefully' garante que o sistema permaneça operacional mesmo sob condições adversas, reduzindo o risco de downtime em produção - característica essencial para sistemas financeiros."**
 
 ---
 
-## 📋 **Checklist de Demonstração**
+##  **Checklist de Demonstração**
 
 - [ ] Interface visual aberta (opcional)
 - [ ] Script de resiliência executado
@@ -148,4 +148,4 @@ curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \
 
 ---
 
-**🚀 Sistema 100% funcional e pronto para demonstração profissional!**
+** Sistema 100% funcional e pronto para demonstração profissional!**

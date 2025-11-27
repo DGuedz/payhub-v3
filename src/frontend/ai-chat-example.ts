@@ -12,7 +12,7 @@ import type { ChatResponse } from './ai-chat-client';
 export function createAIChatExample() {
   return `
     <div id="ai-chat-demo" style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
-      <h1 style="color: #333; margin-bottom: 20px;">🤖 PAYHUB_V3 AI Chat Demo</h1>
+      <h1 style="color: #333; margin-bottom: 20px;"> PAYHUB_V3 AI Chat Demo</h1>
       
       <div style="margin-bottom: 15px;">
         <label for="message-input" style="display: block; margin-bottom: 5px; font-weight: bold;">
@@ -83,12 +83,12 @@ export function createAIChatExample() {
           resultDiv.style.backgroundColor = '#f8d7da';
           resultDiv.style.borderColor = '#f5c6cb';
           resultDiv.innerHTML = \`
-            <strong>❌ Erro:</strong> \${error}
+            <strong> Erro:</strong> \${error}
           \`;
           return;
         }
 
-        const modeIcon = response.mode === 'sandbox' ? '🧩' : '🤖';
+        const modeIcon = response.mode === 'sandbox' ? '' : '';
         const modeText = response.mode === 'sandbox' ? 'Sandbox' : 'GPT';
         
         resultDiv.style.backgroundColor = response.ok ? '#d4edda' : '#f8d7da';
@@ -96,7 +96,7 @@ export function createAIChatExample() {
         
         resultDiv.innerHTML = \`
           <div style="margin-bottom: 10px;">
-            <strong>Status:</strong> \${response.ok ? '✅ Sucesso' : '❌ Erro'}
+            <strong>Status:</strong> \${response.ok ? ' Sucesso' : ' Erro'}
           </div>
           \${response.mode ? \`<div style="margin-bottom: 10px;"><strong>Modo:</strong> \${modeIcon} \${modeText}</div>\` : ''}
           \${response.reply ? \`<div><strong>Resposta:</strong><p style="margin-top: 5px; padding: 10px; background: white; border-radius: 4px;">\${response.reply}</p></div>\` : ''}
@@ -149,7 +149,7 @@ export function createAIChatExample() {
 
 // Exemplo de uso programático
 export async function demonstrateAIChat() {
-  console.log('🤖 Demonstrando PAYHUB_V3 AI Chat...\n');
+  console.log(' Demonstrando PAYHUB_V3 AI Chat...\n');
 
   try {
     // Teste 1: Modo Sandbox (sem autenticação)

@@ -124,7 +124,7 @@ async function main() {
       fileData = await fetchJSON(`https://api.figma.com/v1/files/${fileKey}`, token);
     }
   } catch (e) {
-    console.error('❌ Failed to fetch file:', e.message);
+    console.error(' Failed to fetch file:', e.message);
     process.exit(1);
   }
 
@@ -146,7 +146,7 @@ async function main() {
   }
 
   if (!documentNode) {
-    console.warn('⚠️ No document node found. The file may be inaccessible or empty.');
+    console.warn('️ No document node found. The file may be inaccessible or empty.');
   }
 
   const nodeIds = [];
@@ -165,23 +165,23 @@ async function main() {
     fetchedAt: new Date().toISOString(),
   };
   fs.writeFileSync(metaOut, JSON.stringify(meta, null, 2));
-  console.log(`📝 Metadata written to ${metaOut}`);
+  console.log(` Metadata written to ${metaOut}`);
 
   if (includeImages && nodeIds.length > 0) {
-    console.log(`🖼️ Requesting images for ${nodeIds.length} nodes...`);
+    console.log(`️ Requesting images for ${nodeIds.length} nodes...`);
     // SVG
     let imagesSvg;
     try {
       imagesSvg = await fetchJSON(`https://api.figma.com/v1/images/${fileKey}?ids=${encodeURIComponent(nodeIds.join(','))}&format=svg`, token);
     } catch (e) {
-      console.warn('⚠️ SVG images fetch failed:', e.message);
+      console.warn('️ SVG images fetch failed:', e.message);
     }
     // PNG (2x)
     let imagesPng;
     try {
       imagesPng = await fetchJSON(`https://api.figma.com/v1/images/${fileKey}?ids=${encodeURIComponent(nodeIds.join(','))}&format=png&scale=2`, token);
     } catch (e) {
-      console.warn('⚠️ PNG images fetch failed:', e.message);
+      console.warn('️ PNG images fetch failed:', e.message);
     }
 
     const svgMap = (imagesSvg && imagesSvg.images) || {};
@@ -208,7 +208,7 @@ async function main() {
           }
           downloaded++;
         } catch (e) {
-          console.warn(`⚠️ Failed SVG ${id}:`, e.message);
+          console.warn(`️ Failed SVG ${id}:`, e.message);
         }
       }
       const pngUrl = pngMap[id];
@@ -218,16 +218,16 @@ async function main() {
           await downloadBinary(pngUrl, outFile);
           downloaded++;
         } catch (e) {
-          console.warn(`⚠️ Failed PNG ${id}:`, e.message);
+          console.warn(`️ Failed PNG ${id}:`, e.message);
         }
       }
     }
-    console.log(`✅ Downloaded ${downloaded} image files to ${assetsRoot}`);
+    console.log(` Downloaded ${downloaded} image files to ${assetsRoot}`);
   } else {
     console.log('ℹ️ Skipped image download (no nodes or includeImages=false).');
   }
 
-  console.log('🎉 Figma import completed.');
+  console.log(' Figma import completed.');
 }
 
 main().catch((e) => {

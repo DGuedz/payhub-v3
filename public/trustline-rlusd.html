@@ -74,7 +74,7 @@
 
         try {
           const btn = el('trustBtn');
-          btn.disabled = true; btn.textContent = '🔒 Enviando…';
+          btn.disabled = true; btn.textContent = ' Enviando…';
           setStatus('hint', 'Processando transação no backend…');
           const resp = await fetch('/api/trustline-rlusd', {
             method: 'POST',
@@ -90,7 +90,7 @@
           log(`Erro de rede: ${err && err.message ? err.message : String(err)}`);
         } finally {
           const btn = el('trustBtn');
-          btn.disabled = false; btn.textContent = '✅ Criar Trustline';
+          btn.disabled = false; btn.textContent = ' Criar Trustline';
         }
       }
 

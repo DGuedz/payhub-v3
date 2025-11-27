@@ -639,7 +639,7 @@
                         <div class="step-progress">
                             <div class="step-progress-bar" id="progress-payment"></div>
                         </div>
-                        <div class="step-icon">💳</div>
+                        <div class="step-icon"></div>
                         <h3 class="step-title" data-i18n="steps.payment.title">Pagamento</h3>
                         <div class="step-loading" id="loading-payment" style="display: none;">
                             <span data-i18n="steps.loading">Processando...</span>
@@ -652,7 +652,7 @@
                         <div class="step-progress">
                             <div class="step-progress-bar" id="progress-conversion"></div>
                         </div>
-                        <div class="step-icon">⚡</div>
+                        <div class="step-icon"></div>
                         <h3 class="step-title" data-i18n="steps.conversion.title">Conversão ODL</h3>
                         <div class="step-loading" id="loading-conversion" style="display: none;">
                             <span data-i18n="steps.loading">Convertendo...</span>
@@ -665,7 +665,7 @@
                         <div class="step-progress">
                             <div class="step-progress-bar" id="progress-settlement"></div>
                         </div>
-                        <div class="step-icon">💰</div>
+                        <div class="step-icon"></div>
                         <h3 class="step-title" data-i18n="steps.settlement.title">Liquidação</h3>
                         <div class="step-loading" id="loading-settlement" style="display: none;">
                             <span data-i18n="steps.loading">Finalizando...</span>
@@ -679,31 +679,31 @@
                 <div class="action-section">
                     <button class="cta-button" id="start-process" data-i18n="cta.start">
                         Começar Agora
-                        <span>⚡</span>
+                        <span></span>
                     </button>
                 </div>
 
                 <!-- API Testing Section -->
                 <div class="api-section">
-                    <h2 class="api-title">🧪 Testar APIs do PAYHUB</h2>
+                    <h2 class="api-title"> Testar APIs do PAYHUB</h2>
                     <div class="api-controls">
                         <button class="api-button" id="test-health" data-api="health">
-                            🏥 Health Check
+                             Health Check
                         </button>
                         <button class="api-button" id="test-escrow-create" data-api="escrow-create">
-                            🔐 Criar Escrow
+                             Criar Escrow
                         </button>
                         <button class="api-button" id="test-escrow-finish" data-api="escrow-finish">
-                            ✅ Finalizar Escrow
+                             Finalizar Escrow
                         </button>
                         <button class="api-button" id="test-odl-convert" data-api="odl-convert">
-                            💱 Converter ODL
+                             Converter ODL
                         </button>
                         <button class="api-button" id="test-trustline" data-api="trustline">
-                            🔗 Trustline RLUSD
+                             Trustline RLUSD
                         </button>
                         <button class="api-button" id="test-yield" data-api="yield">
-                            📈 Ativar Yield
+                             Ativar Yield
                         </button>
                     </div>
                     <div id="api-response" class="api-response" style="display: none;"></div>
@@ -711,7 +711,7 @@
 
                 <!-- Transaction Form -->
                 <div class="form-section">
-                    <h2 class="api-title">💰 Simular Transação Completa</h2>
+                    <h2 class="api-title"> Simular Transação Completa</h2>
                     <form id="transaction-form">
                         <div class="form-group">
                             <label class="form-label" data-i18n="form.amount">Valor da Transação (BRL)</label>
@@ -726,14 +726,14 @@
                             <input type="text" class="form-input" id="customer-id" placeholder="CUSTOMER_456" required>
                         </div>
                         <button type="submit" class="form-button" data-i18n="form.submit">
-                            🚀 Iniciar Transação Completa
+                             Iniciar Transação Completa
                         </button>
                     </form>
                 </div>
 
                 <!-- Transaction Log -->
                 <div class="transaction-log">
-                    <h3 style="margin-bottom: 15px; color: #ffffff;">📋 Log de Transações</h3>
+                    <h3 style="margin-bottom: 15px; color: #ffffff;"> Log de Transações</h3>
                     <div id="transaction-log-content">
                         <div class="log-entry info">Sistema iniciado e pronto para transações...</div>
                     </div>
@@ -777,7 +777,7 @@
                         'form.amount': 'Valor da Transação (BRL)',
                         'form.merchant': 'ID do Comerciante',
                         'form.customer': 'ID do Cliente',
-                        'form.submit': '🚀 Iniciar Transação Completa'
+                        'form.submit': ' Iniciar Transação Completa'
                     },
                     en: {
                         'hero.title': 'On-Demand Liquidity',
@@ -794,7 +794,7 @@
                         'form.amount': 'Transaction Amount (BRL)',
                         'form.merchant': 'Merchant ID',
                         'form.customer': 'Customer ID',
-                        'form.submit': '🚀 Start Complete Transaction'
+                        'form.submit': ' Start Complete Transaction'
                     }
                 };
                 
@@ -962,7 +962,7 @@
                     responseDiv.textContent = JSON.stringify(data, null, 2);
                     
                     button.className = 'api-button success';
-                    button.textContent = '✅ Sucesso';
+                    button.textContent = ' Sucesso';
                     
                     this.log(`API ${apiType} test successful`, 'success');
                     
@@ -976,7 +976,7 @@
                     responseDiv.textContent = 'Erro: ' + error.message;
                     
                     button.className = 'api-button error';
-                    button.textContent = '❌ Erro';
+                    button.textContent = ' Erro';
                     
                     this.log(`API ${apiType} test failed: ${error.message}`, 'error');
                     
@@ -992,12 +992,12 @@
             
             getOriginalButtonText(apiType) {
                 const texts = {
-                    'health': '🏥 Health Check',
-                    'escrow-create': '🔐 Criar Escrow',
-                    'escrow-finish': '✅ Finalizar Escrow',
-                    'odl-convert': '💱 Converter ODL',
-                    'trustline': '🔗 Trustline RLUSD',
-                    'yield': '📈 Ativar Yield'
+                    'health': ' Health Check',
+                    'escrow-create': ' Criar Escrow',
+                    'escrow-finish': ' Finalizar Escrow',
+                    'odl-convert': ' Converter ODL',
+                    'trustline': ' Trustline RLUSD',
+                    'yield': ' Ativar Yield'
                 };
                 return texts[apiType] || apiType;
             }
@@ -1141,7 +1141,7 @@
                 await this.delay(1500);
                 
                 // Step 6: Complete
-                this.updateLoadingText('Transação completa! ✅', 'Liquidação confirmada na XRPL');
+                this.updateLoadingText('Transação completa! ', 'Liquidação confirmada na XRPL');
                 await this.delay(1000);
                 
                 this.log(`Transaction completed: BRL ${transaction.amount} → XRP (via RLUSD)`, 'success');
@@ -1186,7 +1186,7 @@
         // Make app globally available for debugging
         window.payhubApp = app;
         
-        console.log('PAYHUB Application initialized successfully! 🚀');
+        console.log('PAYHUB Application initialized successfully! ');
     </script>
 </body>
 </html>

@@ -43,14 +43,14 @@ export async function testSandbox(message = "hello sandbox") {
  * Teste rápido para validar integração
  */
 export async function quickTest() {
-  console.log("🧩 Testando PAYHUB_V3 AI Chat...");
+  console.log(" Testando PAYHUB_V3 AI Chat...");
   
   try {
     const response = await testSandbox("Teste rápido PAYHUB");
-    console.log("✅ Sandbox OK:", response);
+    console.log(" Sandbox OK:", response);
     return response;
   } catch (error) {
-    console.error("❌ Erro:", error);
+    console.error(" Erro:", error);
     throw error;
   }
 }

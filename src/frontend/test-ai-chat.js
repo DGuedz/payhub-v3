@@ -43,13 +43,13 @@ async function sendMessage(message, token = null) {
  * Testa o modo sandbox (sem token)
  */
 async function testSandbox() {
-  console.log('🧩 Testando modo Sandbox...');
+  console.log(' Testando modo Sandbox...');
   try {
     const response = await sendMessage('Olá, PAYHUB_V3! Teste sandbox');
-    console.log('✅ Resposta Sandbox:', response);
+    console.log(' Resposta Sandbox:', response);
     return response;
   } catch (error) {
-    console.error('❌ Erro Sandbox:', error.message);
+    console.error(' Erro Sandbox:', error.message);
     return null;
   }
 }
@@ -58,15 +58,15 @@ async function testSandbox() {
  * Testa com token JWT (modo GPT)
  */
 async function testGPT() {
-  console.log('🤖 Testando modo GPT...');
+  console.log(' Testando modo GPT...');
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZHVqbWN4YmlmaHNzaXBzemRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMDMzODUsImV4cCI6MjA3NzY3OTM4NX0.KwckQ53El1bHj2OA0yEb30s1_aQBgPKTmFfacWJbdv8';
   
   try {
     const response = await sendMessage('Como posso integrar XRPL no PAYHUB?', token);
-    console.log('✅ Resposta GPT:', response);
+    console.log(' Resposta GPT:', response);
     return response;
   } catch (error) {
-    console.error('❌ Erro GPT:', error.message);
+    console.error(' Erro GPT:', error.message);
     return null;
   }
 }
@@ -75,7 +75,7 @@ async function testGPT() {
  * Executa todos os testes
  */
 async function runTests() {
-  console.log('🚀 Iniciando testes do PAYHUB_V3 AI Chat...\n');
+  console.log(' Iniciando testes do PAYHUB_V3 AI Chat...\n');
   
   // Teste 1: Sandbox
   const sandboxResult = await testSandbox();
@@ -88,17 +88,17 @@ async function runTests() {
   console.log('\n' + '='.repeat(50) + '\n');
   
   // Resumo
-  console.log('📊 Resumo dos Testes:');
-  console.log(`Sandbox: ${sandboxResult ? '✅ SUCESSO' : '❌ FALHOU'}`);
-  console.log(`GPT: ${gptResult ? '✅ SUCESSO' : '❌ FALHOU'}`);
+  console.log(' Resumo dos Testes:');
+  console.log(`Sandbox: ${sandboxResult ? ' SUCESSO' : ' FALHOU'}`);
+  console.log(`GPT: ${gptResult ? ' SUCESSO' : ' FALHOU'}`);
   
   if (sandboxResult && sandboxResult.mode === 'sandbox') {
-    console.log('\n🎉 Modo Sandbox está funcionando!');
+    console.log('\n Modo Sandbox está funcionando!');
     console.log('A função está pronta para demonstrações sem custos OpenAI.');
   }
   
   if (gptResult && gptResult.reply) {
-    console.log('\n🎉 Modo GPT está funcionando!');
+    console.log('\n Modo GPT está funcionando!');
     console.log('A integração com OpenAI está ativa.');
   }
 }
@@ -106,8 +106,8 @@ async function runTests() {
 // Executa os testes se este arquivo for executado diretamente
 if (typeof window === 'undefined') {
   // Node.js environment
-  console.log('⚠️  Este teste requer fetch global. Execute em ambiente com fetch ou use node-fetch.');
-  console.log('💡 Dica: Use o navegador ou um ambiente com fetch nativo.');
+  console.log('️  Este teste requer fetch global. Execute em ambiente com fetch ou use node-fetch.');
+  console.log(' Dica: Use o navegador ou um ambiente com fetch nativo.');
 } else {
   // Browser environment
   runTests().catch(console.error);
