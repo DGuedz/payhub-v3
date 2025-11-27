@@ -61,3 +61,4 @@
     "eslint-plugin-react-hooks": "^4.6.0"
   }
 }
+    "postinstall": "node scripts/install-hooks.js || true",
