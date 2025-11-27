@@ -1,5 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
+import { createSDK } from "../../../../sdk/payhub";
 import { Toaster, toast } from "react-hot-toast";
 
 function useJwt() {
@@ -24,6 +25,8 @@ export default function DashboardPage() {
   const [owner, setOwner] = useState<string>(process.env.NEXT_PUBLIC_ESCROW_OWNER_ADDRESS || "");
   const [rlusdValue, setRlusdValue] = useState<string>("100.00");
   const [rlusdIssuer, setRlusdIssuer] = useState<string>("");
+  const [sourceAccount, setSourceAccount] = useState<string>("");
+  const [destinationAccount, setDestinationAccount] = useState<string>("");
 
   async function callApi(path: string, init: RequestInit = {}) {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -34,9 +37,17 @@ export default function DashboardPage() {
     return data;
   }
 
+  function apiBase() {
+    try {
+      if (typeof window !== "undefined" && window.location && window.location.origin) return window.location.origin;
+    } catch {}
+    return "http://localhost:3000";
+  }
+
   async function onTrustline() {
     try {
-      const data = await callApi("/api/odl/trustline-rlusd", { method: "POST", body: JSON.stringify({}) });
+      const sdk = createSDK({ baseUrl: apiBase(), token });
+      const data = await sdk.trustline.create("1000");
       setTrustlineHash(String(data?.txHash || ""));
       toast.success(`Trustline criada: ${String(data?.txHash || "")}`);
     } catch (e: any) {
@@ -46,8 +57,8 @@ export default function DashboardPage() {
 
   async function onEscrowCreate() {
     try {
-      const amount = { currency: "RLUSD", value: rlusdValue, issuer: rlusdIssuer };
-      const data = await callApi("/api/escrow/create", { method: "POST", body: JSON.stringify({ amount }) });
+      const sdk = createSDK({ baseUrl: apiBase(), token });
+      const data = await sdk.escrow.create(rlusdValue);
       setCreateHash(String(data?.txHash || ""));
       const seq = Number(data?.offerSequence);
       if (!Number.isNaN(seq)) setOfferSequence(seq);
@@ -61,7 +72,8 @@ export default function DashboardPage() {
     try {
       const seq = offerSequence;
       if (!owner || seq == null) throw new Error("Defina owner e offerSequence");
-      const data = await callApi("/api/escrow/finish", { method: "POST", body: JSON.stringify({ owner, offerSequence: seq }) });
+      const sdk = createSDK({ baseUrl: apiBase(), token });
+      const data = await sdk.escrow.finish(owner, seq);
       setFinishHash(String(data?.txHash || ""));
       toast.success("Liquidação concluída em 3-5s");
     } catch (e: any) {
@@ -71,7 +83,9 @@ export default function DashboardPage() {
 
   async function onAmmQuote() {
     try {
-      const data = await callApi("/api/amm/quote", { method: "POST", body: JSON.stringify({}) });
+      const sdk = createSDK({ baseUrl: apiBase(), token });
+      const hex = sdk.currencyHex("RLUSD");
+      const data = await sdk.amm.quote({ sourceAccount, destinationAccount, deliverCurrency: hex, deliverIssuer: rlusdIssuer, deliverValue: "1" });
       setAmmPaths(Number(data?.pathsCount || 0));
       toast.success(`Rotas encontradas: ${Number(data?.pathsCount || 0)}`);
     } catch (e: any) {
@@ -86,6 +100,35 @@ export default function DashboardPage() {
       toast.success("Swap iniciado — Yield ativo");
     } catch (e: any) {
       toast.error(e?.message || "Falha no swap AMM");
+    }
+  }
+
+  async function onActivateYield() {
+    try {
+      const sdk = createSDK({ baseUrl: apiBase(), token });
+      const data = await sdk.yield.activate();
+      toast.success(String(data?.status || "Motor de rendimento ativado"));
+    } catch (e: any) {
+      toast.error(e?.message || "Falha ao ativar o rendimento");
+    }
+  }
+
+  async function onDownloadComplianceReport() {
+    try {
+      const sdk = createSDK({ baseUrl: apiBase(), token });
+      const csv = await sdk.compliance.exportCSV();
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "compliance_report.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("Download do relatório iniciado.");
+    } catch (e: any) {
+      toast.error(e?.message || "Falha ao baixar o relatório");
     }
   }
 
@@ -167,10 +210,18 @@ export default function DashboardPage() {
 
         <div style={{ background: "#0a2a52", borderRadius: 12, padding: 16 }}>
           <h2 style={{ margin: 0 }}>Rendimento Ativo — AMM</h2>
+          <input placeholder="Source Account" value={sourceAccount} onChange={(e) => setSourceAccount(e.target.value)} style={{ marginTop: 12, width: "100%", padding: 10, borderRadius: 8 }} />
+          <input placeholder="Destination Account" value={destinationAccount} onChange={(e) => setDestinationAccount(e.target.value)} style={{ marginTop: 8, width: "100%", padding: 10, borderRadius: 8 }} />
           <button onClick={onAmmQuote} style={{ marginTop: 12, background: "#ffffff", color: "#001F3F", padding: "10px 12px", borderRadius: 8 }}>3A. Cotação AMM</button>
           <div style={{ marginTop: 8 }}>{ammPaths != null ? `pathsCount=${ammPaths}` : "Sem cotação"}</div>
           <button onClick={onAmmSwap} style={{ marginTop: 12, background: "#00ff84", color: "#001F3F", padding: "10px 12px", borderRadius: 8, fontWeight: 600 }}>3B. Executar Swap</button>
           <div style={{ marginTop: 8, color: ammSwapHash ? "#00ff84" : "#ff3355" }}>{ammSwapHash ? `txHash=${ammSwapHash}` : "Sem txHash"}</div>
+        </div>
+
+        <div style={{ background: "#0a2a52", borderRadius: 12, padding: 16 }}>
+          <h2 style={{ margin: 0 }}>HUB AI — Tesouraria & RegTech</h2>
+          <button onClick={onActivateYield} style={{ marginTop: 12, background: "#00ff84", color: "#001F3F", padding: "10px 12px", borderRadius: 8, fontWeight: 600 }}>Ativar Rendimento Ativo</button>
+          <button onClick={onDownloadComplianceReport} style={{ marginTop: 12, marginLeft: 8, background: "#ffffff", color: "#001F3F", padding: "10px 12px", borderRadius: 8 }}>Baixar Relatório CSV</button>
         </div>
 
                 <div style={{ background: "#0a2a52", borderRadius: 12, padding: 16 }}>

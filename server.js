@@ -3,6 +3,9 @@
 
 const http = require('http');
 const url = require('url');
+const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60000);
+const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 120);
+const RATE_LIMIT = new Map();
 
 // Simple CORS support for frontend->backend integration in dev
 // Default allows Vite (5173) and Next.js dev (3001)
@@ -77,20 +80,35 @@ const routes = {
   '/api/amm/swap': require('./api/amm-swap'),
   '/api/amm/deposit': require('./api/amm-deposit'),
   '/api/amm/withdraw': require('./api/amm-withdraw'),
+  '/api/payment/pix': require('./api/payment-pix'),
+  '/api/payment/pix/callback': require('./api/payment-pix-callback'),
   '/api/v1/sdk_p4yhu3/liquidar-parcelado': require('./api/v1/sdk_p4yhu3/liquidar-parcelado'),
   // Rotas v1 desabilitadas temporariamente para focar na integração ODL mínima
-  // '/api/v1/sdk_p4yhu3/liquidar-parcelado': require('./api/v1/sdk_p4yhu3/liquidar-parcelado'),
-  // '/api/v1/sdk_p4yhu3/antecipar-escrow': require('./api/v1/sdk_p4yhu3/antecipar-escrow'),
+  '/api/v1/sdk_p4yhu3/antecipar-escrow': require('./api/v1/sdk_p4yhu3/antecipar-escrow'),
   '/api/v1/merchant/yield/activate': require('./api/v1/merchant/yield/activate'),
   '/api/identity/xumm/start': require('./api/identity/xumm/start'),
   '/api/identity/xumm/callback': require('./api/identity/xumm/callback'),
-  // '/api/v1/compliance/report': require('./api/v1/compliance/report'),
+  '/api/security/alerts': require('./api/security/alerts'),
+  '/api/v1/compliance/report': require('./api/v1/compliance/report'),
+  '/api/simulate/escrow-e2e': require('./api/simulate/escrow-e2e'),
   // '/api/v1/connect/erp/reconcile': require('./api/v1/connect/erp/reconcile'),
 };
 
 const server = http.createServer(async (req, res) => {
   // CORS preflight and headers
   if (applyCors(req, res)) return;
+  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString();
+  const now = Date.now();
+  const bucket = RATE_LIMIT.get(ip) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+  if (now > bucket.resetAt) {
+    bucket.count = 0;
+    bucket.resetAt = now + RATE_LIMIT_WINDOW_MS;
+  }
+  bucket.count += 1;
+  RATE_LIMIT.set(ip, bucket);
+  if (bucket.count > RATE_LIMIT_MAX) {
+    return jsonResponse(res, 429, { ok: false, error: 'Too Many Requests' });
+  }
   const parsed = url.parse(req.url, true);
   const handler = routes[parsed.pathname];
   if (!handler) {
