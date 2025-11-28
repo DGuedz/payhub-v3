@@ -77,6 +77,64 @@ Assunto: Análise abrangente de Segurança, Desenvolvimento, Atualização GitHu
 - Conclusão: O DApp evoluiu para um Aplicativo de Produtividade Comercial com abstração máxima. O comerciante só interage com valor, saldo e lucro (RLUSD), enquanto o PAYHUB HUB AI orquestra JWT → Trustline → EscrowCreate → EscrowFinish → Yield e Compliance, com segurança KMS e auditoria (txHash/sequence). A ativação do rendimento e a geração de relatórios de conformidade são automatizadas através de endpoints dedicados, provando a capacidade do sistema como um Agente de Tesouraria Ativo. Integração GTreasury simulada via módulo Reporting, garantindo rastreabilidade corporativa. Resiliência UX implementada com fallback de serviços e loading states no Portal do Comerciante, garantindo operação fluida mesmo sob falhas temporárias.
 - Exportar este arquivo para PDF conforme `docs/INDEX.md`. Comando: `pandoc -o RELATORIO_ANALISE_ESTRATEGICA.pdf docs/RELATORIO_ANALISE_ESTRATEGICA.md`.
 
+## 12. Visão de Médio Prazo e Entregáveis (Q4 2025 → Q2 2026)
+Este é o roteiro de execução para a fase de escalabilidade e consolidação do PAYHUB, marcando a transição de MVP vencedor de hackathon para uma Fintech Híbrida Descentralizada com foco em Tesouraria Ativa e Compliance de Nível Institucional. O plano prioriza a montagem do time principal, integrações estratégicas (Hidden Road, Metaco) e monetização do Yield.
+
+### Entregáveis-Chave
+- Documento Consolidado de Visão de Produto
+- Roadmap de Médio Prazo
+- Estrutura de comunicação definida (marcos, owners, KPIs)
+
+### Roadmap por Trimestre
+Q4 2025 — Institucionalização e Yield Core (90–180 dias)
+- Captação: Grant Não Dilutivo (US$ 150K) para Milestones de Produto/Growth
+- Hiring: CTO/Lead Engineer e consultoria jurídica (Licença BACEN)
+- Core Financeiro: RLUSD Escrow (Prova D+0 na Testnet) e migração para Stablecoin
+- Infraestrutura Institucional: piloto Metaco (custódia/assinado seguro) e início Hidden Road Pilot (Financiamento Colateralizado)
+- Rendimento Ativo Real: Yield Engine na EVM Sidechain (mXRP) com exibição 5%–8% APY no Dashboard
+
+Q1 2026 — Maturidade e Compliance Institucional
+- Consolidação: contratação de Gerente de Compliance; constituição da entidade
+- Dev: refatoração de stubs para TypeScript e build integrado
+- Conformidade: início formal da Licença BACEN e auditoria de código
+- Reporting Layer: lançamento do PAYHUB Connect com `GET /api/v1/compliance/report` (CSV de logs on-chain)
+- Testnet Aberta: solução completa para stress testing e validação por terceiros
+- Reconciliação: dashboard GTreasury (mock) exibindo logs de Escrow e Yield
+
+Q2 2026 — Go-To-Market (GTM) e Tração
+- Escala: Marketing, Vendas (B2B) e aquisição de clientes âncora (eventos/marketplaces)
+- Parcerias: pilotos com 2–3 eventos âncora
+- Lançamento Oficial (Mainnet): Tesouraria ODL no Brasil
+- Tração e Volume: meta de 5K GMV
+- Monetização do Yield: Performance Fee (10%–20% do Yield)
+- Integração Contábil: mock `POST /api/v1/connect/erp/reconcile` para Reconciliação Automática
+- Expansão LatAm: preparação para México/Colômbia
+
+### Destaque Estratégico — Q4 2025 (Foco Semanal)
+- Transformar POC em infraestrutura pronta (Pré‑GTM) com ativos Ripple (Hidden Road, Metaco, GTreasury)
+- Resolver liquidez travada (D+30–D+60) e reduzir perda de margem no parcelado
+
+#### Entregáveis Imediatos
+Liquidez e Financiamento
+- Finalizar `xrpl-escrow-finish.js` seguro no backend
+- Mock `POST /api/v1/merchant/tokenize-receivable` (RCV‑ID colateral)
+
+Tesouraria Ativa (Yield)
+- `POST /api/v1/merchant/yield/activate` no HUB; Dashboard exibe APY acumulado (5%–8%)
+
+Qualidade e Resiliência
+- AI Chat Handler Resiliente (tratamento 429 e parsing JSON seguro)
+- Chaves `XRPL_SEED` isoladas por KMS
+
+GTM e Documentação
+- UVP no Pitch: “Liquidez Imediata + Rendimento Ativo”
+- Plano de Negócios Lite (3–5 páginas) com Estratégia GTM e fundamentos
+
+### Referências de Documentação
+- Roadmap detalhado: `docs/ROADMAP_PAYHUB_Q4_2025_Q2_2026.md:1`
+- Pitch consolidado: `docs/PITCH_DECK_PAYHUB_XRPL.md:1`
+- Builder Tracking PDF: `/Users/doublegreen/Documents/trae_projects/payhub-v3/Builder Tracking Programa - XRPL Hackathon.pdf`
+
 ### Adendo — Integração VTC (PAYHUB como Gateway)
 - Endpoint publicado: `POST /api/v1/payment/vtc-subscription` com JWT curto e logging padronizado
 - Webhook: `POST /api/webhooks/WEBHOOK_PAYHUB_TO_VTC` finaliza Escrow no backend (KMS/ENV) e notifica VTC
