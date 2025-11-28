@@ -53,6 +53,47 @@
 - Pronto para produção: modular, seguro, compliance e escalável.
 - "Liquidez instantânea com inteligência automatizada." — visão PAYHUB.
 
+## 11. Dor do Mercado (LATAM)
+- Maquininhas (POS) são caras, com aluguel e manutenção recorrentes.
+- Taxas abusivas de 10%–20% no parcelado inviabilizam micropagamentos.
+- Atraso na liquidez: D+1, D+30 e até D+60 com capital parado.
+
+## 12. Soft-POS Universal — Seu Celular é a Nova Maquininha
+- Qualquer smartphone vira terminal financeiro com o DApp do PAYHUB.
+- Geração de QR Codes Híbridos (PIX, Cartão, Cripto) sem hardware dedicado.
+- Custo zero de hardware: elimina aluguel e manutenção de POS.
+- Micropagamentos viáveis: taxas de rede ~R$ 0,0001 permitem itens R$ 1–R$ 5.
+
+## 13. Liquidação D+0 — Dinheiro Trabalhando em 3–5s
+- ODL (On-Demand Liquidity) na XRPL garante recebimento em segundos.
+- No parcelado, recebimento à vista em RLUSD (IOU) com custo 2,5%–5,0% (colateralizado), não 10%–20%.
+- Escrow nativo: `EscrowCreate` → `EscrowFinish` com auditoria de `txHash` e `sequence`.
+
+## 14. Tesouraria Ativa (HUB AI)
+- Rendimento automático de 5%–8% APY sobre saldo em RLUSD.
+- Abstração via `POST /api/v1/merchant/yield/activate` no HUB.
+- Controle e auditoria no Dashboard: relatórios fiscais (CARF/OCDE + LGPD) e acesso restrito ao dono.
+
+## 15. Monetização em Escala
+- Taxas competitivas por volume: 1,5%–3,0% no crédito parcelado (XRPL de baixo custo).
+- Exemplo: R$ 15 bi/ano (50 mi de transações) → ~R$ 225 mi de receita bruta.
+- Performance Fee: 10%–20% sobre o lucro (APY) da Tesouraria Ativa.
+
+## 16. Estrutura de Equipe (Fundadores)
+- Product Lead: visão, roadmap e validação de funcionalidades com o mercado.
+- Tech Lead: arquitetura, segurança (KMS/SOC 2), performance XRPL, full‑stack.
+- Business & Partnerships: parcerias estratégicas, prospecção e grants (Ripple/XRPL).
+- UI/UX Designer: identidade visual e UX do Soft‑POS (abstração da XRPL).
+- Responsável Geral: Diego Guedes (DG) — coesão e execução da estratégia.
+
+## 17. KPIs Iniciais
+- Crescimento semanal de usuários ativos (tração do Soft‑POS).
+- Integrações e endpoints funcionando (maturidade do HUB/API).
+- Uso das features principais (Liquidação D+0, Ativação de Yield).
+- Bugs resolvidos por sprint (qualidade e estabilidade).
+- Tempo médio para completar ações (usabilidade do DApp).
+- Qualidade percebida por feedback direto do comerciante.
+
 ## Fontes e Referências
 - XRPL Docs: https://xrpl.org/
 - XRPL AMM: https://xrpl.org/amm-overview.html
