@@ -11,6 +11,11 @@ export function SoftPOSXRPL() {
   const issuer = useMemo(() => process.env.NEXT_PUBLIC_RLUSD_ISSUER || "", []);
   const owner = useMemo(() => process.env.NEXT_PUBLIC_ESCROW_OWNER_ADDRESS || "", []);
   const token = useMemo(() => (typeof window !== "undefined" ? localStorage.getItem("jwt_token") || "" : ""), []);
+  const [trustTx, setTrustTx] = useState<string>("");
+  const [createdSeq, setCreatedSeq] = useState<number | null>(null);
+  const [createdHash, setCreatedHash] = useState<string>("");
+  const [finishedHash, setFinishedHash] = useState<string>("");
+  const [testLoading, setTestLoading] = useState(false);
 
   async function callApi(path: string, init: RequestInit = {}) {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -30,9 +35,8 @@ export function SoftPOSXRPL() {
       setLoading(true);
       if (!token) throw new Error("Autenticação necessária");
       if (!issuer || !owner) throw new Error("Configuração ausente");
-      const trust = await callApi("/api/odl/trustline-rlusd", { method: "POST", body: JSON.stringify({ issuer }) });
-      const amount = { currency: "RLUSD", value: valor, issuer };
-      const created = await callApi("/api/escrow/create", { method: "POST", body: JSON.stringify({ amount, method }) });
+      await callApi("/api/odl/trustline-rlusd", { method: "POST", body: JSON.stringify({ limit: "1000000" }) });
+      const created = await callApi("/api/escrow/create", { method: "POST", body: JSON.stringify({ value: valor }) });
       const seq = Number(created?.offerSequence);
       await callApi("/api/escrow/finish", { method: "POST", body: JSON.stringify({ owner, offerSequence: seq }) });
       toast.success("Pagamento Aprovado. Liquidez em RLUSD recebida em 3s.");
@@ -40,6 +44,55 @@ export function SoftPOSXRPL() {
       toast.error(e?.message || "Falha ao liquidar");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function onTestTrustline() {
+    try {
+      setTestLoading(true);
+      if (!token) throw new Error("Autenticação necessária");
+      if (!issuer) throw new Error("Issuer ausente");
+      const res = await callApi("/api/odl/trustline-rlusd", { method: "POST", body: JSON.stringify({ limit: "1000000" }) });
+      setTrustTx(String(res?.txHash || ""));
+      toast.success("Trustline RLUSD configurada");
+    } catch (e: any) {
+      toast.error(e?.message || "Erro na trustline");
+    } finally {
+      setTestLoading(false);
+    }
+  }
+
+  async function onTestCreate() {
+    try {
+      setTestLoading(true);
+      if (!token) throw new Error("Autenticação necessária");
+      if (!issuer) throw new Error("Issuer ausente");
+      const res = await callApi("/api/escrow/create", { method: "POST", body: JSON.stringify({ value: valor }) });
+      const seq = Number(res?.offerSequence);
+      setCreatedSeq(!Number.isNaN(seq) ? seq : null);
+      setCreatedHash(String(res?.txHash || ""));
+      toast.success("Escrow RLUSD criado");
+    } catch (e: any) {
+      toast.error(e?.message || "Erro ao criar escrow");
+    } finally {
+      setTestLoading(false);
+    }
+  }
+
+  async function onTestFinish() {
+    try {
+      setTestLoading(true);
+      if (!token) throw new Error("Autenticação necessária");
+      if (!owner) throw new Error("Owner ausente");
+      const seq = createdSeq;
+      if (seq == null) throw new Error("Sequence ausente");
+      const res = await callApi("/api/escrow/finish", { method: "POST", body: JSON.stringify({ owner, offerSequence: seq }) });
+      setFinishedHash(String(res?.txHash || ""));
+      toast.success("Escrow finalizado");
+    } catch (e: any) {
+      toast.error(e?.message || "Erro ao finalizar escrow");
+    } finally {
+      setTestLoading(false);
     }
   }
 
@@ -93,9 +146,21 @@ export function SoftPOSXRPL() {
             <button disabled={loading} onClick={onPay} style={{ background: "#00FF84", color: "#001F3F", padding: "16px 24px", borderRadius: 12, fontWeight: 800, fontSize: 18, border: "none", cursor: "pointer", width: "100%" }}>{loading ? "PROCESSANDO LIQUIDEZ..." : "RECEBER PAGAMENTO E LIQUIDAR D+0"}</button>
             {loading && <div aria-label="carregando" style={{ width: 20, height: 20, borderRadius: 999, border: "2px solid #00FF84", borderTopColor: "transparent", animation: "spin 0.8s linear infinite", margin: "12px auto 0" }} />}
           </div>
+          <div style={{ marginTop: 24, background: "#001F3F", borderRadius: 12, padding: 16 }}>
+            <div style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>Painel de Testes</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12, marginTop: 12 }}>
+              <button disabled={testLoading} onClick={onTestTrustline} style={{ background: "#4DA6FF", color: "#001F3F", padding: "12px 14px", borderRadius: 10, fontWeight: 700, border: "none", cursor: "pointer" }}>Trustline RLUSD</button>
+              <button disabled={testLoading} onClick={onTestCreate} style={{ background: "#FFD84D", color: "#001F3F", padding: "12px 14px", borderRadius: 10, fontWeight: 700, border: "none", cursor: "pointer" }}>Criar Escrow RLUSD</button>
+              <button disabled={testLoading || createdSeq == null} onClick={onTestFinish} style={{ background: "#00FF84", color: "#001F3F", padding: "12px 14px", borderRadius: 10, fontWeight: 800, border: "none", cursor: createdSeq == null ? "not-allowed" : "pointer" }}>Finalizar Escrow</button>
+            </div>
+            <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
+              <div style={{ background: "#0A2A52", borderRadius: 8, padding: 10, color: trustTx ? "#00FF84" : "#FFFFFF" }}>{trustTx ? `trustTx=${trustTx}` : "Trustline pendente"}</div>
+              <div style={{ background: "#0A2A52", borderRadius: 8, padding: 10, color: createdHash ? "#FFD84D" : "#FFFFFF" }}>{createdSeq != null ? `seq=${createdSeq} hash=${createdHash}` : "Escrow não criado"}</div>
+              <div style={{ background: "#0A2A52", borderRadius: 8, padding: 10, color: finishedHash ? "#00FF84" : "#FFFFFF" }}>{finishedHash ? `finishHash=${finishedHash}` : "Escrow não finalizado"}</div>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 }
-

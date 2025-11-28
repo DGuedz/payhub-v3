@@ -32,6 +32,7 @@ export default function MerchantPage() {
   const [logs, setLogs] = useState<TxLog[]>([]);
   const [issuer, setIssuer] = useState(process.env.NEXT_PUBLIC_RLUSD_ISSUER || "rRLUSDIssuer...");
   const [owner, setOwner] = useState(process.env.NEXT_PUBLIC_ESCROW_OWNER_ADDRESS || "rVaultAddress...");
+  const simulateEscrow = (process.env.NEXT_PUBLIC_DEV_ESCROW_SIMULATE || "1") === "1";
 
   async function callApi(path: string, init: RequestInit = {}) {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -50,14 +51,22 @@ export default function MerchantPage() {
     try {
       setLoading(true);
       if (!token) throw new Error("Autenticação necessária (JWT)");
-      const trust = await callApi("/api/odl/trustline-rlusd", { method: "POST", body: JSON.stringify({ issuer }) });
-      pushLog({ type: "Trustline OK", txHash: String(trust?.txHash || "") });
-      const amount = { currency: "RLUSD", value: valor, issuer };
-      const created = await callApi("/api/escrow/create", { method: "POST", body: JSON.stringify({ amount, method }) });
-      const seq = Number(created?.offerSequence);
-      pushLog({ type: "Escrow Criado", amount: valor, currency: "RLUSD", txHash: String(created?.txHash || "") });
-      const finished = await callApi("/api/escrow/finish", { method: "POST", body: JSON.stringify({ owner, offerSequence: seq }) });
-      pushLog({ type: "Liquidação D+0", txHash: String(finished?.txHash || "") });
+      if (simulateEscrow) {
+        const sim = await callApi('/api/simulate/escrow-e2e', { method: 'POST', body: JSON.stringify({ value: valor, merchantWallet: owner }) });
+        const art = sim?.artifacts || {};
+        if (art.trustline) pushLog({ type: "Trustline OK", txHash: String(art.trustline.txHash || "") });
+        if (art.escrowCreate) pushLog({ type: "Escrow Criado", amount: valor, currency: "RLUSD", txHash: String(art.escrowCreate.txHash || "") });
+        if (art.escrowFinish) pushLog({ type: "Liquidação D+0", txHash: String(art.escrowFinish.txHash || "") });
+      } else {
+        const trust = await callApi("/api/odl/trustline-rlusd", { method: "POST", body: JSON.stringify({ limit: "1000000" }) });
+        pushLog({ type: "Trustline OK", txHash: String(trust?.txHash || "") });
+        const created = await callApi("/api/escrow/create", { method: "POST", body: JSON.stringify({ value: valor }) });
+        const seq = Number(created?.offerSequence);
+        const ownerResp = String(created?.owner || owner);
+        pushLog({ type: "Escrow Criado", amount: valor, currency: "RLUSD", txHash: String(created?.txHash || "") });
+        const finished = await callApi("/api/escrow/finish", { method: "POST", body: JSON.stringify({ owner: ownerResp, offerSequence: seq }) });
+        pushLog({ type: "Liquidação D+0", txHash: String(finished?.txHash || "") });
+      }
       toast.success("Pagamento Aprovado. Liquidez em RLUSD recebida em 3s.");
       const valorNumerico = Number(valor.replace(",", ".")) || 0;
       const novoSaldo = Number(balanceRlusd.replace(",", ".")) + valorNumerico;
@@ -174,7 +183,7 @@ export default function MerchantPage() {
                   onClick={async () => {
                     try {
                       setLoading(true);
-                      const result = await callApi('/api/v1/merchant/yield/activate', { method: 'POST' });
+                      const result = await callApi('/api/v1/merchant/yield/activate', { method: 'POST', body: JSON.stringify({ merchantId: 'merchant-dev' }) });
                       toast.success(result.message || 'Rendimento ativado com sucesso!');
                     } catch (e: any) {
                       toast.error(e?.message || 'Falha ao ativar o rendimento.');

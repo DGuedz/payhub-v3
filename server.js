@@ -82,6 +82,7 @@ const routes = {
   '/api/amm/withdraw': require('./api/amm-withdraw'),
   '/api/payment/pix': require('./api/payment-pix'),
   '/api/payment/pix/callback': require('./api/payment-pix-callback'),
+  '/api/payment/simulate': require('./api/payment-simulate'),
   '/api/v1/sdk_p4yhu3/liquidar-parcelado': require('./api/v1/sdk_p4yhu3/liquidar-parcelado'),
   // Rotas v1 desabilitadas temporariamente para focar na integração ODL mínima
   '/api/v1/sdk_p4yhu3/antecipar-escrow': require('./api/v1/sdk_p4yhu3/antecipar-escrow'),
