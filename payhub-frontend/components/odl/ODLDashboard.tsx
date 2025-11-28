@@ -47,7 +47,7 @@ export const ODLDashboard: React.FC<ODLDashboardProps> = ({ merchantId }) => {
     fetchMerchantInfo();
   }, [merchantId]);
 
-  const handleConversionSuccess = (transactionData: any) => {
+  const handleConversionSuccess = () => {
     // Atualizar informações após conversão bem-sucedida
     fetchMerchantInfo();
     // Mudar para aba de monitoramento

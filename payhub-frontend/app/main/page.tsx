@@ -10,6 +10,8 @@ export default function MainPage() {
             <a href="/app/portal" style={{ backgroundColor: '#00FF84', color: '#001F3F', padding: '10px 14px', borderRadius: 10, fontWeight: 700, textDecoration: 'none' }}>Abrir Portal do Comerciante</a>
             <a href="/app/merchant" style={{ backgroundColor: '#FFFFFF', color: '#001F3F', padding: '10px 14px', borderRadius: 10, fontWeight: 700, textDecoration: 'none' }}>Abrir DApp Clássico</a>
             <a href="/preview" style={{ backgroundColor: '#4DA6FF', color: '#001F3F', padding: '10px 14px', borderRadius: 10, fontWeight: 700, textDecoration: 'none' }}>Figma Preview</a>
+            <a href="/app/test" style={{ backgroundColor: '#00E676', color: '#001F3F', padding: '10px 14px', borderRadius: 10, fontWeight: 700, textDecoration: 'none' }}>Ambiente de Teste</a>
+            <a href="https://github.com/DGuedz/payhub-v3/blob/docs/vega-xrpl-progress-week1/docs/ROADMAP_PAYHUB_Q4_2025_Q2_2026.md" target="_blank" rel="noreferrer" style={{ backgroundColor: '#FFD84D', color: '#001F3F', padding: '10px 14px', borderRadius: 10, fontWeight: 700, textDecoration: 'none' }}>Roadmap</a>
           </div>
         </div>
       </section>

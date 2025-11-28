@@ -132,41 +132,7 @@ export default function DashboardPage() {
     }
   }
 
-    async function onActivateYield() {
-    try {
-      const data = await callApi("/api/v1/merchant/yield/activate", { method: "POST" });
-      toast.success(data.message || "Motor de rendimento ativado!");
-    } catch (e: any) {
-      toast.error(e?.message || "Falha ao ativar o rendimento");
-    }
-  }
-
-  async function onDownloadComplianceReport() {
-    try {
-      const headers: Record<string, string> = {};
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-      const res = await fetch("/api/v1/compliance/report", { headers });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        throw new Error(errorData?.message || res.statusText);
-      }
-
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "compliance_report.csv";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-
-      toast.success("Download do relatório iniciado.");
-    } catch (e: any) {
-      toast.error(e?.message || "Falha ao baixar o relatório");
-    }
-  }
+  
 
   async function refreshEscrows() {
     try {
