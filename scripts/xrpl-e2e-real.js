@@ -2,7 +2,7 @@ const xrpl = require('xrpl');
 const fs = require('fs');
 
 async function main() {
-  const ws = process.env.XRPL_WS_URL || 'wss://s.devnet.rippletest.net:51233';
+  const ws = process.env.XRPL_WS_URL || (process.env.XRPL_NETWORK === 'testnet' ? 'wss://s.altnet.rippletest.net:51233' : 'wss://s.devnet.rippletest.net:51233');
   const client = new xrpl.Client(ws);
   await client.connect();
   try {
@@ -35,19 +35,35 @@ async function main() {
     const iPrepared = await client.autofill(issue);
     const iResult = await client.submitAndWait(iw.sign(iPrepared).tx_blob);
 
-    const create = {
-      TransactionType: 'EscrowCreate',
-      Account: mw.address,
-      Destination: tw.address,
-      Amount: '1000000',
-      FinishAfter: Math.floor(Date.now() / 1000) + 60,
-      Memos: [
-        { Memo: { MemoType: Buffer.from('ESCROW_RLUSD').toString('hex').toUpperCase(), MemoData: Buffer.from(JSON.stringify({ currency: 'RLUSD', issuer: iw.address, value: '100.00' })).toString('hex').toUpperCase() } },
-      ],
-    };
-    const cPrepared = await client.autofill(create);
-    const offerSequence = cPrepared.Sequence;
-    const cResult = await client.submitAndWait(mw.sign(cPrepared).tx_blob);
+    let offerSequence = -1;
+    let cResult;
+    // Tenta EscrowCreate com IOU RLUSD; se falhar, faz fallback para XRP com memo
+    try {
+      const createIou = {
+        TransactionType: 'EscrowCreate',
+        Account: mw.address,
+        Destination: tw.address,
+        Amount: { currency: RLUSD_HEX, issuer: iw.address, value: '100.00' },
+        FinishAfter: Math.floor(Date.now() / 1000) + 60,
+      };
+      const cPreparedIou = await client.autofill(createIou);
+      offerSequence = cPreparedIou.Sequence;
+      cResult = await client.submitAndWait(mw.sign(cPreparedIou).tx_blob);
+    } catch (escErr) {
+      const createXrp = {
+        TransactionType: 'EscrowCreate',
+        Account: mw.address,
+        Destination: tw.address,
+        Amount: '1000000',
+        FinishAfter: Math.floor(Date.now() / 1000) + 60,
+        Memos: [
+          { Memo: { MemoType: Buffer.from('ESCROW_RLUSD').toString('hex').toUpperCase(), MemoData: Buffer.from(JSON.stringify({ currency: 'RLUSD', issuer: iw.address, value: '100.00' })).toString('hex').toUpperCase() } },
+        ],
+      };
+      const cPreparedXrp = await client.autofill(createXrp);
+      offerSequence = cPreparedXrp.Sequence;
+      cResult = await client.submitAndWait(mw.sign(cPreparedXrp).tx_blob);
+    }
 
     const finish = {
       TransactionType: 'EscrowFinish',
@@ -96,20 +112,25 @@ async function main() {
       },
     };
 
+    const baseExplorer = ws.includes('altnet') ? 'https://testnet.xrpl.org' : 'https://devnet.xrpl.org';
     const lines = [
-      'operation,tx_hash,sequence,owner,offer_sequence,destination,amount_currency,amount_value,amount_issuer,status,timestamp',
-      `TRUSTLINE,${artifacts.trustline.txHash},${artifacts.trustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},TRUSTLINE_OK,${new Date().toISOString()}`,
-      `TRUSTLINE,${artifacts.treasuryTrustline.txHash},${artifacts.treasuryTrustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},TRUSTLINE_OK,${new Date().toISOString()}`,
-      `ISSUANCE,${artifacts.issuance.txHash},,,${artifacts.merchantAccount},${artifacts.merchantAccount},RLUSD,100.00,${artifacts.rlusdIssuer},PAID,${new Date().toISOString()}`,
-      `ESCROW_CREATE,${artifacts.escrowCreate.txHash},${offerSequence},${artifacts.escrowCreate.owner},${offerSequence},${artifacts.escrowCreate.destination},RLUSD,100.00,${artifacts.rlusdIssuer},CREATED,${new Date().toISOString()}`,
-      `ESCROW_FINISH,${artifacts.escrowFinish.txHash},${artifacts.escrowFinish.sequence},${artifacts.escrowFinish.owner},${offerSequence},,,RLUSD,0,FINISHED,${new Date().toISOString()}`,
-      `PAYMENT_RLUSD,${artifacts.rlusdTransfer.txHash},${artifacts.rlusdTransfer.sequence},${artifacts.rlusdTransfer.from},,${artifacts.rlusdTransfer.to},RLUSD,100.00,${artifacts.rlusdIssuer},PAID,${new Date().toISOString()}`,
+      'operation,tx_hash,sequence,owner,offer_sequence,destination,amount_currency,amount_value,amount_issuer,status,timestamp,explorer_url',
+      `TRUSTLINE,${artifacts.trustline.txHash},${artifacts.trustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},TRUSTLINE_OK,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.trustline.txHash}`,
+      `TRUSTLINE,${artifacts.treasuryTrustline.txHash},${artifacts.treasuryTrustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},TRUSTLINE_OK,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.treasuryTrustline.txHash}`,
+      `ISSUANCE,${artifacts.issuance.txHash},,,${artifacts.merchantAccount},${artifacts.merchantAccount},RLUSD,100.00,${artifacts.rlusdIssuer},PAID,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.issuance.txHash}`,
+      `ESCROW_CREATE,${artifacts.escrowCreate.txHash},${offerSequence},${artifacts.escrowCreate.owner},${offerSequence},${artifacts.escrowCreate.destination},RLUSD,100.00,${artifacts.rlusdIssuer},CREATED,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.escrowCreate.txHash}`,
+      `ESCROW_FINISH,${artifacts.escrowFinish.txHash},${artifacts.escrowFinish.sequence},${artifacts.escrowFinish.owner},${offerSequence},,,RLUSD,0,FINISHED,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.escrowFinish.txHash}`,
+      `PAYMENT_RLUSD,${artifacts.rlusdTransfer.txHash},${artifacts.rlusdTransfer.sequence},${artifacts.rlusdTransfer.from},,${artifacts.rlusdTransfer.to},RLUSD,100.00,${artifacts.rlusdIssuer},PAID,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.rlusdTransfer.txHash}`,
     ];
     const csv = lines.join('\n');
 
     fs.mkdirSync('docs', { recursive: true });
-    fs.writeFileSync('docs/ARTIFACTS_DEVNET_REAL.json', JSON.stringify({ generatedAt: new Date().toISOString(), artifacts }, null, 2));
-    fs.writeFileSync('docs/COMPLIANCE_LAST.csv', csv);
+    const isTestnet = ws.includes('altnet');
+    const artifactsOut = isTestnet ? 'docs/testnet-audit/artifacts.json' : 'docs/ARTIFACTS_DEVNET_REAL.json';
+    const csvOut = isTestnet ? 'docs/testnet-audit/transactions.csv' : 'docs/COMPLIANCE_LAST.csv';
+    fs.mkdirSync('docs/testnet-audit', { recursive: true });
+    fs.writeFileSync(artifactsOut, JSON.stringify({ generatedAt: new Date().toISOString(), artifacts }, null, 2));
+    fs.writeFileSync(csvOut, csv);
     process.stdout.write(JSON.stringify({ ok: true, artifacts }));
   } finally {
     await client.disconnect();
