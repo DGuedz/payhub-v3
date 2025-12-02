@@ -152,3 +152,34 @@ GTM e Documentação
 | EscrowCreate (Testnet) | `C3F99CA9D6085727904AF31EB1ED0B38237F769664C42C9A00209DB62BC7C09B` | `12773412` | [Visualizar](https://testnet.xrpl.org/transactions/C3F99CA9D6085727904AF31EB1ED0B38237F769664C42C9A00209DB62BC7C09B) |
 | EscrowFinish (Testnet) | `0BB6D6B493FAB1BE7574DDC2DA29D5EA90A8E87CE1565F6E887009DBECF2A4A0` | `12773413` | [Visualizar](https://testnet.xrpl.org/transactions/0BB6D6B493FAB1BE7574DDC2DA29D5EA90A8E87CE1565F6E887009DBECF2A4A0) |
 | AMM Swap | `D3E4F5A0B1C2D3E4F5A0B1C2D3E4F5A0B1C2D3E4F5A0B1C2D3E4F5A0B1C2D3E4` | `12348` | [Visualizar](https://testnet.xrpl.org/transactions/D3E4F5A0B1C2D3E4F5A0B1C2D3E4F5A0B1C2D3E4F5A0B1C2D3E4F5A0B1C2D3E4) |
+
+## Semana 2 — Entregáveis e Status (01/12 → 05/12)
+
+**Objetivos**
+- Refinar a arquitetura técnica para escalabilidade e segurança na XRPL.
+- Detalhar o escopo do MVP central.
+- Iniciar o desenvolvimento da funcionalidade central (Liquidação D+0 via Escrow).
+
+**Atividades**
+- Criação de backlog detalhado e priorizado para o MVP.
+- Revisão de segurança e melhores práticas de codificação (KMS, JWT curto, auditoria).
+- Definição de integrações e APIs necessárias (Trustline, EscrowCreate, EscrowFinish, Yield).
+
+**Entregáveis**
+- Especificações técnicas documentadas:
+  - Runbook XRPL com passos e variáveis: `docs/XRPL_DEMO_RUNBOOK.md:1`.
+  - Fluxo end-to-end e segurança: `docs/SIMULACAO_COMPLETA_DEVNET.md:1`.
+  - Cliente seguro e finish no servidor: `src/backend/xrpl/xrpl-client.ts:1`.
+- Backlog de desenvolvimento priorizado (P0 → P2):
+  - P0: Migrar `api/*.js` críticos para TypeScript; rate limiting em rotas; rotação de JWT; finalizar `EscrowFinish` com política; auditoria padronizada.
+  - P1: Implementar `AMMDeposit/AMMWithdraw` e UI de LP; adapter mXRP (XRPL EVM Sidechain) e integração de yield pelo endpoint `POST /api/v1/merchant/yield/activate`.
+  - P2: Identidade via Xumm OAuth; observabilidade (latência, pathsCount, ROI/IL) e integração ERP (mock).
+- Prova de Conceito funcional (Testnet):
+  - EscrowCreate `C3F99CA9D6085727...C09B` — `sequence=12773412`.
+  - EscrowFinish `0BB6D6B493FAB1BE...A4A0` — `sequence=12773413`.
+  - Registros auditáveis: `docs/testnet-audit/transactions.csv:7-8`.
+
+**Notas de Segurança**
+- XRPL_SEED via env/KMS, nunca em banco/logs/front; assinatura exclusiva no backend.
+- Rotas críticas protegidas por JWT curto; try-catch + `withRetry` para resiliência.
+- Auditoria registra `txHash` e `sequence` sem PII (ver `api/_logger 2.js:1`).
