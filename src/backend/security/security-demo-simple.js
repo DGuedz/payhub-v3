@@ -4,7 +4,7 @@
  * Versão standalone que não requer módulos TypeScript
  */
 
-console.log('\n🛡️ PAYHUB_V3 - Demonstração de Segurança Completa');
+console.log('\n️ PAYHUB_V3 - Demonstração de Segurança Completa');
 console.log('=' .repeat(70));
 console.log('Sistema de Defesa Ativa contra Ciberameaças Financeiras');
 console.log('=' .repeat(70));
@@ -13,7 +13,7 @@ console.log('=' .repeat(70));
  * Simula sistema honeypot
  */
 function demonstrateHoneypot() {
-  console.log('\n🍯 FASE 1: Sistema Honeypot - Carteiras Isca XRPL');
+  console.log('\n FASE 1: Sistema Honeypot - Carteiras Isca XRPL');
   console.log('-' .repeat(50));
   
   const honeypots = [
@@ -22,13 +22,13 @@ function demonstrateHoneypot() {
     { address: 'rPagamentosInstant789', description: 'Pagamentos Instantâneos - Buffer ODL', balance: 200, sensitivity: 'medium' }
   ];
   
-  console.log(`✅ ${honeypots.length} honeypots criados:`);
+  console.log(` ${honeypots.length} honeypots criados:`);
   honeypots.forEach((hp, i) => {
     console.log(`   ${i + 1}. ${hp.address} - ${hp.description}`);
   });
   
   // Simular detecção
-  console.log('\n🎭 Simulando detecção de intrusão...');
+  console.log('\n Simulando detecção de intrusão...');
   const suspiciousActivity = {
     sourceIp: '192.168.1.100',
     target: honeypots[0].address,
@@ -37,10 +37,10 @@ function demonstrateHoneypot() {
     timestamp: new Date().toISOString()
   };
   
-  console.log(`   🚨 ALERTA DETECTADO:`);
-  console.log(`   🕵️ IP: ${suspiciousActivity.sourceIp}`);
-  console.log(`   🎯 Alvo: ${suspiciousActivity.target}`);
-  console.log(`   💰 Valor: ${suspiciousActivity.amount} XRP`);
+  console.log(`    ALERTA DETECTADO:`);
+  console.log(`   ️ IP: ${suspiciousActivity.sourceIp}`);
+  console.log(`    Alvo: ${suspiciousActivity.target}`);
+  console.log(`    Valor: ${suspiciousActivity.amount} XRP`);
   console.log(`   ⏰ Horário: ${suspiciousActivity.timestamp}`);
   
   return true;
@@ -50,7 +50,7 @@ function demonstrateHoneypot() {
  * Simula proteção KMS
  */
 function demonstrateKMS() {
-  console.log('\n🔐 FASE 2: Proteção KMS - Chaves Criptografadas');
+  console.log('\n FASE 2: Proteção KMS - Chaves Criptografadas');
   console.log('-' .repeat(50));
   
   const protectedKeys = [
@@ -59,13 +59,13 @@ function demonstrateKMS() {
     { id: 'key_encryption_003', type: 'encryption_key', encrypted: true, accessLevel: 'user' }
   ];
   
-  console.log(`🔑 ${protectedKeys.length} chaves protegidas:`);
+  console.log(` ${protectedKeys.length} chaves protegidas:`);
   protectedKeys.forEach(key => {
-    console.log(`   🔐 ${key.id} (${key.type}) - Nível: ${key.accessLevel}`);
+    console.log(`    ${key.id} (${key.type}) - Nível: ${key.accessLevel}`);
   });
   
   // Simular tentativa de acesso não autorizado
-  console.log('\n🚫 Simulando tentativa de acesso não autorizado...');
+  console.log('\n Simulando tentativa de acesso não autorizado...');
   const accessAttempt = {
     keyId: 'key_xrpl_seed_001',
     principal: 'attacker',
@@ -75,11 +75,11 @@ function demonstrateKMS() {
     timestamp: new Date().toISOString()
   };
   
-  console.log(`   ❌ Acesso NEGADO:`);
-  console.log(`   👤 Principal: ${accessAttempt.principal}`);
-  console.log(`   🌐 IP: ${accessAttempt.ipAddress}`);
-  console.log(`   🔑 Chave: ${accessAttempt.keyId}`);
-  console.log(`   ❗ Motivo: ${accessAttempt.reason}`);
+  console.log(`    Acesso NEGADO:`);
+  console.log(`    Principal: ${accessAttempt.principal}`);
+  console.log(`    IP: ${accessAttempt.ipAddress}`);
+  console.log(`    Chave: ${accessAttempt.keyId}`);
+  console.log(`    Motivo: ${accessAttempt.reason}`);
   
   return true;
 }
@@ -88,7 +88,7 @@ function demonstrateKMS() {
  * Simula MFA/JWT
  */
 function demonstrateMFA() {
-  console.log('\n🔑 FASE 3: MFA/JWT - Autenticação Institucional');
+  console.log('\n FASE 3: MFA/JWT - Autenticação Institucional');
   console.log('-' .repeat(50));
   
   const mfaFactors = [
@@ -97,20 +97,20 @@ function demonstrateMFA() {
     { type: 'biometric', verified: false }
   ];
   
-  console.log('🔐 Autenticação Multi-Fator configurada:');
+  console.log(' Autenticação Multi-Fator configurada:');
   mfaFactors.forEach((factor, i) => {
-    const status = factor.verified ? '✅' : '❌';
+    const status = factor.verified ? '' : '';
     console.log(`   ${status} Fator ${i + 1}: ${factor.type}`);
   });
   
   // Simular tentativa de força bruta
-  console.log('\n💥 Simulando ataque de força bruta...');
+  console.log('\n Simulando ataque de força bruta...');
   const bruteForceAttempts = 5;
   const lockoutThreshold = 3;
   
-  console.log(`   🔄 ${bruteForceAttempts} tentativas simuladas`);
-  console.log(`   🚫 Limite: ${lockoutThreshold} tentativas`);
-  console.log(`   🔒 Resultado: Conta bloqueada por 30 minutos`);
+  console.log(`    ${bruteForceAttempts} tentativas simuladas`);
+  console.log(`    Limite: ${lockoutThreshold} tentativas`);
+  console.log(`    Resultado: Conta bloqueada por 30 minutos`);
   
   const session = {
     sessionId: 'session_secure_123',
@@ -121,7 +121,7 @@ function demonstrateMFA() {
   };
   
   console.log(`   🆔 Sessão criada: ${session.sessionId}`);
-  console.log(`   ⚠️ Score de risco: ${session.riskScore}/100`);
+  console.log(`   ️ Score de risco: ${session.riskScore}/100`);
   console.log(`   ⏰ Expira em: ${session.expiresAt}`);
   
   return true;
@@ -131,7 +131,7 @@ function demonstrateMFA() {
  * Simula resposta a incidentes
  */
 function demonstrateIncidentResponse() {
-  console.log('\n🚨 FASE 4: Resposta a Incidentes - Gatilhos Automáticos');
+  console.log('\n FASE 4: Resposta a Incidentes - Gatilhos Automáticos');
   console.log('-' .repeat(50));
   
   const incident = {
@@ -144,10 +144,10 @@ function demonstrateIncidentResponse() {
     affectedSystem: 'payment_processing'
   };
   
-  console.log(`🎯 Incidente detectado: ${incident.id}`);
-  console.log(`   🔥 Severidade: ${incident.severity.toUpperCase()}`);
-  console.log(`   📝 Descrição: ${incident.description}`);
-  console.log(`   🌐 Fonte: ${incident.sourceIp}`);
+  console.log(` Incidente detectado: ${incident.id}`);
+  console.log(`    Severidade: ${incident.severity.toUpperCase()}`);
+  console.log(`    Descrição: ${incident.description}`);
+  console.log(`    Fonte: ${incident.sourceIp}`);
   
   const responseActions = [
     'Invalidar todas as sessões ativas',
@@ -157,13 +157,13 @@ function demonstrateIncidentResponse() {
     'Ativar modo de incidente crítico'
   ];
   
-  console.log('\n🚀 Ações de resposta automática executadas:');
+  console.log('\n Ações de resposta automática executadas:');
   responseActions.forEach((action, i) => {
-    console.log(`   ${i + 1}. ${action} ✅`);
+    console.log(`   ${i + 1}. ${action} `);
   });
   
   console.log(`   ⏱️ Tempo de resposta: 2.3 segundos`);
-  console.log(`   ✅ Incidente neutralizado com sucesso`);
+  console.log(`    Incidente neutralizado com sucesso`);
   
   return true;
 }
@@ -172,10 +172,10 @@ function demonstrateIncidentResponse() {
  * Simula ataque completo
  */
 function simulateFullAttack() {
-  console.log('\n⚔️ FASE 5: Simulação de Ataque Completo');
+  console.log('\n️ FASE 5: Simulação de Ataque Completo');
   console.log('-' .repeat(50));
   
-  console.log('🎭 Simulando ataque cibernético multifásico...');
+  console.log(' Simulando ataque cibernético multifásico...');
   
   const attackPhases = [
     {
@@ -206,18 +206,18 @@ function simulateFullAttack() {
   
   attackPhases.forEach((phase, i) => {
     console.log(`\n${i + 1}. ${phase.phase.toUpperCase()}`);
-    console.log(`   📋 ${phase.description}`);
-    console.log(`   🛡️ Detectado: ${phase.detected ? '✅' : '❌'}`);
-    console.log(`   🚀 Ação: ${phase.action}`);
+    console.log(`    ${phase.description}`);
+    console.log(`   ️ Detectado: ${phase.detected ? '' : ''}`);
+    console.log(`    Ação: ${phase.action}`);
   });
   
-  console.log('\n🏆 RESULTADO DA DEFESA:');
-  console.log('   ✅ SISTEMA RESISTIU AO ATAQUE!');
-  console.log('   🛡️ Defesa ativa funcionou perfeitamente');
-  console.log('   🍯 Honeypots detectaram intrusão');
-  console.log('   🔐 KMS protegeu chaves críticas');
-  console.log('   🔑 MFA bloqueou acesso não autorizado');
-  console.log('   🚨 Sistema de incidentes respondeu automaticamente');
+  console.log('\n RESULTADO DA DEFESA:');
+  console.log('    SISTEMA RESISTIU AO ATAQUE!');
+  console.log('   ️ Defesa ativa funcionou perfeitamente');
+  console.log('    Honeypots detectaram intrusão');
+  console.log('    KMS protegeu chaves críticas');
+  console.log('    MFA bloqueou acesso não autorizado');
+  console.log('    Sistema de incidentes respondeu automaticamente');
   
   return true;
 }
@@ -226,28 +226,28 @@ function simulateFullAttack() {
  * Gera relatório final
  */
 function generateFinalReport() {
-  console.log('\n📈 RELATÓRIO FINAL DE SEGURANÇA');
+  console.log('\n RELATÓRIO FINAL DE SEGURANÇA');
   console.log('=' .repeat(70));
   
   const securityScore = 95;
   const threatsBlocked = 4;
   const responseTime = 2.3;
   
-  console.log(`\n📊 MÉTRICAS FINAIS:`);
-  console.log(`   🛡️ Score de Segurança: ${securityScore}/100`);
-  console.log(`   🚫 Ameaças Bloqueadas: ${threatsBlocked}`);
-  console.log(`   ⚡ Tempo de Resposta: ${responseTime}s`);
-  console.log(`   🟢 Status: SISTEMA SEGURO`);
+  console.log(`\n MÉTRICAS FINAIS:`);
+  console.log(`   ️ Score de Segurança: ${securityScore}/100`);
+  console.log(`    Ameaças Bloqueadas: ${threatsBlocked}`);
+  console.log(`    Tempo de Resposta: ${responseTime}s`);
+  console.log(`    Status: SISTEMA SEGURO`);
   
-  console.log(`\n🛡️ CAPACIDADES DEMONSTRADAS:`);
-  console.log(`   ✅ Detecção proativa com honeypots`);
-  console.log(`   ✅ Proteção institucional de chaves`);
-  console.log(`   ✅ Autenticação multi-fator resiliente`);
-  console.log(`   ✅ Resposta automática a incidentes`);
-  console.log(`   ✅ Monitoramento em tempo real`);
-  console.log(`   ✅ Defesa ativa contra intrusão`);
+  console.log(`\n️ CAPACIDADES DEMONSTRADAS:`);
+  console.log(`    Detecção proativa com honeypots`);
+  console.log(`    Proteção institucional de chaves`);
+  console.log(`    Autenticação multi-fator resiliente`);
+  console.log(`    Resposta automática a incidentes`);
+  console.log(`    Monitoramento em tempo real`);
+  console.log(`    Defesa ativa contra intrusão`);
   
-  console.log(`\n🏆 CONCLUSÃO:`);
+  console.log(`\n CONCLUSÃO:`);
   console.log(`   O PAYHUB_V3 demonstra maturidade de segurança bancária`);
   console.log(`   com proteção ativa contra as 10 principais ameaças financeiras:`);
   console.log(`   - Roubo de chaves e fraude interna`);
@@ -256,14 +256,14 @@ function generateFinalReport() {
   console.log(`   - Exploração de lógica e falhas de orquestração`);
   console.log(`   - Sistema pronto para auditoria e compliance`);
   
-  console.log(`\n🚀 PRONTO PARA PRODUÇÃO FINANCEIRA!`);
+  console.log(`\n PRONTO PARA PRODUÇÃO FINANCEIRA!`);
 }
 
 /**
  * Executar demonstração
  */
 function runSecurityDemo() {
-  console.log('\n🚀 Iniciando demonstração de segurança PAYHUB_V3...');
+  console.log('\n Iniciando demonstração de segurança PAYHUB_V3...');
   
   try {
     // Executar todas as fases
@@ -280,13 +280,13 @@ function runSecurityDemo() {
     
     if (allPassed) {
       generateFinalReport();
-      console.log('\n✅ Demonstração concluída com sucesso!');
+      console.log('\n Demonstração concluída com sucesso!');
     } else {
-      console.log('\n⚠️ Algumas fases da demonstração falharam');
+      console.log('\n️ Algumas fases da demonstração falharam');
     }
     
   } catch (error) {
-    console.error('\n❌ Erro durante demonstração:', error.message);
+    console.error('\n Erro durante demonstração:', error.message);
   }
 }
 

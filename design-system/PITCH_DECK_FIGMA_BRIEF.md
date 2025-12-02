@@ -1,4 +1,4 @@
-# 🎨 PITCH DECK – Brief UI/UX (PAYHUB)
+#  PITCH DECK – Brief UI/UX (PAYHUB)
 
 ## Paleta e Tipografia
 

@@ -4,6 +4,7 @@
 const { requireAuth } = require('./_auth');
 const { getWsUrl } = require('./_xrpl-config');
 const { withRetry } = require('./_retry');
+const { screenPayment } = require('./_screening');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -14,7 +15,7 @@ module.exports = async (req, res) => {
     const authUser = requireAuth(req, res);
     if (!authUser) return; // resposta já enviada com erro
 
-    const { value, finishAfterUnix } = req.body || {};
+    const { value, finishAfterUnix, policy, preimageHex } = req.body || {};
     const issuer = process.env.RLUSD_ISSUER_ADDRESS;
     const seed = process.env.XRPL_SEED;
     const treasuryVault = process.env.TREASURY_VAULT_ADDRESS;
@@ -25,6 +26,11 @@ module.exports = async (req, res) => {
     }
     if (!value) {
       return res.status(400).json({ ok: false, error: 'Missing value' });
+    }
+
+    const screening = await screenPayment({ type: 'EscrowCreate', currency: 'RLUSD', value, issuer });
+    if (!screening.allowed) {
+      return res.status(403).json({ ok: false, error: screening.reason || 'SCREENING_FAILED' });
     }
 
     let xrpl;
@@ -39,12 +45,21 @@ module.exports = async (req, res) => {
     try {
       const wallet = xrpl.Wallet.fromSeed(seed);
       const amount = { currency: 'RLUSD', issuer, value: String(value) };
+      const memos = policy ? [{ Memo: { MemoType: Buffer.from('SMART_ESCROW_POLICY').toString('hex').toUpperCase(), MemoData: Buffer.from(JSON.stringify(policy)).toString('hex').toUpperCase() } }] : undefined;
+      let condition;
+      if (preimageHex && /^[0-9A-Fa-f]+$/.test(preimageHex)) {
+        const preimageBuf = Buffer.from(preimageHex, 'hex');
+        const hash = xrpl.sha256(preimageBuf);
+        condition = hash.toUpperCase();
+      }
       const tx = {
         TransactionType: 'EscrowCreate',
         Account: wallet.address,
         Destination: treasuryVault, // V2: Escrow como colateral; destino é a vault do financiador
         Amount: amount,
         ...(finishAfterUnix ? { FinishAfter: finishAfterUnix } : {}),
+        ...(condition ? { Condition: condition } : {}),
+        ...(memos ? { Memos: memos } : {}),
       };
 
       const prepared = await client.autofill(tx);
@@ -63,7 +78,7 @@ module.exports = async (req, res) => {
         }
       } catch {}
 
-      return res.status(200).json({ ok: true, txHash, offerSequence });
+      return res.status(200).json({ ok: true, txHash, offerSequence, owner: wallet.address, condition: condition || null });
     } finally {
       await client.disconnect();
     }

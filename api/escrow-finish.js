@@ -6,6 +6,7 @@ const { requireAuth } = require('./_auth');
 const { getWsUrl } = require('./_xrpl-config');
 const { withRetry } = require('./_retry');
 const { getDecryptedXRPLSeed } = require('./_kms-adapter');
+const { screenPayment } = require('./_screening');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -16,7 +17,7 @@ module.exports = async (req, res) => {
     const authUser = requireAuth(req, res);
     if (!authUser) return; // resposta já enviada com erro
 
-    const { owner, offerSequence } = req.body || {};
+    const { owner, offerSequence, fulfillmentHex, policy } = req.body || {};
     let seed;
     try {
       seed = await getDecryptedXRPLSeed();
@@ -29,22 +30,33 @@ module.exports = async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Missing owner or offerSequence' });
     }
 
+    const screening = await screenPayment({ type: 'EscrowFinish', owner, offerSequence });
+    if (!screening.allowed) {
+      return res.status(403).json({ ok: false, error: screening.reason || 'SCREENING_FAILED' });
+    }
+
     let xrpl;
     try {
       xrpl = require('xrpl');
     } catch (e) {
       return res.status(500).json({ ok: false, error: 'Dependency xrpl missing. npm i xrpl' });
     }
+    const { enforcePolicy } = require('../src/backend/smart-escrow-policy');
 
     const client = new xrpl.Client(wsUrl);
     await client.connect();
     try {
       const wallet = xrpl.Wallet.fromSeed(seed);
+      const okPolicy = await enforcePolicy(policy, { xrpl, client, screenPayment });
+      if (!okPolicy) {
+        return res.status(403).json({ ok: false, error: 'SMART_ESCROW_POLICY_BLOCKED' });
+      }
       const tx = {
         TransactionType: 'EscrowFinish',
         Account: wallet.address,
         Owner: owner,
         OfferSequence: offerSequence,
+        ...(fulfillmentHex && /^[0-9A-Fa-f]+$/.test(fulfillmentHex) ? { Fulfillment: fulfillmentHex.toUpperCase() } : {}),
       };
 
       const prepared = await client.autofill(tx);

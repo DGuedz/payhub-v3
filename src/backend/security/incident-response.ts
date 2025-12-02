@@ -199,7 +199,7 @@ export class IncidentResponseEngine {
     // Modo de incidente
     this.actionExecutors.set('activate_incident_mode', async (action) => {
       const { mode, duration, affectedSystems } = action.parameters;
-      console.log(`⚠️  Modo de incidente ativado: ${mode} (${duration}s)`);
+      console.log(`️  Modo de incidente ativado: ${mode} (${duration}s)`);
       
       return {
         mode,

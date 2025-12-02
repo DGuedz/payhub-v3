@@ -331,7 +331,7 @@ class SessionManager {
     
     // Verificar risco
     if (session.riskScore > 70) {
-      console.warn(`⚠️ Sessão de alto risco detectada: ${sessionId}`);
+      console.warn(`️ Sessão de alto risco detectada: ${sessionId}`);
     }
 
     return session;
@@ -345,7 +345,7 @@ class SessionManager {
     if (session) {
       session.isActive = false;
       session.expiresAt = new Date(); // Expirar imediatamente
-      console.log(`🔒 Sessão invalidada: ${sessionId}`);
+      console.log(` Sessão invalidada: ${sessionId}`);
       return true;
     }
     return false;
@@ -365,7 +365,7 @@ class SessionManager {
       }
     }
 
-    console.log(`🔒 Sessões invalidadas para usuário ${userId}: ${invalidatedCount}`);
+    console.log(` Sessões invalidadas para usuário ${userId}: ${invalidatedCount}`);
     return invalidatedCount;
   }
 
@@ -543,7 +543,7 @@ export class MFAJWTSystem {
     if (factorType === 'totp' && !this.userSecrets.has(userId)) {
       const secret = this.generateTOTPSecret();
       this.userSecrets.set(userId, secret);
-      console.log(`🔑 TOTP Secret gerado para ${userId}: ${secret}`);
+      console.log(` TOTP Secret gerado para ${userId}: ${secret}`);
     }
 
     return {
@@ -666,9 +666,9 @@ export class MFAJWTSystem {
       mfaCredentials.deviceInfo
     );
 
-    console.log(`✅ MFA verificado com sucesso para ${userId}`);
-    console.log(`🔐 Sessão criada: ${session.sessionId}`);
-    console.log(`⚠️ Score de risco: ${session.riskScore}`);
+    console.log(` MFA verificado com sucesso para ${userId}`);
+    console.log(` Sessão criada: ${session.sessionId}`);
+    console.log(`️ Score de risco: ${session.riskScore}`);
 
     return {
       success: true,
@@ -726,7 +726,7 @@ export class MFAJWTSystem {
       mfa_verified: payload.mfa_verified || false
     }, 'access');
 
-    console.log(`🔄 Token renovado para ${userId}`);
+    console.log(` Token renovado para ${userId}`);
 
     return {
       success: true,

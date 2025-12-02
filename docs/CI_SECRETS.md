@@ -10,7 +10,8 @@ Adicione em `Settings → Secrets and variables → Actions`:
 - `FIGMA_FILE_KEY`: Chave do arquivo Figma. Ex.: `UQwbW2cybw7SGzlBWHlgcr`.
 - `VERCEL_TOKEN`: Token de acesso do Vercel (User/Org token).
 - `VERCEL_ORG_ID`: ID da organização no Vercel.
-- `VERCEL_PROJECT_ID`: ID do projeto no Vercel.
+- `VERCEL_PROJECT_ID_FRONTEND`: ID do projeto Vercel do frontend.
+- `VERCEL_PROJECT_ID_BACKEND`: ID do projeto Vercel do backend.
 
 Opcional (se necessário pelo app):
 
@@ -25,7 +26,8 @@ gh secret set FIGMA_TOKEN --body "<seu_token_figma>"
 gh secret set FIGMA_FILE_KEY --body "UQwbW2cybw7SGzlBWHlgcr"
 gh secret set VERCEL_TOKEN --body "<seu_token_vercel>"
 gh secret set VERCEL_ORG_ID --body "<sua_org_id>"
-gh secret set VERCEL_PROJECT_ID --body "<seu_project_id>"
+gh secret set VERCEL_PROJECT_ID_FRONTEND --body "<project_id_frontend>"
+gh secret set VERCEL_PROJECT_ID_BACKEND --body "<project_id_backend>"
 ```
 
 ### Exemplos de valores (apenas ilustrativos)
@@ -38,7 +40,8 @@ FIGMA_FILE_KEY=UQwbW2cybw7SGzlBWHlgcr
 # Vercel
 VERCEL_TOKEN=vercel_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 VERCEL_ORG_ID=org_xxxxxxxxxxxxxxxxxxxxxxxxx
-VERCEL_PROJECT_ID=prj_xxxxxxxxxxxxxxxxxxxxxxxxx
+VERCEL_PROJECT_ID_FRONTEND=prj_frontend_xxxxxxxxxxxxxxxxx
+VERCEL_PROJECT_ID_BACKEND=prj_backend_xxxxxxxxxxxxxxxxx
 ```
 
 ## Vercel — Variáveis de Ambiente

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 PAYHUB_V3 AI Chat - Demo Hackathon</title>
+    <title> PAYHUB_V3 AI Chat - Demo Hackathon</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
         .container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -33,7 +33,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🤖 PAYHUB_V3 AI Chat</h1>
+        <h1> PAYHUB_V3 AI Chat</h1>
         <p class="subtitle">Demo Hackathon XRPL Vega House</p>
         
         <div class="info-box">
@@ -57,9 +57,9 @@
         </div>
 
         <div class="button-group">
-            <button id="sendBtn" class="btn-primary">💬 Enviar Mensagem</button>
-            <button id="sandboxBtn" class="btn-secondary">🧩 Testar Sandbox</button>
-            <button id="quickTestBtn" class="btn-secondary">⚡ Teste Rápido</button>
+            <button id="sendBtn" class="btn-primary"> Enviar Mensagem</button>
+            <button id="sandboxBtn" class="btn-secondary"> Testar Sandbox</button>
+            <button id="quickTestBtn" class="btn-secondary"> Teste Rápido</button>
         </div>
 
         <div class="input-group">
@@ -112,20 +112,20 @@
             responseDiv.classList.remove('empty');
             
             const modeBadge = isSandbox 
-                ? '<span class="mode-badge mode-sandbox">🧩 SANDBOX</span>' 
-                : '<span class="mode-badge mode-gpt">🤖 GPT</span>';
+                ? '<span class="mode-badge mode-sandbox"> SANDBOX</span>' 
+                : '<span class="mode-badge mode-gpt"> GPT</span>';
             
             if (data.ok && data.reply) {
                 responseDiv.innerHTML = `
                     <div style="margin-bottom: 8px;">${modeBadge}</div>
                     <div>${data.reply}</div>
                 `;
-                showSuccess('✅ Mensagem processada com sucesso!');
+                showSuccess(' Mensagem processada com sucesso!');
             } else if (data.error) {
-                responseDiv.innerHTML = `<div style="color: #dc2626;">❌ Erro: ${data.error}</div>`;
+                responseDiv.innerHTML = `<div style="color: #dc2626;"> Erro: ${data.error}</div>`;
                 showError(`Erro: ${data.error}`);
             } else {
-                responseDiv.innerHTML = `<div>📄 Resposta: ${JSON.stringify(data, null, 2)}</div>`;
+                responseDiv.innerHTML = `<div> Resposta: ${JSON.stringify(data, null, 2)}</div>`;
             }
         }
 
@@ -171,14 +171,14 @@
 
             hideMessages();
             setLoading(true);
-            responseDiv.innerHTML = '🔄 Processando...';
+            responseDiv.innerHTML = ' Processando...';
 
             try {
                 const response = await sendMessage(message, jwt);
                 showResponse(response, !jwt);
             } catch (error) {
                 showError(`Erro: ${error.message}`);
-                responseDiv.innerHTML = '❌ Erro ao processar mensagem';
+                responseDiv.innerHTML = ' Erro ao processar mensagem';
             } finally {
                 setLoading(false);
             }
@@ -187,14 +187,14 @@
         sandboxBtn.addEventListener('click', async () => {
             hideMessages();
             setLoading(true);
-            responseDiv.innerHTML = '🔄 Testando modo sandbox...';
+            responseDiv.innerHTML = ' Testando modo sandbox...';
 
             try {
                 const response = await testSandbox("Teste do modo sandbox PAYHUB_V3");
                 showResponse(response, true);
             } catch (error) {
                 showError(`Erro no sandbox: ${error.message}`);
-                responseDiv.innerHTML = '❌ Erro no modo sandbox';
+                responseDiv.innerHTML = ' Erro no modo sandbox';
             } finally {
                 setLoading(false);
             }
@@ -203,7 +203,7 @@
         quickTestBtn.addEventListener('click', async () => {
             hideMessages();
             setLoading(true);
-            responseDiv.innerHTML = '🔄 Executando testes rápidos...';
+            responseDiv.innerHTML = ' Executando testes rápidos...';
 
             const testMessages = [
                 "Olá PAYHUB_V3!",
@@ -221,7 +221,7 @@
                 }
             }
 
-            responseDiv.innerHTML = '<h4>🧩 Resultados dos Testes:</h4>';
+            responseDiv.innerHTML = '<h4> Resultados dos Testes:</h4>';
             results.forEach(result => {
                 const div = document.createElement('div');
                 div.style.marginBottom = '12px';
@@ -230,23 +230,23 @@
                 div.style.borderRadius = '4px';
                 
                 if (result.response) {
-                    div.innerHTML = `<strong>"${result.message}"</strong><br>✅ ${result.response.reply}`;
+                    div.innerHTML = `<strong>"${result.message}"</strong><br> ${result.response.reply}`;
                 } else {
-                    div.innerHTML = `<strong>"${result.message}"</strong><br>❌ ${result.error}`;
+                    div.innerHTML = `<strong>"${result.message}"</strong><br> ${result.error}`;
                 }
                 
                 responseDiv.appendChild(div);
             });
 
-            showSuccess('✅ Testes rápidos concluídos!');
+            showSuccess(' Testes rápidos concluídos!');
             setLoading(false);
         });
 
         // Demo inicial
         window.addEventListener('load', () => {
-            console.log('🤖 PAYHUB_V3 AI Chat Demo carregada!');
-            console.log('📍 Endpoint:', RES_URL);
-            console.log('🧩 Modo Sandbox disponível (sem custos)');
+            console.log(' PAYHUB_V3 AI Chat Demo carregada!');
+            console.log(' Endpoint:', RES_URL);
+            console.log(' Modo Sandbox disponível (sem custos)');
         });
     </script>
 </body>
