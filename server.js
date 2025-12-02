@@ -6,6 +6,9 @@ const url = require('url');
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60000);
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 120);
 const RATE_LIMIT = new Map();
+const RATE_LIMIT_TOKEN_WINDOW_MS = Number(process.env.RATE_LIMIT_TOKEN_WINDOW_MS || RATE_LIMIT_WINDOW_MS);
+const RATE_LIMIT_TOKEN_MAX = Number(process.env.RATE_LIMIT_TOKEN_MAX || Math.max(30, Math.floor(RATE_LIMIT_MAX / 2)));
+const RATE_LIMIT_TOKEN = new Map();
 
 // Simple CORS support for frontend->backend integration in dev
 // Default allows Vite (5173) and Next.js dev (3001)
@@ -92,7 +95,7 @@ const routes = {
   '/api/security/alerts': require('./api/security/alerts'),
   '/api/v1/compliance/report': require('./api/v1/compliance/report'),
   '/api/simulate/escrow-e2e': require('./api/simulate/escrow-e2e'),
-  // '/api/v1/connect/erp/reconcile': require('./api/v1/connect/erp/reconcile'),
+  '/api/v1/connect/erp/reconcile': require('./api/v1/connect/erp/reconcile'),
 };
 
 const server = http.createServer(async (req, res) => {
@@ -109,6 +112,19 @@ const server = http.createServer(async (req, res) => {
   RATE_LIMIT.set(ip, bucket);
   if (bucket.count > RATE_LIMIT_MAX) {
     return jsonResponse(res, 429, { ok: false, error: 'Too Many Requests' });
+  }
+  const authHeader = (req.headers['authorization'] || '').toString();
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+  const key = `${token || ip}:${parsed.pathname}`;
+  const tb = RATE_LIMIT_TOKEN.get(key) || { count: 0, resetAt: now + RATE_LIMIT_TOKEN_WINDOW_MS };
+  if (now > tb.resetAt) {
+    tb.count = 0;
+    tb.resetAt = now + RATE_LIMIT_TOKEN_WINDOW_MS;
+  }
+  tb.count += 1;
+  RATE_LIMIT_TOKEN.set(key, tb);
+  if (tb.count > RATE_LIMIT_TOKEN_MAX) {
+    return jsonResponse(res, 429, { ok: false, error: 'Too Many Requests (token/route)' });
   }
   const parsed = url.parse(req.url, true);
   const handler = routes[parsed.pathname];
