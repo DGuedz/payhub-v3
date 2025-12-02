@@ -199,3 +199,37 @@ GTM e Documentação
 - XRPL_SEED via env/KMS, nunca em banco/logs/front; assinatura exclusiva no backend.
 - Rotas críticas protegidas por JWT curto; try-catch + `withRetry` para resiliência.
 - Auditoria registra `txHash` e `sequence` sem PII (ver `api/_logger 2.js:1`).
+
+## Relatório de Consolidação Estratégica e Roadmap Evolutivo — PAYHUB
+
+**Projeto**: PAYHUB (P4YHU3) • **Responsável**: Diego Guedes (DG)
+
+### Semana 1 (24/11–28/11) — Fundação D+0
+- Entregáveis Técnicos
+  - Liquidez D+0 (Escrow): fluxo `EscrowCreate → EscrowFinish` com RLUSD no backend (`api/escrow-create.js:1`, `api/escrow-finish.js:1`).
+  - Segurança de Defesa Ativa: XRPL_SEED isolada por KMS/ENV (`src/backend/security/kms-adapter.ts:1`); Honeypot Decoys (`src/backend/security/honeypot-system.ts:1`).
+  - Compliance Inicial: trilha de auditoria via `GET /api/v1/compliance/report` roteada em `server.js:93` (logs `txHash/sequence` sem PII).
+  - DevOps: proteção básica de fluxo com scripts e validações (`package.json:26` n8n validate; lint/typecheck).
+- Retrospectiva
+  - Soft‑POS D+0 estabelecido com Yield alvo 5–8% APY.
+  - Trustline RLUSD e ciclo de vida Escrow mapeados e implementados.
+  - Endpoints de Yield/Compliance definidos e operacionais em DEV.
+
+### Semana 2 (01/12–05/12) — Imersão Técnica e MVP Central
+- Entregáveis Técnicos
+  - Rate limiting por IP e token+rota (configurável por env) em `server.js:98–113`.
+  - Rotação emergencial de JWT (política `JWT_ROTATION_EMERGENCY_MS`) em `api/_auth.js:29–41`.
+  - Validação de política no `EscrowFinish` (KYC/NFT + screening) (`api/escrow-finish.js:50–55`, `src/backend/smart-escrow-policy.js:12–24`).
+  - Auditoria padronizada (hash/sequence) sem PII (`api/_logger 2.js:1`).
+  - Migração para TypeScript das lógicas XRPL server‑side: `src/backend/api/trustlineRlusd.ts:1`, `src/backend/api/escrowCreate.ts:1`, `src/backend/api/escrowFinish.ts:1`.
+  - AMMDeposit/AMMWithdraw com KMS e auditoria; execução opt‑in (`AMM_EXECUTE=1`) em `api/amm-deposit.js:15–31`, `api/amm-withdraw.js:15–31`.
+  - Observabilidade: latência e `pathsCount` em AMM Quote (`api/amm-quote.js:20–24`).
+  - Integração ERP (mock) publicada: `POST /api/v1/connect/erp/reconcile` (`api/v1/connect/erp/reconcile.js:1–20`, `server.js:95–96`).
+- Evidências de Testnet (POC)
+  - EscrowCreate `C3F99CA9D6085727...C09B` (`sequence=12773412`) — `docs/RELATORIO_ANALISE_ESTRATEGICA.md:152`.
+  - EscrowFinish `0BB6D6B493FAB1BE...A4A0` (`sequence=12773413`) — `docs/RELATORIO_ANALISE_ESTRATEGICA.md:153`.
+  - Registros auditáveis CSV — `docs/testnet-audit/transactions.csv:7–8`.
+
+### Próximas Fases (Resumo)
+- Semana 3: feedback UX Soft‑POS; ampliar reconciliação ERP; preparar pilotos (Metaco/Hidden Road).
+- Semana 4: consolidar MVP e Pitch para Grants; preparar transição para Testnet/Mainnet.
