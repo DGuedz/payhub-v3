@@ -31,6 +31,15 @@ function requireAuth(req, res) {
     if (issuer) options.issuer = issuer;
     if (process.env.JWT_MAX_AGE) options.maxAge = process.env.JWT_MAX_AGE;
     const decoded = jwt.verify(token, secret, options);
+    const emergencyMs = Number(process.env.JWT_ROTATION_EMERGENCY_MS || '0');
+    if (Number.isFinite(emergencyMs) && emergencyMs > 0) {
+      const iatSec = decoded && typeof decoded.iat === 'number' ? decoded.iat : 0;
+      const iatMs = iatSec * 1000;
+      if (!iatMs || (now - iatMs) > emergencyMs) {
+        res.status(401).json({ ok: false, error: 'JWT rejected by rotation policy' });
+        return null;
+      }
+    }
     // Cache store (TTL curto)
     const ttl = getCacheTtlMs();
     jwtCache.set(token, { decoded, expiresAt: now + ttl });

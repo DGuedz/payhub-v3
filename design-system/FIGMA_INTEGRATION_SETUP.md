@@ -1,4 +1,4 @@
-# 🎨 Integração Figma → Trae IDE - Setup Completo
+#  Integração Figma → Trae IDE - Setup Completo
 
 ## Objetivo
 Integrar o ambiente Trae IDE ao projeto de design do PAYHUB no Figma, criando os documentos necessários e configurando o token de acesso para importar dados e assets.
@@ -27,7 +27,7 @@ Integrar o ambiente Trae IDE ao projeto de design do PAYHUB no Figma, criando os
 
 ## Token de Acesso (Configuração)
 
-- Status: ✅ PRONTO
+- Status:  PRONTO
 - Token: `<FIGMA_TOKEN>` (placeholder; não incluir token real no repositório)
 - Validade: conforme sua conta Figma
 - Uso: mantenha o token fora do controle de versão
@@ -110,7 +110,7 @@ Onde `ABC123DEF456` é o **File Key**. Para nós, você já forneceu:
 ---
 
 ```
-✅ Figma Integration Environment Initialized.
-📂 Files: FIGMA_INTEGRATION_SETUP.md + PITCH_DECK_FIGMA_BRIEF.md
-🚀 Aguardando File Key (e permissões) para disparar importação.
+ Figma Integration Environment Initialized.
+ Files: FIGMA_INTEGRATION_SETUP.md + PITCH_DECK_FIGMA_BRIEF.md
+ Aguardando File Key (e permissões) para disparar importação.
 ```

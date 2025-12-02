@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2025-11-27T13:18:34.094Z",
+  "baseUrl": "http://localhost:3000",
+  "artifacts": {
+    "trustline": {
+      "txHash": "TL-1764249514092-IE7P4L",
+      "sequence": 4227,
+      "status": "TRUSTLINE_OK"
+    },
+    "escrowCreate": {
+      "txHash": "ESC-1764249514092-GQZA8BTV",
+      "offerSequence": 415383,
+      "owner": "rC3KVC5MP22XPWBB3UKLCJF4RDH7",
+      "destination": "rSUXUNF81Q96LrZ1DSBY4UBKYER",
+      "amount": {
+        "currency": "RLUSD",
+        "issuer": "r3N7KLGFCXLCDFDZXXDRZU1GTr",
+        "value": "100.00"
+      }
+    },
+    "advance95": {
+      "txHash": "ADV-1764249514092-N8SARBI5",
+      "sequence": 7727,
+      "financedAmount": "95.00",
+      "destination": "rMERCHANT_SIM"
+    },
+    "escrowFinish": {
+      "txHash": "FIN-1764249514092-FU2GLRGN",
+      "sequence": 5143,
+      "owner": "rC3KVC5MP22XPWBB3UKLCJF4RDH7",
+      "offerSequence": 415383
+    },
+    "pathsCount": 3,
+    "simulated": true
+  },
+  "report": {
+    "ok": true,
+    "format": "csv",
+    "content": "operation,tx_hash,sequence,owner,offer_sequence,destination,amount_currency,amount_value,amount_issuer,status,timestamp\nTRUSTLINE,TL-1764249514092-IE7P4L,4227,,,,RLUSD,,,TRUSTLINE_OK,2025-11-27T13:18:34.099Z\nESCROW_CREATE,ESC-1764249514092-GQZA8BTV,415383,rC3KVC5MP22XPWBB3UKLCJF4RDH7,415383,rSUXUNF81Q96LrZ1DSBY4UBKYER,RLUSD,100.00,r3N7KLGFCXLCDFDZXXDRZU1GTr,CREATED,2025-11-27T13:18:34.099Z\nADVANCE_95,ADV-1764249514092-N8SARBI5,7727,,,rMERCHANT_SIM,RLUSD,95.00,,PAID,2025-11-27T13:18:34.099Z\nESCROW_FINISH,FIN-1764249514092-FU2GLRGN,5143,rC3KVC5MP22XPWBB3UKLCJF4RDH7,415383,,,RLUSD,0,FINISHED,2025-11-27T13:18:34.099Z"
+  }
+}

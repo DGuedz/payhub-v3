@@ -13,7 +13,10 @@
     "dev": "vite",
     "preview": "vite preview",
     "start": "node server.js",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint": "eslint sdk app payhub-frontend/app --ext .ts,.tsx --max-warnings=0",
+    "typecheck": "tsc -p tsconfig.json",
+    "check:emoji": "node scripts/check-emojis.js",
+    "postinstall": "node scripts/install-hooks.js || true",
     "security:build": "tsc -p tsconfig.security.json",
     "security:init": "npm run security:build && node dist/security/security-init.js",
     "security:rotate-tokens": "npm run security:build && node dist/security/token-rotation-system.js",
@@ -37,6 +40,7 @@
   },
   "homepage": "https://github.com/DGuedz/PAYHUB_V3#readme",
   "dependencies": {
+    "jose": "^6.1.2",
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
@@ -51,6 +55,11 @@
     "@vitejs/plugin-react": "^5.1.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12"
+    "vite": "^7.1.12",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0"
   }
 }

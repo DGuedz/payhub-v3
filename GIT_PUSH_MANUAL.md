@@ -15,7 +15,7 @@ git add AUDITORIA_*.md TRAE_*.md HANDOFF_SUMMARY.md README_PUSH_GITHUB.md pre-pu
 
 3) Commit institucional
 ```bash
-git commit -m "🔍 Auditoria Financeira Completa - Series A Ready"
+git commit -m " Auditoria Financeira Completa - Series A Ready"
 ```
 
 4) Push

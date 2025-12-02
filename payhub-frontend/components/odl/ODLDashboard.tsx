@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ODLConversionForm } from './ODLConversionForm';
 import { EscrowMonitor } from './EscrowMonitor';
+import { XRPLTestPanel } from './XRPLTestPanel';
 
 interface MerchantInfo {
   id: string;
@@ -21,7 +22,7 @@ interface ODLDashboardProps {
 export const ODLDashboard: React.FC<ODLDashboardProps> = ({ merchantId }) => {
   const [merchantInfo, setMerchantInfo] = useState<MerchantInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'conversion' | 'monitor' | 'analytics'>('conversion');
+  const [activeTab, setActiveTab] = useState<'conversion' | 'monitor' | 'analytics' | 'tests'>('conversion');
 
   const fetchMerchantInfo = async () => {
     try {
@@ -46,7 +47,7 @@ export const ODLDashboard: React.FC<ODLDashboardProps> = ({ merchantId }) => {
     fetchMerchantInfo();
   }, [merchantId]);
 
-  const handleConversionSuccess = (transactionData: any) => {
+  const handleConversionSuccess = () => {
     // Atualizar informações após conversão bem-sucedida
     fetchMerchantInfo();
     // Mudar para aba de monitoramento
@@ -145,6 +146,16 @@ export const ODLDashboard: React.FC<ODLDashboardProps> = ({ merchantId }) => {
           >
             Analytics
           </button>
+          <button
+            onClick={() => setActiveTab('tests')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'tests'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Testes XRPL
+          </button>
         </nav>
       </div>
 
@@ -197,15 +208,19 @@ export const ODLDashboard: React.FC<ODLDashboardProps> = ({ merchantId }) => {
             </div>
           </div>
         )}
+
+        {activeTab === 'tests' && (
+          <XRPLTestPanel />
+        )}
       </div>
 
       {/* Footer com informações de segurança */}
       <div className="mt-8 bg-white rounded-lg shadow-md p-4">
         <div className="flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center space-x-4">
-            <span>🔒 Segurança Nível Bancário</span>
-            <span>⚡ Liquidação D+0</span>
-            <span>📈 Yield 5-8% APY</span>
+            <span> Segurança Nível Bancário</span>
+            <span> Liquidação D+0</span>
+            <span> Yield 5-8% APY</span>
           </div>
           <span>v3.0.0 | XRPL Vega House Hackathon</span>
         </div>

@@ -50,7 +50,7 @@ export class SecurityInitSystem {
       return;
     }
 
-    console.log('🚀 Inicializando sistemas de segurança...');
+    console.log(' Inicializando sistemas de segurança...');
 
     try {
       // 1. Validação de ambiente
@@ -72,11 +72,11 @@ export class SecurityInitSystem {
       }
 
       this.isInitialized = true;
-      console.log('✅ Sistemas de segurança inicializados com sucesso');
+      console.log(' Sistemas de segurança inicializados com sucesso');
       this.printSecurityStatus();
 
     } catch (error) {
-      console.error('❌ Falha na inicialização de segurança:', error);
+      console.error(' Falha na inicialização de segurança:', error);
       const message = (error instanceof Error) ? error.message : String(error);
       throw new Error(`Erro na inicializacao de seguranca: ${message}`);
     }
@@ -86,7 +86,7 @@ export class SecurityInitSystem {
    * Valida todas as variáveis de ambiente
    */
   private async validateEnvironment(): Promise<void> {
-    console.log('🔍 Validando variáveis de ambiente...');
+    console.log(' Validando variáveis de ambiente...');
 
     if (!this.envManager.isValid()) {
       const errors = this.envManager.getValidationErrors();
@@ -96,7 +96,7 @@ export class SecurityInitSystem {
     // Verifica se variáveis sensíveis não estão com valores padrão
     this.checkForDefaultSecrets();
 
-    console.log('✅ Variáveis de ambiente validadas');
+    console.log(' Variáveis de ambiente validadas');
   }
 
   /**
@@ -118,7 +118,7 @@ export class SecurityInitSystem {
         const value = this.envManager.get(varName);
         
         if (value && defaultSecrets.some(secret => value.includes(secret))) {
-          console.warn(`⚠️  AVISO: ${varName} pode estar usando valor padrão inseguro`);
+          console.warn(`️  AVISO: ${varName} pode estar usando valor padrão inseguro`);
         }
       } catch {
         // Variável não configurada, ignora
@@ -130,7 +130,7 @@ export class SecurityInitSystem {
    * Inicializa sistema de rotação de tokens
    */
   private initializeTokenRotation(): void {
-    console.log('🔄 Inicializando rotação automática de tokens...');
+    console.log(' Inicializando rotação automática de tokens...');
 
     // Configura intervalo baseado em variável de ambiente
     const rotationInterval = this.envManager.get('TOKEN_ROTATION_INTERVAL');
@@ -150,10 +150,10 @@ export class SecurityInitSystem {
    * Inicializa monitoramento de acesso
    */
   private initializeAccessMonitoring(): void {
-    console.log('👀 Inicializando monitoramento de acesso...');
+    console.log(' Inicializando monitoramento de acesso...');
 
     const retentionDays = this.envManager.get('LOG_RETENTION_DAYS');
-    console.log(`📊 Retençao de logs configurada para ${retentionDays} dias`);
+    console.log(` Retençao de logs configurada para ${retentionDays} dias`);
 
     // Limpa logs antigos na inicialização
     this.accessMonitor.cleanupOldLogs(retentionDays);
@@ -163,7 +163,7 @@ export class SecurityInitSystem {
    * Configura protocolos de emergência
    */
   private setupEmergencyProtocols(): void {
-    console.log('🚨 Configurando protocolos de emergência...');
+    console.log(' Configurando protocolos de emergência...');
 
     // Handler para shutdown graceful
     this.setupShutdownHandler();
@@ -171,7 +171,7 @@ export class SecurityInitSystem {
     // Handler para uncaught exceptions
     this.setupExceptionHandler();
 
-    console.log('✅ Protocolos de emergência configurados');
+    console.log(' Protocolos de emergência configurados');
   }
 
   /**
@@ -182,7 +182,7 @@ export class SecurityInitSystem {
 
     shutdownSignals.forEach(signal => {
       process.on(signal, async () => {
-        console.log(`\n🛑 Recebido ${signal}. Desligando sistemas de segurança...`);
+        console.log(`\n Recebido ${signal}. Desligando sistemas de segurança...`);
         
         await this.shutdown();
         process.exit(0);
@@ -195,7 +195,7 @@ export class SecurityInitSystem {
    */
   private setupExceptionHandler(): void {
     process.on('uncaughtException', (error: any) => {
-      console.error('💥 Exceção não capturada:', error);
+      console.error(' Exceção não capturada:', error);
       
       // Log de segurança para exceções críticas
       this.accessMonitor.logAccess({
@@ -215,7 +215,7 @@ export class SecurityInitSystem {
 
       // Não encerra o processo imediatamente (depende da criticalidade)
       if (this.isCriticalError(error)) {
-        console.error('❌ Erro crítico detectado. Encerrando processo...');
+        console.error(' Erro crítico detectado. Encerrando processo...');
         process.exit(1);
       }
     });
@@ -244,10 +244,10 @@ export class SecurityInitSystem {
     // Em produção, verificar se houve vazamento recente
     // Para agora, sempre forçar rotação na inicialização por segurança
     
-    console.log('🔄 Forçando rotação de tokens por segurança...');
+    console.log(' Forçando rotação de tokens por segurança...');
     
     this.tokenSystem.emergencyRotation().catch(error => {
-      console.warn('⚠️  Não foi possível forçar rotação de tokens:', error);
+      console.warn('️  Não foi possível forçar rotação de tokens:', error);
     });
   }
 
@@ -255,7 +255,7 @@ export class SecurityInitSystem {
    * Desliga todos os sistemas de segurança gracefulmente
    */
   public async shutdown(): Promise<void> {
-    console.log('🔒 Desligando sistemas de segurança...');
+    console.log(' Desligando sistemas de segurança...');
 
     try {
       // Para rotação automática de tokens
@@ -264,9 +264,9 @@ export class SecurityInitSystem {
       // Limpa recursos
       this.accessMonitor.cleanupOldLogs(0); // Mantém apenas logs da sessão atual
 
-      console.log('✅ Sistemas de segurança desligados');
+      console.log(' Sistemas de segurança desligados');
     } catch (error) {
-      console.error('❌ Erro ao desligar sistemas de segurança:', error);
+      console.error(' Erro ao desligar sistemas de segurança:', error);
     }
   }
 
@@ -274,25 +274,25 @@ export class SecurityInitSystem {
    * Imprime status atual da segurança
    */
   public printSecurityStatus(): void {
-    console.log('\n📊 STATUS DE SEGURANÇA:');
+    console.log('\n STATUS DE SEGURANÇA:');
     console.log('=======================');
 
     // Status do ambiente
-    console.log('🔧 Ambiente:', this.envManager.get('NODE_ENV'));
-    console.log('✅ Validação de ambiente:', this.envManager.isValid() ? 'OK' : 'ERRO');
+    console.log(' Ambiente:', this.envManager.get('NODE_ENV'));
+    console.log(' Validação de ambiente:', this.envManager.isValid() ? 'OK' : 'ERRO');
 
     // Status dos tokens
     const tokenStats = this.tokenSystem.getStats();
-    console.log('🔄 Rotaçao automática:', tokenStats.autoRotationEnabled ? 'ATIVADA' : 'DESATIVADA');
-    console.log('🔑 Tokens ativos:', tokenStats.activeTokens);
+    console.log(' Rotaçao automática:', tokenStats.autoRotationEnabled ? 'ATIVADA' : 'DESATIVADA');
+    console.log(' Tokens ativos:', tokenStats.activeTokens);
 
     // Status do monitoramento
     const accessStats = this.accessMonitor.getStats();
-    console.log('👀 Logs de acesso:', accessStats.totalLogs);
-    console.log('🚨 Alertas de segurança:', accessStats.totalAlerts);
+    console.log(' Logs de acesso:', accessStats.totalLogs);
+    console.log(' Alertas de segurança:', accessStats.totalAlerts);
 
     if (accessStats.totalAlerts > 0) {
-      console.log('⚠️  Alertas nas últimas 24h:', accessStats.alertsLast24h);
+      console.log('️  Alertas nas últimas 24h:', accessStats.alertsLast24h);
     }
 
     console.log('=======================\n');
@@ -364,7 +364,7 @@ try {
     };
     run().catch((err) => {
       const message = (err instanceof Error) ? err.message : String(err);
-      console.error('❌ Falha na inicialização de segurança (CLI):', message);
+      console.error(' Falha na inicialização de segurança (CLI):', message);
       process?.exit?.(1);
     });
   }

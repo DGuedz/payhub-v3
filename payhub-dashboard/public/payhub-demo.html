@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PAYHUB Demo</title>
+    <style>
+      body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto; padding: 24px; }
+      .card { border: 1px solid #2a355f; border-radius: 12px; padding: 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <button id="healthBtn">Ping /api/health</button>
+      <pre id="out"></pre>
+    </div>
+    <script>
+      document.getElementById('healthBtn').onclick = async () => {
+        try {
+          const res = await fetch('/api/health');
+          const json = await res.json();
+          document.getElementById('out').textContent = JSON.stringify(json, null, 2);
+        } catch (e) {
+          document.getElementById('out').textContent = String(e && e.message ? e.message : e);
+        }
+      };
+    </script>
+  </body>
+</html>
