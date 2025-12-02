@@ -179,6 +179,22 @@ GTM e Documentação
   - EscrowFinish `0BB6D6B493FAB1BE...A4A0` — `sequence=12773413`.
   - Registros auditáveis: `docs/testnet-audit/transactions.csv:7-8`.
 
+**Relatório Completo da Entrega**
+- P0 realizado:
+  - Rate limiting por token/rota (`server.js:98–113`) e por IP (`server.js:101–111`), configurável via `RATE_LIMIT_*` env.
+  - Rotação emergencial de JWT (`api/_auth.js:29–41`) com rejeição por idade (`JWT_ROTATION_EMERGENCY_MS`) e validação de `JWT_ISSUER`/expiração curta.
+  - Validação de política em `EscrowFinish` (KYC/NFT + screening) (`api/escrow-finish.js:50–55`, `src/backend/smart-escrow-policy.js:12–24`).
+  - Auditoria padronizada sem PII em rotas críticas (`api/_logger 2.js:1`) e uso em `escrow-create`/`escrow-finish`.
+  - Migração de lógicas XRPL para TypeScript (server-side): `src/backend/api/trustlineRlusd.ts:1`, `src/backend/api/escrowCreate.ts:1`, `src/backend/api/escrowFinish.ts:1`; `npm run typecheck` OK.
+- P1 realizado:
+  - AMMDeposit/AMMWithdraw implementados com KMS, `withRetry` e auditoria; execução opt‑in por `AMM_EXECUTE=1` (`api/amm-deposit.js:15–31`, `api/amm-withdraw.js:15–31`).
+  - Métricas de latência e `pathsCount` em AMM Quote (`api/amm-quote.js:20–24`).
+- P2 realizado (parcial):
+  - Stubs de identidade Xumm (`api/identity/xumm/start.js:1`, `api/identity/xumm/callback.js:1`).
+  - Integração ERP (mock) publicada: `POST /api/v1/connect/erp/reconcile` (`api/v1/connect/erp/reconcile.js:1–20`, `server.js:95–96`).
+- Evidências Testnet confirmadas:
+  - EscrowCreate/Finish com hashes e sequences em `docs/RELATORIO_ANALISE_ESTRATEGICA.md:152–153` e `docs/testnet-audit/transactions.csv:7–8`.
+
 **Notas de Segurança**
 - XRPL_SEED via env/KMS, nunca em banco/logs/front; assinatura exclusiva no backend.
 - Rotas críticas protegidas por JWT curto; try-catch + `withRetry` para resiliência.
