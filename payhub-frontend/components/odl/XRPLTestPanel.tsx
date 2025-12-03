@@ -91,12 +91,12 @@ export const XRPLTestPanel: React.FC = () => {
 
   const connectMetaMask = async () => {
     try {
-      // @ts-ignore
+      // @ts-expect-error MetaMask provider injected in window.ethereum
       if (!(window && window.ethereum)) {
         append({ op: 'metamask', res: { status: 0, data: 'MetaMask não detectado' } });
         return;
       }
-      // @ts-ignore
+      // @ts-expect-error Ethereum provider request available via window.ethereum
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const acc = Array.isArray(accounts) ? accounts[0] : '';
       setEvmAccount(acc || '');

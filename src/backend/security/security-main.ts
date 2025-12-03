@@ -103,10 +103,10 @@ export class PAYHUBSecuritySystem {
       await this.performInitialCheck();
       
       this.isInitialized = true;
-      console.log('✅ Sistema de Segurança PAYHUB_V3 inicializado com sucesso!');
+      console.log(' Sistema de Segurança PAYHUB_V3 inicializado com sucesso!');
       
     } catch (error) {
-      console.error('❌ Falha ao inicializar sistema de segurança:', error);
+      console.error(' Falha ao inicializar sistema de segurança:', error);
       throw error;
     }
   }
@@ -124,7 +124,7 @@ export class PAYHUBSecuritySystem {
         // Honeypot já é inicializado automaticamente
         this.status.subsystems.honeypot = true;
       } catch (error) {
-        console.error('❌ Falha ao inicializar honeypot:', error);
+        console.error(' Falha ao inicializar honeypot:', error);
       }
     }
 
@@ -135,7 +135,7 @@ export class PAYHUBSecuritySystem {
         // Incident Response já é inicializado automaticamente
         this.status.subsystems.incidentResponse = true;
       } catch (error) {
-        console.error('❌ Falha ao inicializar resposta a incidentes:', error);
+        console.error(' Falha ao inicializar resposta a incidentes:', error);
       }
     }
 
@@ -146,7 +146,7 @@ export class PAYHUBSecuritySystem {
         // KMS já é inicializado automaticamente
         this.status.subsystems.kms = true;
       } catch (error) {
-        console.error('❌ Falha ao inicializar KMS:', error);
+        console.error(' Falha ao inicializar KMS:', error);
       }
     }
 
@@ -157,7 +157,7 @@ export class PAYHUBSecuritySystem {
         // MFA já é inicializado automaticamente
         this.status.subsystems.mfa = true;
       } catch (error) {
-        console.error('❌ Falha ao inicializar MFA:', error);
+        console.error(' Falha ao inicializar MFA:', error);
       }
     }
 
@@ -168,7 +168,7 @@ export class PAYHUBSecuritySystem {
         // Dashboard já é inicializado automaticamente
         this.status.subsystems.dashboard = true;
       } catch (error) {
-        console.error('❌ Falha ao inicializar dashboard:', error);
+        console.error(' Falha ao inicializar dashboard:', error);
       }
     }
   }
@@ -186,7 +186,7 @@ export class PAYHUBSecuritySystem {
         
         if (this.configuration.autoResponseEnabled) {
           incidentResponseEngine.processSecurityAlert(alert).catch(error => {
-            console.error('❌ Falha ao processar alerta:', error);
+            console.error(' Falha ao processar alerta:', error);
           });
         }
       });
@@ -231,7 +231,7 @@ export class PAYHUBSecuritySystem {
       await this.executePreventiveActions(currentStatus);
       
     } catch (error) {
-      console.error('❌ Erro durante verificação de segurança:', error);
+      console.error(' Erro durante verificação de segurança:', error);
     }
   }
 
@@ -259,7 +259,7 @@ export class PAYHUBSecuritySystem {
     this.status.activeThreats = activeThreats;
     
     if (activeThreats > 0) {
-      console.log(`⚠️ ${activeThreats} ameaça(s) ativa(s) detectada(s)`);
+      console.log(`️ ${activeThreats} ameaça(s) ativa(s) detectada(s)`);
     }
   }
 
@@ -277,7 +277,7 @@ export class PAYHUBSecuritySystem {
       try {
         await kmsProtectionSystem.checkAndRotateExpiredKeys('system');
       } catch (error) {
-        console.error('❌ Falha ao verificar rotação de chaves:', error);
+        console.error(' Falha ao verificar rotação de chaves:', error);
       }
     }
   }
@@ -329,7 +329,7 @@ export class PAYHUBSecuritySystem {
       }
     }
     
-    console.log('✅ Modo de alta segurança ativado');
+    console.log(' Modo de alta segurança ativado');
   }
 
   /**
@@ -346,7 +346,7 @@ export class PAYHUBSecuritySystem {
       }, 30000); // Verificar a cada 30 segundos
     }
     
-    console.log('✅ Modo de segurança padrão ativado');
+    console.log(' Modo de segurança padrão ativado');
   }
 
   /**
@@ -363,7 +363,7 @@ export class PAYHUBSecuritySystem {
       }, 60000); // Verificar a cada minuto
     }
     
-    console.log('✅ Modo de segurança relaxada ativado');
+    console.log(' Modo de segurança relaxada ativado');
   }
 
   /**
@@ -466,7 +466,7 @@ export class PAYHUBSecuritySystem {
       this.monitoringInterval = undefined;
     }
     
-    console.log('✅ Sistema de segurança desligado com segurança');
+    console.log(' Sistema de segurança desligado com segurança');
   }
 }
 

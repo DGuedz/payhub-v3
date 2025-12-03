@@ -1,10 +1,10 @@
-# 🤖 PAYHUB_V3 AI Chat - Hackathon XRPL Vega House
+#  PAYHUB_V3 AI Chat - Hackathon XRPL Vega House
 
-## 📋 Status: ✅ PRONTO PARA DEMO
+##  Status:  PRONTO PARA DEMO
 
 A Edge Function `ai-chat` está totalmente funcional com modo **sandbox** (sem custos) e tratamento robusto de erros.
 
-## 🚀 Teste Rápido (1 minuto)
+##  Teste Rápido (1 minuto)
 
 ### Opção 1: Sandbox (Sem Autenticação - Sem Custos)
 ```bash
@@ -27,7 +27,7 @@ curl -s -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" 
   -d '{"message":"Explique sobre XRPL e DeFi"}'
 ```
 
-## 📁 Arquivos de Demo
+##  Arquivos de Demo
 
 | Arquivo | Descrição | Uso |
 |---------|-----------|-----|
@@ -36,13 +36,13 @@ curl -s -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" 
 | `demo-usage.ts` | Exemplos de código | Referência de integração |
 | `test-ai-chat.js` | Script de teste | Validação rápida |
 
-## 🎯 Modos de Operação
+##  Modos de Operação
 
-### 🧩 Modo Sandbox (Atual)
-- ✅ **Sem custos OpenAI**
-- ✅ **Sem autenticação necessária**
-- ✅ **Respostas locais simuladas**
-- ✅ **Ideal para demonstrações**
+###  Modo Sandbox (Atual)
+-  **Sem custos OpenAI**
+-  **Sem autenticação necessária**
+-  **Respostas locais simuladas**
+-  **Ideal para demonstrações**
 
 ```json
 {
@@ -52,13 +52,13 @@ curl -s -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" 
 }
 ```
 
-### 🤖 Modo GPT (Com quota OpenAI)
-- ✅ **Integração real com OpenAI GPT-4o-mini**
-- ✅ **Requer autenticação JWT**
-- ✅ **Respostas inteligentes**
-- ⚠️ **Requer quota ativa na conta OpenAI**
+###  Modo GPT (Com quota OpenAI)
+-  **Integração real com OpenAI GPT-4o-mini**
+-  **Requer autenticação JWT**
+-  **Respostas inteligentes**
+- ️ **Requer quota ativa na conta OpenAI**
 
-## 🔧 Integração Frontend (TypeScript)
+##  Integração Frontend (TypeScript)
 
 ```typescript
 import { sendMessage, testSandbox } from './ai-chat-client';
@@ -72,7 +72,7 @@ const jwt = await getUserToken(); // Seu sistema de auth
 const response = await sendMessage("Como integrar XRPL?", jwt);
 ```
 
-## 📊 Endpoints e Configurações
+##  Endpoints e Configurações
 
 - **Project Ref**: `nsdujmcxbifhssipszdp`
 - **Endpoint**: `https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat`
@@ -81,7 +81,7 @@ const response = await sendMessage("Como integrar XRPL?", jwt);
   - `Content-Type: application/json` (obrigatório)
   - `Authorization: Bearer <JWT>` (opcional - para modo GPT)
 
-## 🎨 Personalização para Demo
+##  Personalização para Demo
 
 ### Mensagens Sugeridas para Teste:
 1. "Olá PAYHUB_V3! Apresente o projeto"
@@ -95,7 +95,7 @@ const response = await sendMessage("Como integrar XRPL?", jwt);
 - "Modo Sandbox ativo - demonstração sem custos OpenAI"
 - "Sistema pronto para integração com XRPL e DeFi"
 
-## ⚡ Comandos Úteis
+##  Comandos Úteis
 
 ### Verificar status da função:
 ```bash
@@ -115,7 +115,7 @@ curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \
   -d 'mensagem invalida'
 ```
 
-## 🏆 Checklist Final Demo
+##  Checklist Final Demo
 
 - [x] Edge Function deployada e funcionando
 - [x] Modo sandbox ativo (sem custos)
@@ -125,8 +125,8 @@ curl -X POST "https://nsdujmcxbifhssipszdp.supabase.co/functions/v1/ai-chat" \
 - [x] Exemplos de código documentados
 - [x] Testes de integração validados
 
-## 🎉 Sistema Pronto!
+##  Sistema Pronto!
 
 O PAYHUB_V3 AI Chat está **100% funcional** para demonstrações no hackathon XRPL Vega House. Use o modo sandbox para apresentações sem custos e sem complicações de autenticação!
 
-**Boa sorte na apresentação!** 🚀
+**Boa sorte na apresentação!** 

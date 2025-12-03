@@ -1,8 +1,13 @@
 // Lightweight local server to run Vercel-style API routes for testing via terminal
 // Security: never log secrets; relies on env vars set in the shell / .env loader upstream
 
-const http = require('http');
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
 const url = require('url');
+const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60000);
+const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 120);
+const RATE_LIMIT = new Map();
 
 // Simple CORS support for frontend->backend integration in dev
 // Default allows Vite (5173) and Next.js dev (3001)
@@ -77,53 +82,56 @@ const routes = {
   '/api/amm/swap': require('./api/amm-swap'),
   '/api/amm/deposit': require('./api/amm-deposit'),
   '/api/amm/withdraw': require('./api/amm-withdraw'),
+  '/api/payment/pix': require('./api/payment-pix'),
+  '/api/payment/pix/callback': require('./api/payment-pix-callback'),
+  '/api/payment/simulate': require('./api/payment-simulate'),
   '/api/v1/sdk_p4yhu3/liquidar-parcelado': require('./api/v1/sdk_p4yhu3/liquidar-parcelado'),
   // Rotas v1 desabilitadas temporariamente para focar na integração ODL mínima
-  // '/api/v1/sdk_p4yhu3/liquidar-parcelado': require('./api/v1/sdk_p4yhu3/liquidar-parcelado'),
-  // '/api/v1/sdk_p4yhu3/antecipar-escrow': require('./api/v1/sdk_p4yhu3/antecipar-escrow'),
+  '/api/v1/sdk_p4yhu3/antecipar-escrow': require('./api/v1/sdk_p4yhu3/antecipar-escrow'),
   '/api/v1/merchant/yield/activate': require('./api/v1/merchant/yield/activate'),
   '/api/identity/xumm/start': require('./api/identity/xumm/start'),
   '/api/identity/xumm/callback': require('./api/identity/xumm/callback'),
-  // '/api/v1/compliance/report': require('./api/v1/compliance/report'),
+  '/api/security/alerts': require('./api/security/alerts'),
+  '/api/v1/compliance/report': require('./api/v1/compliance/report'),
+  '/api/simulate/escrow-e2e': require('./api/simulate/escrow-e2e'),
   // '/api/v1/connect/erp/reconcile': require('./api/v1/connect/erp/reconcile'),
 };
 
-const server = http.createServer(async (req, res) => {
-  // CORS preflight and headers
-  if (applyCors(req, res)) return;
-  const parsed = url.parse(req.url, true);
-  const handler = routes[parsed.pathname];
-  if (!handler) {
-    return jsonResponse(res, 404, { ok: false, error: 'Not Found' });
-  }
+const app = express();
+app.use(helmet());
+app.use(cors({ origin: (origin, cb) => {
+  if (!origin) return cb(null, false);
+  if (ALLOW_ANY || ALLOWED_ORIGINS.includes(origin)) return cb(null, origin);
+  return cb(null, false);
+}, credentials: true }));
+app.use(express.json());
 
-  const resWrap = createRes();
-  resWrap._rawRes = res;
+app.use((req, res, next) => {
+  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString();
+  const now = Date.now();
+  const bucket = RATE_LIMIT.get(ip) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+  if (now > bucket.resetAt) { bucket.count = 0; bucket.resetAt = now + RATE_LIMIT_WINDOW_MS; }
+  bucket.count += 1; RATE_LIMIT.set(ip, bucket);
+  if (bucket.count > RATE_LIMIT_MAX) return jsonResponse(res, 429, { ok: false, error: 'Too Many Requests' });
+  next();
+});
 
-  // Build minimal req object expected by handlers
-  const reqWrap = {
-    method: req.method,
-    headers: req.headers,
-    query: parsed.query,
-    body: undefined,
-  };
-
-  if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
-    reqWrap.body = await parseJsonBody(req);
-  }
-
-  try {
-    const result = handler(reqWrap, resWrap);
-    if (result && typeof result.then === 'function') {
-      await result;
+Object.keys(routes).forEach((path) => {
+  app.all(path, async (req, res) => {
+    const handler = routes[path];
+    const resWrap = createRes();
+    resWrap._rawRes = res;
+    const parsed = url.parse(req.url, true);
+    const reqWrap = { method: req.method, headers: req.headers, query: parsed.query, body: req.body };
+    try {
+      const result = handler(reqWrap, resWrap);
+      if (result && typeof result.then === 'function') await result;
+    } catch (err) {
+      const message = err && err.message ? err.message : String(err);
+      jsonResponse(res, 500, { ok: false, error: message });
     }
-  } catch (err) {
-    const message = err && err.message ? err.message : String(err);
-    jsonResponse(res, 500, { ok: false, error: message });
-  }
+  });
 });
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
-server.listen(port, () => {
-  console.log(JSON.stringify({ msg: 'Local API server listening', port }));
-});
+app.listen(port, () => { console.log(JSON.stringify({ msg: 'Local API server listening', port })); });

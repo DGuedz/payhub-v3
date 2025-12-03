@@ -1,0 +1,73 @@
+openapi: 3.0.3
+info:
+  title: PAYHUB VTC Subscription API
+  version: 1.0.0
+  description: Endpoint para iniciar pagamento de assinatura VTC via PAYHUB
+servers:
+  - url: http://localhost:3001
+paths:
+  /api/v1/payment/vtc-subscription:
+    post:
+      summary: Inicia fluxo de pagamento e EscrowCreate RLUSD
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                planId:
+                  type: string
+                  enum: [Starter, Pro, Elite]
+                paymentMethod:
+                  type: string
+                  enum: [PIX, Card, Crypto]
+                vtcUserId:
+                  type: string
+              required: [planId, paymentMethod, vtcUserId]
+      responses:
+        '200':
+          description: Payload de pagamento gerado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: pending_payment
+                  plan:
+                    type: string
+                  amount:
+                    type: string
+                  currency:
+                    type: string
+                    example: USD
+                  escrowHash:
+                    type: string
+                  escrowSequence:
+                    type: integer
+                  owner:
+                    type: string
+                  paymentMethod:
+                    type: string
+                  paymentInstruction:
+                    type: string
+                  paymentDetails:
+                    type: object
+                  webhookUrl:
+                    type: string
+        '401':
+          description: JWT inválido ou ausente
+        '400':
+          description: Plano inválido
+        '500':
+          description: Erro interno
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

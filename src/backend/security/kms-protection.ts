@@ -407,7 +407,7 @@ export class KMSProtectionSystem {
 
     this.logAccess(keyId, 'update', principal, true, `Chave marcada como comprometida: ${reason}`, metadata);
 
-    console.log(`🚨 Chave comprometida: ${keyId} - ${reason}`);
+    console.log(` Chave comprometida: ${keyId} - ${reason}`);
 
     // Executar ações de emergência
     await this.emergencyKeyRevocation(keyId, principal);
@@ -432,7 +432,7 @@ export class KMSProtectionSystem {
       backedUpBy: principal
     };
 
-    console.log(`💾 Backup criado: ${backupId}`);
+    console.log(` Backup criado: ${backupId}`);
     
     // Em produção, salvar em storage seguro
     // await secureStorage.saveBackup(backupId, backupData);
@@ -442,20 +442,20 @@ export class KMSProtectionSystem {
    * Revogação emergencial de chave
    */
   private async emergencyKeyRevocation(keyId: string, principal: string): Promise<void> {
-    console.log(`🚨 Iniciando revogação emergencial da chave: ${keyId}`);
+    console.log(` Iniciando revogação emergencial da chave: ${keyId}`);
 
     // Ações de emergência:
     // 1. Notificar equipe de segurança
-    console.log(`📢 Equipe de segurança notificada sobre chave comprometida: ${keyId}`);
+    console.log(` Equipe de segurança notificada sobre chave comprometida: ${keyId}`);
 
     // 2. Rotacionar chaves relacionadas
-    console.log(`🔄 Chaves relacionadas sendo rotacionadas`);
+    console.log(` Chaves relacionadas sendo rotacionadas`);
 
     // 3. Invalidar sessões ativas
-    console.log(`🔓 Todas as sessões usando esta chave foram invalidadas`);
+    console.log(` Todas as sessões usando esta chave foram invalidadas`);
 
     // 4. Gerar novo par de chaves
-    console.log(`🔐 Novo par de chaves sendo gerado`);
+    console.log(` Novo par de chaves sendo gerado`);
   }
 
   /**
@@ -535,7 +535,7 @@ export class KMSProtectionSystem {
         : daysSinceCreation;
 
       if (daysSinceRotation >= policy.rotationInterval) {
-        console.log(`🔄 Rotação automática necessária para: ${keyId}`);
+        console.log(` Rotação automática necessária para: ${keyId}`);
         
         try {
           // Gerar nova chave (simulação)
@@ -544,7 +544,7 @@ export class KMSProtectionSystem {
           rotatedKeys.push(keyId);
           
         } catch (error) {
-          console.error(`❌ Falha ao rotacionar chave ${keyId}:`, error);
+          console.error(` Falha ao rotacionar chave ${keyId}:`, error);
         }
       }
     }

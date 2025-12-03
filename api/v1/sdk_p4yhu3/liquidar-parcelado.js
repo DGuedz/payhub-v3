@@ -1,68 +1,41 @@
-// Endpoint de orquestração: POST /api/v1/sdk_p4yhu3/liquidar-parcelado
-// Fluxo: Capital -> Assurance (sign) -> Rails (submit) -> Reporting
-// Segurança: JWT obrigatório; sem exposição de segredos
-
 const { requireAuth } = require('../../_auth');
-const { logger } = require('../../_logger');
-const { GatewayService } = require('../../../src/backend/lib/sdk/gateway-service');
-const { CapitalService } = require('../../../src/backend/lib/sdk/capital-service');
-const { AssuranceService } = require('../../../src/backend/lib/sdk/assurance-service');
-const { ReportingService } = require('../../../src/backend/lib/sdk/reporting-service');
+const { solicitarFinanciamento, cancelarFinanciamento } = require('../../../src/backend/sdk/capital-service');
+const { criarEscrow, submeterTransacao } = require('../../../src/backend/sdk/assurance-service');
+const { logarOperacao } = require('../../../src/backend/sdk/reporting-service');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
   }
-
+  const authUser = requireAuth(req, res);
+  if (!authUser) return;
   try {
-    const authUser = requireAuth(req, res);
-    if (!authUser) return; // resposta já enviada
-
-    // Validação inicial
-    const input = await GatewayService.validarEntrada(req.body || {});
-
-    const rcvId = `RCV-ID-PAYHUB-${Date.now()}`;
-    let funding, signedTxBlob, submitResult, report;
-
-    try {
-      // Passo 1: Financiamento (Hidden Road)
-      funding = await CapitalService.solicitarFinanciamento(rcvId, input.valor_brl);
-
-      // Passo 2: Assinatura (Metaco)
-      signedTxBlob = await AssuranceService.criarEscrow(
-        funding,
-        input.recebedor_wallet,
-        input.prova_servico_id
-      );
-
-      // Passo 3: Submissão (Rails/XRPL)
-      submitResult = await AssuranceService.submeterTransacao(signedTxBlob);
-
-      // Passo 4: Reporting (GTreasury)
-      report = await ReportingService.logarOperacao(
-        submitResult.txHash,
-        input.recebedor_wallet,
-        'IN_ESCROW'
-      );
-    } catch (stepErr) {
-      // Rollback: cancelar financiamento se falha após Passo 1
-      if (funding && funding.fundingId) {
-        try { await CapitalService.cancelarFinanciamento(funding.fundingId); } catch {}
-      }
-      logger.error('[P4YHU3-SDK] Orquestração FAIL', { error: stepErr.message });
-      return res.status(500).json({ ok: false, error: stepErr.message });
+    const body = req.body || {};
+    const valorBrL = Number(body.valor_brl || body.valor || 0);
+    const parcelas = Number(body.parcelas || 0);
+    const recebedorWallet = String(body.recebedor_wallet || '').trim();
+    const provaServicoId = String(body.prova_servico_id || '').trim();
+    if (!valorBrL || !recebedorWallet) {
+      return res.status(400).json({ ok: false, error: 'Missing valor_brl or recebedor_wallet' });
     }
-
-    // Auditoria final
+    const rcvId = `RCV-${Date.now()}-${parcelas || 1}`;
+    let funding;
+    let escrowCreate;
+    let submitRes;
     try {
-      if (submitResult && submitResult.txHash) {
-        logger.audit('[P4YHU3-SDK] Operação concluída', { txHash: submitResult.txHash, operationId: report.id });
-      }
-    } catch {}
-
-    return res.status(200).json({ status: 'success', operationId: report.id, txHash: submitResult.txHash });
+      funding = solicitarFinanciamento(rcvId, valorBrL);
+      escrowCreate = criarEscrow(funding, recebedorWallet, provaServicoId);
+      submitRes = submeterTransacao(escrowCreate.signedTxBlob);
+    } catch (e) {
+      try { if (funding && funding.fundingId) cancelarFinanciamento(funding.fundingId); } catch {}
+      const message = e && e.message ? e.message : String(e);
+      return res.status(500).json({ ok: false, error: message });
+    }
+    const report = logarOperacao(submitRes.txHash, recebedorWallet, 'IN_ESCROW');
+    return res.status(200).json({ ok: true, operationId: report.operationId, fundingId: funding.fundingId, escrow: { txHash: submitRes.txHash, offerSequence: submitRes.offerSequence, owner: recebedorWallet } });
   } catch (err) {
     const message = err && err.message ? err.message : String(err);
     return res.status(500).json({ ok: false, error: message });
   }
 };
+

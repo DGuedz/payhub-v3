@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2025-12-02T15:33:40.064Z",
+  "artifacts": {
+    "rlusdIssuer": "rhvzTE7FXW88bJUE7hWvc566S3jQnErK2X",
+    "merchantAccount": "rHHe2ha4z23RZJdPQTg11E1QuxEDjGgJz8",
+    "treasuryVault": "r3YVS16agyx8JJdcroAWCyjmW8Yoejtn5K",
+    "trustline": {
+      "txHash": "527F0C5615004AF3B3C3FE12D1CECE7CD2D9CA229D3607B65210357A231836C2",
+      "sequence": 12860888,
+      "status": "TRUSTLINE_OK"
+    },
+    "treasuryTrustline": {
+      "txHash": "4BB99CE6611658CD22692C4A2DF550C7420DF371EE74A64CF91D1E7A88957AE4",
+      "sequence": 12860890,
+      "status": "TRUSTLINE_OK"
+    },
+    "issuance": {
+      "txHash": "CECB0CA7C5F33116BB90E7FDC3E59E50AA5DFED1BAA2BE144D181BBFCB7332A9",
+      "value": "100.00"
+    },
+    "escrowCreate": {
+      "txHash": "7876B63EE59FCE568CAF52C60736B717FAE4636622E85670D87FDB455A314DC6",
+      "offerSequence": 12860889,
+      "owner": "rHHe2ha4z23RZJdPQTg11E1QuxEDjGgJz8",
+      "destination": "r3YVS16agyx8JJdcroAWCyjmW8Yoejtn5K",
+      "amount": {
+        "currency": "RLUSD",
+        "issuer": "rhvzTE7FXW88bJUE7hWvc566S3jQnErK2X",
+        "value": "100.00"
+      }
+    },
+    "escrowFinish": {
+      "txHash": "38D3ED5B09CF4C1F03651615F95E42F790ADCBCE9DD6918F272FDF1A4C0B93F5",
+      "sequence": 12860890,
+      "owner": "rHHe2ha4z23RZJdPQTg11E1QuxEDjGgJz8",
+      "offerSequence": 12860889
+    },
+    "rlusdTransfer": {
+      "txHash": "025375A56E9C326FD03CB600809077E3F8FA07183B3B4B820DFC6513FD58F1EE",
+      "sequence": 12860891,
+      "from": "rHHe2ha4z23RZJdPQTg11E1QuxEDjGgJz8",
+      "to": "r3YVS16agyx8JJdcroAWCyjmW8Yoejtn5K",
+      "amount": "100.00"
+    }
+  }
+}
