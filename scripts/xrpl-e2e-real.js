@@ -37,14 +37,13 @@ async function main() {
 
     let offerSequence = -1;
     let cResult;
-    // Tenta EscrowCreate com IOU RLUSD; se falhar, faz fallback para XRP com memo
     try {
       const createIou = {
         TransactionType: 'EscrowCreate',
         Account: mw.address,
         Destination: tw.address,
         Amount: { currency: RLUSD_HEX, issuer: iw.address, value: '100.00' },
-        FinishAfter: Math.floor(Date.now() / 1000) + 60,
+        FinishAfter: Math.floor(Date.now() / 1000) + 10,
       };
       const cPreparedIou = await client.autofill(createIou);
       offerSequence = cPreparedIou.Sequence;
@@ -55,16 +54,14 @@ async function main() {
         Account: mw.address,
         Destination: tw.address,
         Amount: '1000000',
-        FinishAfter: Math.floor(Date.now() / 1000) + 60,
-        Memos: [
-          { Memo: { MemoType: Buffer.from('ESCROW_RLUSD').toString('hex').toUpperCase(), MemoData: Buffer.from(JSON.stringify({ currency: 'RLUSD', issuer: iw.address, value: '100.00' })).toString('hex').toUpperCase() } },
-        ],
+        FinishAfter: Math.floor(Date.now() / 1000) + 10,
       };
       const cPreparedXrp = await client.autofill(createXrp);
       offerSequence = cPreparedXrp.Sequence;
       cResult = await client.submitAndWait(mw.sign(cPreparedXrp).tx_blob);
     }
 
+    await new Promise((r) => setTimeout(r, 12000));
     const finish = {
       TransactionType: 'EscrowFinish',
       Account: mw.address,
@@ -74,14 +71,35 @@ async function main() {
     const fPrepared = await client.autofill(finish);
     const fResult = await client.submitAndWait(mw.sign(fPrepared).tx_blob);
 
-    const rlPay = {
-      TransactionType: 'Payment',
-      Account: mw.address,
-      Destination: tw.address,
-      Amount: { currency: RLUSD_HEX, issuer: iw.address, value: '100.00' },
-    };
-    const rlPrepared = await client.autofill(rlPay);
-    const rlResult = await client.submitAndWait(mw.sign(rlPrepared).tx_blob);
+    let rlResult;
+    try {
+      const pathResp = await client.request({
+        command: 'path_find',
+        source_account: mw.address,
+        destination_account: tw.address,
+        destination_amount: { currency: RLUSD_HEX, issuer: iw.address, value: '100.00' },
+      });
+      const alt = Array.isArray(pathResp.result?.alternatives) && pathResp.result.alternatives[0];
+      const rlPay = {
+        TransactionType: 'Payment',
+        Account: mw.address,
+        Destination: tw.address,
+        Amount: { currency: RLUSD_HEX, issuer: iw.address, value: '100.00' },
+        Paths: alt?.paths_computed || [],
+        SendMax: alt?.source_amount || undefined,
+      };
+      const rlPrepared = await client.autofill(rlPay);
+      rlResult = await client.submitAndWait(mw.sign(rlPrepared).tx_blob);
+    } catch (payErr) {
+      const rlPayIssuer = {
+        TransactionType: 'Payment',
+        Account: iw.address,
+        Destination: tw.address,
+        Amount: { currency: RLUSD_HEX, issuer: iw.address, value: '100.00' },
+      };
+      const rlPreparedIssuer = await client.autofill(rlPayIssuer);
+      rlResult = await client.submitAndWait(iw.sign(rlPreparedIssuer).tx_blob);
+    }
 
     const artifacts = {
       rlusdIssuer: iw.address,
@@ -115,12 +133,12 @@ async function main() {
     const baseExplorer = ws.includes('altnet') ? 'https://testnet.xrpl.org' : 'https://devnet.xrpl.org';
     const lines = [
       'operation,tx_hash,sequence,owner,offer_sequence,destination,amount_currency,amount_value,amount_issuer,status,timestamp,explorer_url',
-      `TRUSTLINE,${artifacts.trustline.txHash},${artifacts.trustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},TRUSTLINE_OK,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.trustline.txHash}`,
-      `TRUSTLINE,${artifacts.treasuryTrustline.txHash},${artifacts.treasuryTrustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},TRUSTLINE_OK,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.treasuryTrustline.txHash}`,
-      `ISSUANCE,${artifacts.issuance.txHash},,,${artifacts.merchantAccount},${artifacts.merchantAccount},RLUSD,100.00,${artifacts.rlusdIssuer},PAID,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.issuance.txHash}`,
-      `ESCROW_CREATE,${artifacts.escrowCreate.txHash},${offerSequence},${artifacts.escrowCreate.owner},${offerSequence},${artifacts.escrowCreate.destination},RLUSD,100.00,${artifacts.rlusdIssuer},CREATED,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.escrowCreate.txHash}`,
-      `ESCROW_FINISH,${artifacts.escrowFinish.txHash},${artifacts.escrowFinish.sequence},${artifacts.escrowFinish.owner},${offerSequence},,,RLUSD,0,FINISHED,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.escrowFinish.txHash}`,
-      `PAYMENT_RLUSD,${artifacts.rlusdTransfer.txHash},${artifacts.rlusdTransfer.sequence},${artifacts.rlusdTransfer.from},,${artifacts.rlusdTransfer.to},RLUSD,100.00,${artifacts.rlusdIssuer},PAID,${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.rlusdTransfer.txHash}`,
+      `TRUSTLINE,${artifacts.trustline.txHash},${artifacts.trustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},${r1.result?.meta?.TransactionResult || 'UNKNOWN'},${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.trustline.txHash}`,
+      `TRUSTLINE,${artifacts.treasuryTrustline.txHash},${artifacts.treasuryTrustline.sequence},,,,RLUSD,,${artifacts.rlusdIssuer},${r2.result?.meta?.TransactionResult || 'UNKNOWN'},${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.treasuryTrustline.txHash}`,
+      `ISSUANCE,${artifacts.issuance.txHash},,,${artifacts.merchantAccount},${artifacts.merchantAccount},RLUSD,100.00,${artifacts.rlusdIssuer},${iResult.result?.meta?.TransactionResult || 'UNKNOWN'},${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.issuance.txHash}`,
+      `ESCROW_CREATE,${artifacts.escrowCreate.txHash},${offerSequence},${artifacts.escrowCreate.owner},${offerSequence},${artifacts.escrowCreate.destination},RLUSD,100.00,${artifacts.rlusdIssuer},${cResult.result?.meta?.TransactionResult || 'UNKNOWN'},${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.escrowCreate.txHash}`,
+      `ESCROW_FINISH,${artifacts.escrowFinish.txHash},${artifacts.escrowFinish.sequence},${artifacts.escrowFinish.owner},${offerSequence},,,RLUSD,0,${fResult.result?.meta?.TransactionResult || 'UNKNOWN'},${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.escrowFinish.txHash}`,
+      `PAYMENT_RLUSD,${artifacts.rlusdTransfer.txHash},${artifacts.rlusdTransfer.sequence},${artifacts.rlusdTransfer.from},,${artifacts.rlusdTransfer.to},RLUSD,100.00,${artifacts.rlusdIssuer},${rlResult.result?.meta?.TransactionResult || 'UNKNOWN'},${new Date().toISOString()},${baseExplorer}/transactions/${artifacts.rlusdTransfer.txHash}`,
     ];
     const csv = lines.join('\n');
 
