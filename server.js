@@ -1,7 +1,9 @@
 // Lightweight local server to run Vercel-style API routes for testing via terminal
 // Security: never log secrets; relies on env vars set in the shell / .env loader upstream
 
-const http = require('http');
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
 const url = require('url');
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60000);
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 120);
@@ -95,54 +97,41 @@ const routes = {
   // '/api/v1/connect/erp/reconcile': require('./api/v1/connect/erp/reconcile'),
 };
 
-const server = http.createServer(async (req, res) => {
-  // CORS preflight and headers
-  if (applyCors(req, res)) return;
+const app = express();
+app.use(helmet());
+app.use(cors({ origin: (origin, cb) => {
+  if (!origin) return cb(null, false);
+  if (ALLOW_ANY || ALLOWED_ORIGINS.includes(origin)) return cb(null, origin);
+  return cb(null, false);
+}, credentials: true }));
+app.use(express.json());
+
+app.use((req, res, next) => {
   const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString();
   const now = Date.now();
   const bucket = RATE_LIMIT.get(ip) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
-  if (now > bucket.resetAt) {
-    bucket.count = 0;
-    bucket.resetAt = now + RATE_LIMIT_WINDOW_MS;
-  }
-  bucket.count += 1;
-  RATE_LIMIT.set(ip, bucket);
-  if (bucket.count > RATE_LIMIT_MAX) {
-    return jsonResponse(res, 429, { ok: false, error: 'Too Many Requests' });
-  }
-  const parsed = url.parse(req.url, true);
-  const handler = routes[parsed.pathname];
-  if (!handler) {
-    return jsonResponse(res, 404, { ok: false, error: 'Not Found' });
-  }
+  if (now > bucket.resetAt) { bucket.count = 0; bucket.resetAt = now + RATE_LIMIT_WINDOW_MS; }
+  bucket.count += 1; RATE_LIMIT.set(ip, bucket);
+  if (bucket.count > RATE_LIMIT_MAX) return jsonResponse(res, 429, { ok: false, error: 'Too Many Requests' });
+  next();
+});
 
-  const resWrap = createRes();
-  resWrap._rawRes = res;
-
-  // Build minimal req object expected by handlers
-  const reqWrap = {
-    method: req.method,
-    headers: req.headers,
-    query: parsed.query,
-    body: undefined,
-  };
-
-  if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
-    reqWrap.body = await parseJsonBody(req);
-  }
-
-  try {
-    const result = handler(reqWrap, resWrap);
-    if (result && typeof result.then === 'function') {
-      await result;
+Object.keys(routes).forEach((path) => {
+  app.all(path, async (req, res) => {
+    const handler = routes[path];
+    const resWrap = createRes();
+    resWrap._rawRes = res;
+    const parsed = url.parse(req.url, true);
+    const reqWrap = { method: req.method, headers: req.headers, query: parsed.query, body: req.body };
+    try {
+      const result = handler(reqWrap, resWrap);
+      if (result && typeof result.then === 'function') await result;
+    } catch (err) {
+      const message = err && err.message ? err.message : String(err);
+      jsonResponse(res, 500, { ok: false, error: message });
     }
-  } catch (err) {
-    const message = err && err.message ? err.message : String(err);
-    jsonResponse(res, 500, { ok: false, error: message });
-  }
+  });
 });
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
-server.listen(port, () => {
-  console.log(JSON.stringify({ msg: 'Local API server listening', port }));
-});
+app.listen(port, () => { console.log(JSON.stringify({ msg: 'Local API server listening', port })); });

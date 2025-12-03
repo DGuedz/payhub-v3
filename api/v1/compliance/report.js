@@ -17,15 +17,17 @@ module.exports = async (req, res) => {
     let csv;
     try {
       const fs = require('fs');
-      const p = 'docs/ARTIFACTS_DEVNET.json';
-      if (fs.existsSync(p)) {
-        const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+      const isTestnet = String(process.env.XRPL_NETWORK || '').toLowerCase() === 'testnet';
+      const artifactsPath = isTestnet ? 'docs/testnet-audit/artifacts.json' : 'docs/ARTIFACTS_DEVNET.json';
+      if (fs.existsSync(artifactsPath)) {
+        const data = JSON.parse(fs.readFileSync(artifactsPath, 'utf8'));
         const a = data.artifacts || {};
-        const lines = ['operation,tx_hash,sequence,owner,offer_sequence,destination,amount_currency,amount_value,amount_issuer,status,timestamp'];
-        if (a.trustline) lines.push(`TRUSTLINE,${a.trustline.txHash || ''},${a.trustline.sequence || ''},,,,RLUSD,,${process.env.RLUSD_ISSUER_ADDRESS || ''},${a.trustline.status || ''},${new Date().toISOString()}`);
-        if (a.escrowCreate) lines.push(`ESCROW_CREATE,${a.escrowCreate.txHash || ''},${a.escrowCreate.offerSequence || ''},${a.escrowCreate.owner || ''},${a.escrowCreate.offerSequence || ''},${a.escrowCreate.destination || ''},RLUSD,${a.escrowCreate.amount?.value || ''},${a.escrowCreate.amount?.issuer || ''},CREATED,${new Date().toISOString()}`);
-        if (a.advance95) lines.push(`ADVANCE_95,${a.advance95.txHash || ''},${a.advance95.sequence || ''},,,${a.advance95.destination || ''},RLUSD,${a.advance95.financedAmount || ''},${process.env.RLUSD_ISSUER_ADDRESS || ''},PAID,${new Date().toISOString()}`);
-        if (a.escrowFinish) lines.push(`ESCROW_FINISH,${a.escrowFinish.txHash || ''},${a.escrowFinish.sequence || ''},${a.escrowFinish.owner || ''},${a.escrowFinish.offerSequence || ''},,,RLUSD,0,FINISHED,${new Date().toISOString()}`);
+        const explorerBase = isTestnet ? 'https://testnet.xrpl.org/transactions/' : 'https://devnet.xrpl.org/transactions/';
+        const lines = ['operation,tx_hash,sequence,owner,offer_sequence,destination,amount_currency,amount_value,amount_issuer,status,timestamp,explorer_url'];
+        if (a.trustline) lines.push(`TRUSTLINE,${a.trustline.txHash || ''},${a.trustline.sequence || ''},,,,RLUSD,,${process.env.RLUSD_ISSUER_ADDRESS || a.rlusdIssuer || ''},${a.trustline.status || ''},${new Date().toISOString()},${explorerBase}${a.trustline.txHash || ''}`);
+        if (a.escrowCreate) lines.push(`ESCROW_CREATE,${a.escrowCreate.txHash || ''},${a.escrowCreate.offerSequence || ''},${a.escrowCreate.owner || ''},${a.escrowCreate.offerSequence || ''},${a.escrowCreate.destination || ''},RLUSD,${a.escrowCreate.amount?.value || ''},${a.escrowCreate.amount?.issuer || a.rlusdIssuer || ''},CREATED,${new Date().toISOString()},${explorerBase}${a.escrowCreate.txHash || ''}`);
+        if (a.advance95) lines.push(`ADVANCE_95,${a.advance95.txHash || ''},${a.advance95.sequence || ''},,,${a.advance95.destination || ''},RLUSD,${a.advance95.financedAmount || ''},${process.env.RLUSD_ISSUER_ADDRESS || a.rlusdIssuer || ''},PAID,${new Date().toISOString()},${explorerBase}${a.advance95.txHash || ''}`);
+        if (a.escrowFinish) lines.push(`ESCROW_FINISH,${a.escrowFinish.txHash || ''},${a.escrowFinish.sequence || ''},${a.escrowFinish.owner || ''},${a.escrowFinish.offerSequence || ''},,,RLUSD,0,FINISHED,${new Date().toISOString()},${explorerBase}${a.escrowFinish.txHash || ''}`);
         csv = lines.join('\n');
       }
     } catch {}

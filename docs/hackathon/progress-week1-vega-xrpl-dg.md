@@ -94,6 +94,9 @@ Semana 2 (29/11–05/12) — MVP Central e Resiliência
 Sumário
 - Fechamos o MVP central com segurança institucional: rate limit por IP, JWT curto com `issuer/maxAge` e cache TTL, orquestração Escrow RLUSD (IOU) end‑to‑end, AMM Quote via `ripple_path_find`, endpoints AMM Deposit/Withdraw (ack), reconciliação ERP mock e export de compliance. Assinaturas ocorrem exclusivamente no backend com `XRPL_SEED` isolada por ENV/KMS; auditoria registra `txHash/sequence` sem segredos.
 
+Resumo Semana 2 
+- Consolidamos a liquidação D+0 via Escrow na XRPL com RLUSD (IOU), reforçando segurança e resiliência. No backend, habilitamos rate limit por IP (`server.js:98–113`) e JWT curto com `issuer/maxAge` e cache TTL (`api/_auth.js:29–37`), preservando a assinatura exclusivamente no servidor com `XRPL_SEED` isolada (ENV/KMS). Implementamos Trustline RLUSD e o fluxo completo `EscrowCreate → EscrowFinish`, capturando corretamente `Owner` e `OfferSequence` e auditando `txHash/sequence` sem expor segredos. Adicionamos AMM Quote (`ripple_path_find`) e endpoints AMM Deposit/Withdraw com ACK autenticado, além de reconciliação ERP (mock) e export de compliance (CSV). A robustez foi ampliada com retry/backoff controlado para erros 429/timeout. No frontend, entregamos monitor de escrows e painel de testes. Executamos o mesmo trilho na Testnet com carteiras efêmeras, registrando evidências e links de explorer. Como defesa ativa, mantivemos o honeypot (carteiras isca) e resposta de invalidação de sessão. O HUB abstrai Trustlines/Escrow/DeFi, permitindo pagamento híbrido (PIX/cartão) e recebimento em RLUSD, preparando ativação de yield mXRP (XRPL EVM Sidechain) via `POST /api/v1/merchant/yield/activate` e métricas de APY (5–8%).
+
 Progresso Verificável
 - CSV consolidado de evidências: `docs/COMPLIANCE_LAST.csv:1`–`7`.
 - Artefatos Devnet (hashes/sequence/owner/offerSequence): `docs/ARTIFACTS_DEVNET.json` e `docs/progress/vega-xrpl/EVIDENCE.md:1`–`29`.
@@ -146,3 +149,14 @@ Relatório Testnet (Verificável)
 - EscrowCreate (IOU RLUSD) — owner: `rHHe2ha4z23RZJdPQTg11E1QuxEDjGgJz8`, offerSequence: `12860889`, tx: `7876B63EE59FCE568CAF52C60736B717FAE4636622E85670D87FDB455A314DC6` — https://testnet.xrpl.org/transactions/7876B63EE59FCE568CAF52C60736B717FAE4636622E85670D87FDB455A314DC6
 - EscrowFinish — sequence: `12860890`, tx: `38D3ED5B09CF4C1F03651615F95E42F790ADCBCE9DD6918F272FDF1A4C0B93F5` — https://testnet.xrpl.org/transactions/38D3ED5B09CF4C1F03651615F95E42F790ADCBCE9DD6918F272FDF1A4C0B93F5
 - Payment RLUSD — tx: `025375A56E9C326FD03CB600809077E3F8FA07183B3B4B820DFC6513FD58F1EE` — https://testnet.xrpl.org/transactions/025375A56E9C326FD03CB600809077E3F8FA07183B3B4B820DFC6513FD58F1EE
+
+Roadmap (Semanas 3–4)
+- Semana 3 (06/12–12/12)
+- Adapter mXRP (XRPL EVM Sidechain) e fluxo de yield: ativação, saldos, APY (5–8%), limites e UI básica de LP; auditoria sem PII.
+- Observabilidade: latência Escrow/AMM, `pathsCount`, ROI/IL; dashboards e alarmes.
+- Endurecimento: política de rotação JWT emergencial, code scanning dedicado, rate limit por token/rota.
+- Semana 4 (13/12–19/12)
+- Identidade Xumm OAuth: onboarding seguro e associação de `owner`.
+- ERP estendido: reconciliação com estados, export CSV diário e endpoint de compliance refinado; automação n8n.
+- Defesa Ativa: gatilho honeypot e resposta (invalidação de sessões); drill de incidentes.
+- Readiness: PRs protegidos, KMS/HSM, documentação e pilotos controlados.

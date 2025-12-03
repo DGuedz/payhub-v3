@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Payhub v3 - Liquidez Sob Demanda</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            padding: 20px 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .logo .pay {
+            color: #ffffff;
+        }
+        
+        .logo .hub {
+            color: #3b82f6;
+        }
+        
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .lang-toggle {
+            display: flex;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 20px;
+            padding: 4px;
+        }
+        
+        .lang-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 16px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-description {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Process Steps */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .step-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .step-card:hover::before {
+            left: 100%;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+        }
+        
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        
+        .step-loading {
+            font-size: 0.875rem;
+            color: #3b82f6;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .step-description {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin: 80px 0;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 16px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* Interactive Simulation */
+        .simulation-section {
+            margin: 60px 0;
+            text-align: center;
+        }
+        
+        .simulation-title {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+        
+        .simulation-button {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .simulation-button:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        /* Tech Stack */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+        }
+        
+        .tech-badge {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Infrastructure Section */
+        .infrastructure {
+            text-align: center;
+            margin: 60px 0;
+        }
+        
+        .infrastructure h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .nav-controls {
+                gap: 10px;
+            }
+            
+            .tech-stack {
+                gap: 10px;
+            }
+        }
+        
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Language-specific content */
+        [lang="pt-BR"] .en-content { display: none; }
+        [lang="en"] .pt-content { display: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">
+                    <span class="pay">PAY</span><span class="hub">HUB</span>
+                </a>
+                <div class="nav-controls">
+                    <div class="lang-toggle">
+                        <button class="lang-btn active" onclick="setLanguage('pt-BR')">PT</button>
+                        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1 class="pt-content">Liquidez Sob Demanda</h1>
+            <h1 class="en-content">On-Demand Liquidity</h1>
+            
+            <p class="hero-subtitle pt-content">Transforme seu celular em uma maquininha Web3 descentralizada</p>
+            <p class="hero-subtitle en-content">Transform your phone into a decentralized Web3 payment terminal</p>
+            
+            <p class="hero-description pt-content">Liquide vendas em segundos via XRPL. Sem bancos. Sem espera.</p>
+            <p class="hero-description en-content">Liquidate sales in seconds via XRPL. No banks. No waiting.</p>
+        </section>
+
+        <section class="process-steps">
+            <div class="step-card">
+                <div class="step-icon"></div>
+                <h3 class="step-title pt-content">Pagamento</h3>
+                <h3 class="step-title en-content">Payment</h3>
+                <div class="step-description pt-content">Pix • Cartão • Cripto</div>
+                <div class="step-description en-content">Pix • Card • Crypto</div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-icon"></div>
+                <h3 class="step-title pt-content">Conversão ODL</h3>
+                <h3 class="step-title en-content">ODL Conversion</h3>
+                <div class="step-loading">
+                    <span class="pt-content">3s carregando...</span>
+                    <span class="en-content">3s loading...</span>
+                    <span class="loading">⏳</span>
+                </div>
+                <div class="step-description pt-content">RLUSD/XRP Instantâneo</div>
+                <div class="step-description en-content">RLUSD/XRP Instant</div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-icon"></div>
+                <h3 class="step-title pt-content">Liquidação</h3>
+                <h3 class="step-title en-content">Settlement</h3>
+                <div class="step-description">3-5s finality</div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <button class="cta-button" onclick="startSimulation()">
+                <span class="pt-content">Começar Agora</span>
+                <span class="en-content">Start Now</span>
+                <span></span>
+            </button>
+        </section>
+
+        <section class="simulation-section">
+            <div class="simulation-title pt-content">Simulação Interativa</div>
+            <div class="simulation-title en-content">Interactive Simulation</div>
+            <a href="#" class="simulation-button" onclick="openCryptoPoint()">
+                <span class="pt-content">Crypto Point - Eventos Web3</span>
+                <span class="en-content">Crypto Point - Web3 Events</span>
+                <span></span>
+            </a>
+        </section>
+
+        <section class="tech-stack">
+            <span class="tech-badge">Powered by XRPL</span>
+            <span class="tech-badge">Escrow Inteligente</span>
+            <span class="tech-badge">On-Demand Liquidity (ODL)</span>
+            <span class="tech-badge">Auto-Yield</span>
+        </section>
+
+        <section class="infrastructure">
+            <h2 class="pt-content">Infraestrutura Global XRPL</h2>
+            <h2 class="en-content">Global XRPL Infrastructure</h2>
+        </section>
+    </main>
+
+    <script>
+        // Language switching
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.body.setAttribute('lang', lang);
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update page title
+            if (lang === 'pt-BR') {
+                document.title = 'Payhub v3 - Liquidez Sob Demanda';
+            } else {
+                document.title = 'Payhub v3 - On-Demand Liquidity';
+            }
+        }
+
+        // Start simulation
+        function startSimulation() {
+            // Simulate ODL conversion
+            const loadingElement = document.querySelector('.step-loading');
+            const originalContent = loadingElement.innerHTML;
+            
+            loadingElement.innerHTML = `
+                <span class="${document.documentElement.lang === 'pt-BR' ? 'pt-content' : 'en-content'}">
+                    ${document.documentElement.lang === 'pt-BR' ? 'Convertendo...' : 'Converting...'}
+                </span>
+                <span class="loading"></span>
+            `;
+            
+            setTimeout(() => {
+                loadingElement.innerHTML = originalContent;
+                
+                // Show success message
+                const lang = document.documentElement.lang;
+                const message = lang === 'pt-BR' 
+                    ? ' Conversão completa! Liquidação em 3-5 segundos.'
+                    : ' Conversion complete! Settlement in 3-5 seconds.';
+                
+                alert(message);
+            }, 3000);
+        }
+
+        // Open Crypto Point simulation
+        function openCryptoPoint() {
+            const lang = document.documentElement.lang;
+            const message = lang === 'pt-BR'
+                ? ' Abrindo simulador Crypto Point para eventos Web3...'
+                : ' Opening Crypto Point simulator for Web3 events...';
+            
+            alert(message);
+            
+            // In a real implementation, this would open the simulator
+            // window.open('/simulator', '_blank', 'width=800,height=600');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default language
+            setLanguage('pt-BR');
+            
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

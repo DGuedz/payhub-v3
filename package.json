@@ -13,7 +13,8 @@
     "dev": "vite",
     "preview": "vite preview",
     "start": "node server.js",
-    "lint": "eslint sdk app payhub-frontend/app --ext .ts,.tsx --max-warnings=0",
+    "lint": "eslint \"sdk/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\" \"payhub-frontend/app/**/*.{ts,tsx}\" --max-warnings=0",
+    "lint:fix": "eslint \"sdk/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\" \"payhub-frontend/app/**/*.{ts,tsx}\" --fix",
     "typecheck": "tsc -p tsconfig.json",
     "check:emoji": "node scripts/check-emojis.js",
     "postinstall": "node scripts/install-hooks.js || true",
@@ -28,6 +29,9 @@
     "security:honeypot-trigger": "npm run security:build && node dist/security/security-demo-trigger.js",
     "demo:artifacts": "OUTPUT_FILE=docs/ARTIFACTS_DEVNET.json node scripts/xrpl-smoke-demo.js"
   },
+  "engines": {
+    "node": ">=18.0.0 <19"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DGuedz/PAYHUB_V3.git"
@@ -40,6 +44,9 @@
   },
   "homepage": "https://github.com/DGuedz/PAYHUB_V3#readme",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "helmet": "^7.0.0",
     "jose": "^6.1.2",
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2",
@@ -49,17 +56,17 @@
     "xrpl": "^2.9.0"
   },
   "devDependencies": {
-    "@types/node": "^24.10.0",
+    "@types/node": "^20.11.16",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^5.1.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12",
-    "eslint": "^8.57.0",
-    "@typescript-eslint/parser": "^6.7.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "vite": "^7.1.12"
   }
 }

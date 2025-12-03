@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PAYHUB — Monitor de Escrow RLUSD</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --surface: #121935;
+        --text: #e9ecf7;
+        --muted: #b6bfd6;
+        --accent: #6ea8fe;
+        --accent-2: #6df1c6;
+        --border: #2a355f;
+        --danger: #ff6b6b;
+        --success: #6df1c6;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: radial-gradient(1200px 600px at 20% 0%, #0f1530, var(--bg)); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
+      header { display:flex; align-items:center; justify-content:space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, rgba(18,25,53,0.9), rgba(18,25,53,0.6)); backdrop-filter: blur(8px); position: sticky; top:0; }
+      header h1 { font-size: 1.1rem; margin:0; letter-spacing: 0.3px; }
+      header .badge { color: var(--muted); font-size: 0.85rem; }
+      main { max-width: 900px; margin: 2rem auto; padding: 0 2rem; }
+      .card { border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: linear-gradient(180deg, rgba(18,25,53,0.9), rgba(18,25,53,0.65)); box-shadow: 0 6px 30px rgba(0,0,0,0.25); }
+      .card h2 { font-size: 1rem; margin: 0 0 0.75rem; color: var(--muted); }
+      label { display: block; margin: 0.5rem 0 0.35rem; font-weight: 600; color: var(--muted); }
+      input { width: 100%; padding: 0.65rem 0.75rem; margin-bottom: 0.75rem; border-radius: 10px; border: 1px solid var(--border); background: #0d1430; color: var(--text); outline: none; }
+      input::placeholder { color: #7c88aa; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+      button { width: 100%; padding: 0.7rem 0.9rem; border-radius: 10px; border: 1px solid #3b4ea5; background: linear-gradient(180deg, #3b4ea5, #2b3b8a); color: #f0f4ff; cursor: pointer; font-weight: 600; letter-spacing: 0.2px; }
+      button:hover { filter: brightness(1.06); }
+      button:disabled { opacity: 0.6; cursor: not-allowed; }
+      .actions { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: center; }
+      .hint { font-size: 0.85rem; color: var(--muted); }
+      .status { font-size: 0.85rem; color: var(--muted); text-align: right; }
+      .status.ok { color: var(--success); }
+      .status.err { color: var(--danger); }
+      .log { white-space: pre-wrap; background: #0a1130; border-radius: 10px; padding: 0.9rem; border: 1px dashed var(--border); color: #a7b3d8; min-height: 88px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>PAYHUB — Monitor de Escrow RLUSD</h1>
+      <div class="badge">Frontend envia apenas <code>owner</code> e <code>offerSequence</code></div>
+    </header>
+    <main>
+      <div class="card" aria-label="Finalização de Escrow">
+        <h2>Finalizar Escrow</h2>
+        <label for="jwt">JWT (Bearer)</label>
+        <input id="jwt" type="text" placeholder="Cole aqui o token gerado (expiração curta)" />
+        <div class="hint">Tokens curtos (ex.: 5–10m). O backend valida issuer/expiração.</div>
+        <div class="row" style="margin-top: 0.5rem;">
+          <div>
+            <label for="owner">Owner</label>
+            <input id="owner" type="text" placeholder="Endereço do owner do escrow" />
+          </div>
+          <div>
+            <label for="offerSequence">OfferSequence</label>
+            <input id="offerSequence" type="number" placeholder="Sequence capturado no EscrowCreate" />
+          </div>
+        </div>
+        <div class="actions">
+          <button id="finishBtn">⏳ Finalizar Escrow</button>
+          <div id="status" class="status">Aguardando envio…</div>
+        </div>
+        <h2 style="margin-top:1rem;">Log</h2>
+        <div id="log" class="log" aria-live="polite" aria-atomic="false"></div>
+      </div>
+    </main>
+
+    <script>
+      const el = (id) => document.getElementById(id);
+      const log = (msg) => {
+        const time = new Date().toISOString();
+        el('log').textContent += `[${time}] ${msg}\n`;
+      };
+
+      function setStatus(type, text) {
+        const s = el('status');
+        s.className = `status ${type}`;
+        s.textContent = text;
+      }
+
+      async function finishEscrow() {
+        const jwt = el('jwt').value.trim();
+        const owner = el('owner').value.trim();
+        const offerSequence = Number(el('offerSequence').value);
+
+        if (!jwt) { setStatus('err', 'JWT ausente'); return log('Erro: JWT ausente'); }
+        if (!owner || !offerSequence) { setStatus('err', 'Campos inválidos'); return log('Erro: owner ou offerSequence inválidos'); }
+
+        try {
+          const btn = el('finishBtn');
+          btn.disabled = true;
+          btn.textContent = ' Enviando…';
+          setStatus('hint', 'Processando transação no backend…');
+          const resp = await fetch('/api/escrow-finish', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${jwt}`,
+            },
+            body: JSON.stringify({ owner, offerSequence }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) {
+            const msg = data && data.error ? data.error : String(resp.status);
+            setStatus('err', 'Falha na transação');
+            log(`Falha: ${msg}`);
+            return;
+          }
+          setStatus('ok', 'Transação enviada com sucesso');
+          log(`Sucesso: txHash=${data.txHash} sequence=${data.sequence}`);
+        } catch (err) {
+          setStatus('err', 'Erro de rede');
+          log(`Erro de rede: ${err && err.message ? err.message : String(err)}`);
+        } finally {
+          const btn = el('finishBtn');
+          btn.disabled = false;
+          btn.textContent = ' Finalizar Escrow';
+        }
+      }
+
+      el('finishBtn').addEventListener('click', finishEscrow);
+    </script>
+  </body>
+</html>
